@@ -3,10 +3,13 @@
 <head>
     <title>CellCounter</title>
     <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/960_16_col.css" rel="stylesheet">
 </head>
 
-<body>
-    {% block content %}{% endblock %}
+<body class="container_16">
+    <div id="content" class="grid_16">
+        {% block content %}{% endblock %}
+    </div>
 </body>
     
 </html>
