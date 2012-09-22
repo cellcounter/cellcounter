@@ -4,9 +4,14 @@
     <title>CellCounter</title>
     <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}css/960_16_col.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/cellcounter.css" rel="stylesheet">
 </head>
 
 <body class="container_16">
+    <nav class="grid_16">
+        <a href="/login/">Login</a>        
+    </nav>
+
     <div id="content" class="grid_16">
         {% block content %}{% endblock %}
     </div>

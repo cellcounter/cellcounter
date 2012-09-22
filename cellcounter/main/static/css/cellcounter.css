@@ -1,0 +1,9 @@
+/* Base cellcounter css */
+
+nav {
+    text-align: right;
+    padding: 0.75em;
+    padding-bottom: 0em;
+    background: #1B1B1B;
+    height: 2em;
+}
