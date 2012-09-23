@@ -1,0 +1,58 @@
+/* Base cellcounter css */
+
+nav {
+    text-align: right;
+    padding: 0.75em;
+    padding-bottom: 0em;
+    background: #1B1B1B;
+    height: 2em;
+}
+
+
+
+div.count {
+
+}
+
+div.count #cellname {
+  text-align: center;
+}
+
+div.count #key {
+  font-size: 200%;
+  text-align: center;
+  display: none;
+}
+
+div#counterbox {
+  /*clear: both;*/
+  position: relative;
+  display: none;
+  background-color: #ffffff;
+  z-index: 101;
+  height: 400px;
+}
+
+div#openkeyboard {
+  border: 2px solid black;
+  width: 100px;
+}
+
+div#submit {
+  border: 2px solid black;
+  width: 100px;
+}
+
+#fuzz {
+  position:absolute;
+  top:0; left:0; width:100%;
+  height: 500px;
+  z-index: 100;
+  /*background: url('/static/images/fuzz.gif');*/
+  display:none;
+  text-align:left; 
+  background-color: #e5e5e5;
+
+  opacity:0.6;
+  filter:alpha(opacity=60); /* For IE8 and earlier */
+}
