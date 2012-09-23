@@ -15,7 +15,8 @@ div#total {
    font-size: 300%;
    display: block;
    position: absolute;
-   top: 280px;
+   top: 300px;
+   left: 30px;
 }
 
 div.count #cellname {
@@ -87,4 +88,9 @@ div#imgdisplay {
   height: 300px;
   width: 400px;
 
+}
+
+div#keyboard {
+  margin-top: 40px;
+  margin-left: 20px;
 }
