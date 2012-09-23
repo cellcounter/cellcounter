@@ -2,111 +2,46 @@
 
 {% block content %}
 
-<div class="navbar">
-  <div class="navbar-inner">
-    <a class="brand" href="#">
-<table>
-	<tr>
-	<th rowspan=3><img align="middle" height="75" width="75" style="padding:10px;" src="static/images/sexy_slide.jpg"></img></th>
-	<td>Blood Count</td>
-	<tr><td><font2>Quick, accurate, fun</font2></td></tr>
-	</tr>
-</table></a>
-    <ul class="nav">
-      <li class="active"><a href="#">Home</a></li>
-      <li><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
-    </ul>
-  </div>
-</div>
+<p>Blood Count provides a simple way for cells on a blood film to be counted and analysed.  as they are identified.</p>
 
-<p>Haematocritters provides a simple way for cells on a blood film to be counted and analysed. Cell types can be input with one hand as they are identified, and pressing space+key allows abnormal cell types to be counted. </p>
-<p>For ambiguous cells, pressing shift+key shows normal examples, and shift+space+key shows abnormal examples.</p>
+<p><font5>Input mode</font5>Cell types can be input with one hand. Pressing space+key allows abnormal cells of each type to be selected.</p>
+
+<p><font5>View mode</font5>Normal examples can be viewed by pressing shift+key. Abnormal exampels can be viewed by pressing shift+space+key.
+
 
 <br><br><br><br>
 
 </div>
 
-    <div id="openkeyboard">Open keyboard</div>
+<div id="boxholder1">
+<div class="box1 c1"></div><div class="box1 c1"></div><div class="box1 c1"></div><div class="box1 c1"></div><div class="box1 c1"></div><div class="box1 c1"></div>
+<div class="box1 c2" id="u"><font1>u</font1><br><br><font4>blast</font4></div>
+<div class="box1 c2" id="i"><font1>i</font1><br><br><font4>lymph</font4></div>
+<div class="box1 c2" id="o"><font1>o</font1><br><br><font4>prolymph</font4></div>
+<div class="box1 c2" id="p"><font1>p</font1><br><br><font4>plasma</font4></div>
+</div>
 
-        <div id="counterbox">
+<div id="boxholder2">
+<div class="box1 c1"></div><div class="box1 c1"></div><div class="box1 c1"></div><div class="box1 c1"></div><div class="box1 c1"></div>
+<div class="box1 c2" id="h"><font1>h</font1><br><br><font4>neut</font4></div>
+<div class="box1 c2" id="j"><font1>j</font1><br><br><font4>meta</font4></div>
+<div class="box1 c2" id="k"><font1>k</font1><br><br><font4>myelo</font4></div>
+<div class="box1 c2" id="l"><font1>l</font1><br><br><font4>promyelo</font4></div>
+</div>
 
-          <!-- Row 1 -->
-          <div id="boxholder1">
-            <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c2 count" id="u">
-              <font1>u</font1><br>
-              <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-              <font2>blast</font2>
-              <div id="key">u</div>
-            </div>
-            <div class="box1 c2 count" id="i">
-              <font1>i</font1><br>
-              <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-              <font2>lymph</font2>
-              <div id="key">i</div>
-            </div>
-            <div class="box1 c2 count" id="o">
-              <font1>o</font1><br>
-              <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-              <font2>prolymph</font2>
-              <div id="key">o</div>
-            </div>
-            <div class="box1 c2 count" id="p">
-              <font1>p</font1><br>
-              <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-              <font2>plasma</font2>
-              <div id="key">p</div>
-            </div>
-          </div>
+<div id="boxholder3holder">
+<div class="box_shiftkey c3" id="shiftkey"><font3><br>view</font4></div>
+<div class="box1 c1"></div><div class="box1 c1"></div><div class="box1 c1"></div><div class="box1 c1"></div>
+<div class="box1 c2" id="b"><font1>b</font1><br><br><font4>erythro</font4></div>
+<div class="box1 c2" id="n"><font1>n</font1><br><br><font4>eo</font4></div>
+<div class="box1 c2" id="m"><font1>m</font1><br><br><font4>mono</font4></div>
+<div class="box1 c2" id="comma"><font1>,</font1><br><br><font4>promono</font4></div>
+<div class="box2 c1"></div>
+<div class="box2 c1"></div>
+</div>
 
-          <!-- Row 2 -->
-          <div id="boxholder2">
-            <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c2 count" id="h">
-              <font1>h</font1><br>
-              <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-              <font2>neut</font2>
-              <div id="key">h</div>
-            </div>
-            <div class="box1 c2" id="j">
-              <font1>j</font1><br><br><font2>meta</font2>
-            </div>
-            <div class="box1 c2" id="k">
-              <font1>k</font1><br><br><font2>myelo</font2>
-            </div>
-            <div class="box1 c2" id="l">
-              <font1>l</font1><br><br><font2>promyelo</font2>
-            </div>
-          </div>
-
-          <!-- Row 3 -->
-          <div id="boxholder3holder">
-            <div class="box_shiftkey c3" id="shiftkey"><font3><br>view</font2></div>
-            <div class="box1 c1"></div><div class="box1 c1"></div><div class="box1 c1"></div><div class="box1 c1"></div>
-            <div class="box1 c2" id="b"><font1>b</font1><br><br><font2>erythro</font2></div>
-            <div class="box1 c2" id="n"><font1>n</font1><br><br><font2>eo</font2></div>
-            <div class="box1 c2" id="m"><font1>m</font1><br><br><font2>mono</font2></div>
-            <div class="box1 c2" id="comma"><font1>,</font1><br><br><font2>promono</font2></div>
-            <div class="box2 c1"></div>
-            <div class="box2 c1"></div>
-          </div>
-
-          <div id="boxholder_spacebar">
-            <div class="box_spacebar c3" id="spacebar"><font3><br>abnormal</font2></div>
-          </div>
-        </div>
-
-        <div id="submit">Submit</div>
-        <div id="results"></div>
+<div id="boxholder_spacebar">
+<div class="box_spacebar c3" id="spacebar"><font3><br>abnormal</font4></div>
+</div>
 
 {% endblock %}
