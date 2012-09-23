@@ -36,6 +36,13 @@ div#counterbox {
   background-color: #ffffff;
   z-index: 11;
   height: 400px;
+  border: 2px solid black;
+  border-radius: 15px;
+}
+
+div#terbox {
+  margin-top: 20px;
+  margin-left: 30px;
 }
 
 div#openkeyboard {

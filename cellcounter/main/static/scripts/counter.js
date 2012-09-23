@@ -75,21 +75,21 @@ $('#submit').click(function() {
 
     //$(document).keypress(function(e) {
     jQuery(document).bind('keydown', function (e){
+        //Event.stop(e);
       if($keyboard_active) {
       $key = String.fromCharCode(e.which).toUpperCase();
       $code = e.which;
       $shift_pressed = e.shiftKey;
       if($code == 188) $key = ","; // XXX: WTF
-
-      if($img_displayed)
-      {
-      }
+      if($code == 173) $key = "-"; // XXX: WTF
 
       if($key == " ") {
         $abnormal = true;
+        //Event.stop(e);
+        return false;
         //$("div#imagebox").css("background-image", "");
       }
-      else if($code == 8) {
+      else if($key == "-") {
         $undo = true;
       }
       else {
@@ -147,11 +147,19 @@ $('#submit').click(function() {
       if($keyboard_active) {
         $code = e.which;
         $key = String.fromCharCode($code).toUpperCase();
+        if($code == 173) $key = "-"; // XXX: WTF
+
         if($key == " ")
           $abnormal = false;
-        if($code == 8)
+        if($key == "-")
           $undo = false;
       }
     });
 
     });
+
+/*window.onkeydown=function(e){
+if(e.keyCode==32){
+return false;
+}
+}; */
