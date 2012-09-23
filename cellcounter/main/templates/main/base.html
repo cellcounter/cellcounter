@@ -9,6 +9,7 @@
 
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}scripts/counter.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}scripts/jquery.json-2.3.min.js"></script>
 </head>
 
 <body class="container_16">
@@ -21,10 +22,10 @@
 	</a>		
 
     <ul class="nav">
-      <li class="active grid_2"><a href="/work/" class="navbar"><font_titlelink>Work</a></li>
-      <li class="grid_2"><a href="/discover/" class="navbar">Discover</a></li>
-      <li class="grid_2"><a href="/share/" class="navbar">Share</a></li>
-      <li class="grid_1"><a href=""></a></li>
+      <li class="active grid_2"><a href="/submit/" class="navbar"><font_titlelink>Work</a></li>
+      <li class="grid_2"><a href="/discover/">Discover</a></li>
+      <li class="grid_2"><a href="/share/">Share</a></li>
+      <li class="grid_2"><a href=""></a></li>
       <li class="active grid_2 omega"><a class="btn btn-info grid_2 omega" href="/login/">Login</a>
 </li>
 
@@ -36,6 +37,7 @@
 
         
  <div id="fuzz"></div>
+          
     <div id="content" class="grid_16">
         {% block content %}{% endblock %}
     </div>

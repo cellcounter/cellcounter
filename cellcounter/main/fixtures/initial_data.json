@@ -1,0 +1,106 @@
+[
+ {
+  "pk": 1, 
+  "model": "main.celltype", 
+  "fields": {
+   "readable_name": "Neutrophil",
+   "machine_name": "neutrophil"
+  }
+ }, 
+ {
+  "pk": 2, 
+  "model": "main.celltype", 
+  "fields": {
+   "readable_name": "Myelocytes",
+   "machine_name": "myelocytes"
+  }
+ }, 
+ {
+  "pk": 3, 
+  "model": "main.celltype", 
+  "fields": {
+   "readable_name": "Band forms",
+   "machine_name": "band_forms"
+  }
+ }, 
+ {
+  "pk": 4, 
+  "model": "main.celltype", 
+  "fields": {
+   "readable_name": "Promyelocytes",
+   "machine_name": "promyelocytes"
+  }
+ }, 
+ {
+  "pk": 5, 
+  "model": "main.celltype", 
+  "fields": {
+   "readable_name": "Blasts",
+   "machine_name": "blasts"
+  }
+ }, 
+ {
+  "pk": 6, 
+  "model": "main.celltype", 
+  "fields": {
+   "readable_name": "Eosinophils",
+   "machine_name": "eosinophils"
+  }
+ }, 
+ {
+  "pk": 7, 
+  "model": "main.celltype", 
+  "fields": {
+   "readable_name": "Erythroid",
+   "machine_name": "erythroid"
+  }
+ }, 
+ {
+  "pk": 8, 
+  "model": "main.celltype", 
+  "fields": {
+   "readable_name": "Lymphocytes",
+   "machine_name": "lymphocytes"
+  }
+ }, 
+ {
+  "pk": 9, 
+  "model": "main.celltype", 
+  "fields": {
+   "readable_name": "Plasma Cells",
+   "machine_name": "plasma_cells"
+  }
+ }, 
+ {
+  "pk": 10, 
+  "model": "main.celltype", 
+  "fields": {
+   "readable_name": "Monocytes",
+   "machine_name": "monocytes"
+  }
+ }, 
+ {
+  "pk": 11, 
+  "model": "main.celltype", 
+  "fields": {
+   "readable_name": "Histiocytes",
+   "machine_name": "histiocytes"
+  }
+ }, 
+ {
+  "pk": 12, 
+  "model": "main.celltype", 
+  "fields": {
+   "readable_name": "Basophils",
+   "machine_name": "basophils"
+  }
+ }, 
+ {
+  "pk": 13, 
+  "model": "main.celltype", 
+  "fields": {
+   "readable_name": "Other",
+   "machine_name": "other"
+  }
+ }
+]
