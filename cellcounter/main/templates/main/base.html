@@ -9,6 +9,7 @@
 
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}scripts/counter.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}scripts/jquery.json-2.3.min.js"></script>
 </head>
 
 <body class="container_16">
@@ -16,6 +17,7 @@
         <a class="btn btn-success" href="/login/">Login</a>        
     </nav>
  <div id="fuzz"></div>
+          
     <div id="content" class="grid_16">
         {% block content %}{% endblock %}
     </div>

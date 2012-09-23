@@ -2,10 +2,14 @@
 
 {% block content %}
 
+
+
         <div id="openkeyboard">Open keyboard</div>
 
-        <div id="counterbox">
+        <div id="counterbox" style="position: relative;">
+          <div id="imagebox"></div>
 
+          <div id="terbox" style="position: absolute; top: 0px; z-index: -1;">
           <!-- Row 1 -->
           <div id="boxholder1">
             <div class="box1 c1"></div>
@@ -19,6 +23,7 @@
               <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
               <font2>blast</font2>
               <div id="key">u</div>
+              <a id="img">http://imagebank.hematology.org/Content/32/1553/1553_full.JPG</a>
             </div>
             <div class="box1 c2 count" id="i">
               <font1>i</font1><br>
@@ -79,6 +84,9 @@
           <div id="boxholder_spacebar">
             <div class="box_spacebar c3" id="spacebar"><font3><br>abnormal</font2></div>
           </div>
+        </div>
+
+
         </div>
 
         <div id="submit">Submit</div>
