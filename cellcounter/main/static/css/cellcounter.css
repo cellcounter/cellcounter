@@ -10,18 +10,18 @@ nav {
 
 body { background: #fff; text-align: center; font: 12px "Trebuchet MS", Arial, sans-serif; margin: 20px; padding: 0 }
 
-#boxholder1 { width: 800px; min-height: 80px; border: solid white 1px; margin: auto }
-#boxholder2 { width: 720px; min-height: 80px; border: solid white 1px; margin: auto }
-#boxholder3 { width: 948px; min-height: 80px; border: solid black 1px; margin: auto }
-#boxholder3holder { width: 948px; min-height: 80px; border: solid white 1px; margin: auto }
+#boxholder1 { width: 800px; min-height: 80px; border: solid white 1px; margin: auto; }
+#boxholder2 { width: 720px; min-height: 80px; border: solid white 1px; margin: auto; }
+#boxholder3 { width: 948px; min-height: 80px; border: solid black 1px; margin: auto; }
+#boxholder3holder { width: 948px; min-height: 80px; border: solid white 1px; margin: auto; }
 
-#boxholder_spacebar { width: 475px; min-height: 80px; border: white 1px; margin: auto }
-#boxholder_shiftkey { width: 140px; min-height: 80px; border: white 1px; margin: auto }
+#boxholder_spacebar { width: 475px; min-height: 80px; border: white 1px; margin: auto; }
+#boxholder_shiftkey { width: 140px; min-height: 80px; border: white 1px; margin: auto; }
 
-.box1 { width: 74px; height: 74px; border: solid black 3px; float: left; }
-.box2 { width: 74px; height: 74px; border: solid white 3px; float: left; }
-.box_spacebar { width: 469px; height: 74px; border: solid black 3px; float: left; margin-bottom:40px}
-.box_shiftkey { width: 142px; height: 74px; border: solid black 3px; float: left; }
+.box1 { width: 74px; height: 74px; border: solid black 3px; float: left; text-align: center; }
+.box2 { width: 74px; height: 74px; border: solid white 3px; float: left;  text-align: center; }
+.box_spacebar { width: 469px; height: 74px; border: solid black 3px; float: left; margin-bottom:40px; text-align: center; }
+.box_shiftkey { width: 142px; height: 74px; border: solid black 3px; float: left;  text-align: center; }
 
 .c1 { background: #FFF }
 .c2 { background: #E24 }
