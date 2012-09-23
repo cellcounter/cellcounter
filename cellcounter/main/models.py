@@ -59,7 +59,7 @@ class CellCountInstance(models.Model):
     datetime_submitted = models.DateTimeField()
     datetime_updated = models.DateTimeField()
     tissue_type = models.CharField(max_length=25, choices=TISSUE_TYPE)
-    overall_comment = models.TextField()
+    overall_comment = models.TextField(blank=True)
 
     def __unicode__(self):
         return u'Count %s' %(self.id)
@@ -79,7 +79,9 @@ class BoneMarrowBackground(models.Model):
                                         choices=BM_EASE_OF_ASPIRATION)
 
 class CellType(models.Model):
-    name = models.CharField(max_length=50)
+    readable_name = models.CharField(max_length=50)
+    machine_name = models.CharField(max_length=50)
+    comment = models.TextField()
 
 class CellCount(models.Model):
     cell_count_instance = models.ForeignKey(CellCountInstance)
