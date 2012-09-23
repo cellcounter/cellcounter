@@ -13,7 +13,7 @@ urlpatterns = patterns('',
     url(r'^$', direct_to_template, {'template': 'main/index.html'},
             name="index"),
 
-    (r'^login/$', login),
+    (r'^login/$', login, {'template_name': 'main/login.html'}),
     (r'^logout/$', logout),
 
     # Examples:
