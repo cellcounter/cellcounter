@@ -89,8 +89,9 @@ $('#submit').click(function() {
         return false;
         //$("div#imagebox").css("background-image", "");
       }
-      else if($key == "-") {
+      else if($code == 8) {
         $undo = true;
+        return false;
       }
       else {
         if($shift_pressed) {
@@ -151,7 +152,7 @@ $('#submit').click(function() {
 
         if($key == " ")
           $abnormal = false;
-        if($key == "-")
+        if($code == 8)
           $undo = false;
       }
     });
