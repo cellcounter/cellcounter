@@ -5,13 +5,17 @@
     <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}css/960_16_col.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}css/cellcounter.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/keyboard.css" rel="stylesheet">
+
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}scripts/counter.js"></script>
 </head>
 
 <body class="container_16">
     <nav class="grid_16">
         <a href="/login/">Login</a>        
     </nav>
-
+ <div id="fuzz"></div>
     <div id="content" class="grid_16">
         {% block content %}{% endblock %}
     </div>
