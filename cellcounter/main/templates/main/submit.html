@@ -1,15 +1,10 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-<form action="/submit/" method="POST">
-    {% csrf_token %}
-    {{ cellcount.as_p }}
-    {{ bonemarrowbackground.as_p }}
-	<input type="hidden" id="counter">
-    <input type="submit" value="Submit" />
-</form>
 
-        <div id="openkeyboard">Open keyboard</div>
+        <div id="openkeyboard" class="btn">Open keyboard</div>
+
+        <br />
 
         <div id="counterbox" style="position: relative;">
           <div style="text-align: center; width: 100%"><div id="imagebox"><div id="imgdisplay"></div></div></div>
@@ -134,4 +129,14 @@
         <div id="total">0</div>
 
         </div>
+
+<form action="/submit/" method="POST">
+    {% csrf_token %}
+    {{ cellcount.as_p }}
+    {{ bonemarrowbackground.as_p }}
+	<input type="hidden" id="counter">
+    <input type="submit" value="Submit" />
+</form>
+
+
 {% endblock %}
