@@ -59,7 +59,7 @@ class CellCountInstance(models.Model):
     datetime_submitted = models.DateTimeField()
     datetime_updated = models.DateTimeField()
     tissue_type = models.CharField(max_length=25, choices=TISSUE_TYPE)
-    overall_comment = models.TextField()
+    overall_comment = models.TextField(blank=True)
 
     def __unicode__(self):
         return u'Count %s' %(self.id)
