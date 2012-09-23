@@ -79,7 +79,9 @@ class BoneMarrowBackground(models.Model):
                                         choices=BM_EASE_OF_ASPIRATION)
 
 class CellType(models.Model):
-    name = models.CharField(max_length=50)
+    readable_name = models.CharField(max_length=50)
+    machine_name = models.CharField(max_length=50)
+    comment = models.TextField()
 
 class CellCount(models.Model):
     cell_count_instance = models.ForeignKey(CellCountInstance)
