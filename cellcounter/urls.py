@@ -5,7 +5,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 from django.contrib.auth.views import login, logout
 
-from cellcounter.main.views import submit 
+from cellcounter.main.views import submit
 
 admin.autodiscover()
 
