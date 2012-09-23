@@ -13,8 +13,8 @@ urlpatterns = patterns('',
     url(r'^$', direct_to_template, {'template': 'main/index.html'},
             name="index"),
 
-    (r'^login/$', login(template_name='main/login.html'), name="login")
-    (r'^logout/$', logout(template_name='main/logout.html', name="logout")
+    (r'^login/$', login, {'template_name': 'main/login.html'}),
+    (r'^logout/$', logout),
 
     # Examples:
     # url(r'^$', 'cellcounter.views.home', name='home'),
