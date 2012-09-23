@@ -10,8 +10,12 @@ nav {
 
 
 
-div.count {
-
+div#total {
+   clear: both;
+   font-size: 300%;
+   display: block;
+   position: absolute;
+   top: 280px;
 }
 
 div.count #cellname {
@@ -45,16 +49,21 @@ div#submit {
 
 #fuzz {
   position:absolute;
-  top:0; left:0; width:100%;
-  height: 500px;
+  width:100%;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+/*  height: 500px;*/
   z-index: 10;
   /*background: url('/static/images/fuzz.gif');*/
   display:none;
-  text-align:left; 
+  text-align:left;
   background-color: #e5e5e5;
 
   opacity:0.6;
   filter:alpha(opacity=60); /* For IE8 and earlier */
+  overflow: hidden;
 }
 
 a#img {
@@ -62,11 +71,20 @@ a#img {
 }
 
 div#imagebox {
-  display: relative;
+  position: relative;
   /*text-align:center;*/
+  z-index: 120;
+  padding: 20px;
+  border: 2px solid black;
+  border-radius: 15px;
+  width: 400px;
+  display: none;
+  background-color: #e5e5e5;
+  margin: auto;
+}
+
+div#imgdisplay {
   height: 300px;
   width: 400px;
-  z-index: 120;
-  top: 100px;
-  left: 100px;
+
 }

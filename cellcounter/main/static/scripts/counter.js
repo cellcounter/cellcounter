@@ -5,6 +5,7 @@
     $abnormal = false;
     $undo = false;
     $keyboard_active = false;
+    $img_displayed = false;
 
     $(document).ready(function() {
       $('.count').each(
@@ -31,6 +32,7 @@ $('#openkeyboard').click(function() {
   $('#fuzz').fadeIn('slow', function() {
     $('#counterbox').slideDown('slow', function() {
       // Animation complete.
+      $("#fuzz").css("height", $(document).height());
       $keyboard_active = true;
     });
   });
@@ -48,8 +50,10 @@ $('#openkeyboard').click(function() {
 
 //Adjust height of overlay to fill screen when browser gets resized
 $(window).bind("resize", function(){
-   $("#fuzz").css("height", $(window).height());
+   $("#fuzz").css("height", $(document).height());
+   //$("#fuzz").css("top", $(window).top());
 });
+   //$("#fuzz").css("height", $(document).height());
 
 $('#submit').click(function() {
   $output = {}
@@ -72,24 +76,41 @@ $('#submit').click(function() {
       $key = String.fromCharCode(e.which).toUpperCase();
       $code = e.which;
       $shift_pressed = e.shiftKey;
-      //alert($key);
+      if($code == 188) $key = ","; // XXX: WTF
+
+      if($img_displayed)
+      {
+      }
 
       if($key == " ") {
         $abnormal = true;
-        $("div#imagebox").css("background-image", "");
+        //$("div#imagebox").css("background-image", "");
       }
       else if($code == 8) {
         $undo = true;
       }
       else {
-        for (var prop in $counters) {
-          if($counters[prop]["key"] == $key) {
-            if($shift_pressed) {
-              //$($counters[prop]["box"]).find("span#abnormal").text($counters[prop]["img"]);
-              $("div#imagebox").css("display", "absolute");
-              $("div#imagebox").css("background-image", "url(" + $counters[prop]["img"] + ")");
+        if($shift_pressed) {
+          for (var prop in $counters) {
+            if($counters[prop]["key"] == $key) {
+              $el = $("div#imagebox");
+              $el.css("display", "block");
+              $el.find("div#imgdisplay").css("background-image", "url(" + $counters[prop]["img"] + ")");
+              $img_displayed = true;
             }
-            else if($abnormal) {
+          }
+        }
+        else {
+          if($img_displayed) {
+              $("div#imagebox").css("display", "none");
+              $img_displayed = false;
+              return;
+          }
+          $count_total = 0;
+          $abnormal_total = 0;
+          for (var prop in $counters) {
+          if($counters[prop]["key"] == $key) {
+            if($abnormal) {
               if($undo) {
                 if($counters[prop]["abnormal"] > 0)
                   $counters[prop]["abnormal"]--;
@@ -108,8 +129,13 @@ $('#submit').click(function() {
               $($counters[prop]["box"]).find("span#countval").text($counters[prop]["count"]);
             }
           }
+          $count_total += $counters[prop]["abnormal"];
+          $count_total += $counters[prop]["count"];
+
+          }
+        $("#total").text($count_total);
+
         }
-        //$abnormal = false;
       }
       }
     });
