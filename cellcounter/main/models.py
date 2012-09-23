@@ -12,8 +12,8 @@ CELLULARITY_CHOICES = (
         ('Acellular', 'Acellular'))
 
 BM_PARTICULATE = (
-        ('No particles', 'No particles')
-        ('Few particles', 'Few particles')
+        ('No particles', 'No particles'),
+        ('Few particles', 'Few particles'),
         ('Adequate particles', 'Adequate particles'))
 
 BM_HAEMODILUTION =(
@@ -46,7 +46,7 @@ MEGAKARYOCYTE_DYSPLASIA = (
         ('Hypolobulated', 'Hypolobulated'),
         ('Fragmented', 'Fragmented'))
 
-GRANULOPOEISIS_DYSPLASIA = (
+GRANULOPOIESIS_DYSPLASIA = (
         ('None', 'None'),
         ('Hypogranular', 'Hypogranular'),
         ('Pelger', 'Pelger'),
@@ -85,7 +85,7 @@ class CellCount(models.Model):
     cell_count_instance = models.ForeignKey(CellCountInstance)
     cell = models.ForeignKey(CellType)
     count = models.IntegerField()
-    comment = models.TextField(default=Null)
+    comment = models.TextField(blank=True)
 
 class ErythropoiesisFindings(models.Model):
     cell_count_instance = models.ForeignKey(CellCountInstance)
@@ -96,6 +96,6 @@ class ErythropoiesisFindings(models.Model):
 class GranulopoiesisFindings(models.Model):
     cell_count_instance = models.ForeignKey(CellCountInstance)
     dysplasia = models.CharField(max_length=50,
-                                choices=GRANUOLOPOIESIS_DYSPLASIA)
+                                choices=GRANULOPOIESIS_DYSPLASIA)
     comment = models.TextField()
 
