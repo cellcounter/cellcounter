@@ -13,18 +13,11 @@ urlpatterns = patterns('',
     url(r'^$', direct_to_template, {'template': 'main/index.html'},
             name="index"),
 
+    
+
+    url(r'^admin/', include(admin.site.urls)),
     (r'^login/$', login, {'template_name': 'main/login.html'}),
     (r'^logout/$', logout),
-
-    # Examples:
-    # url(r'^$', 'cellcounter.views.home', name='home'),
-    # url(r'^cellcounter/', include('cellcounter.foo.urls')),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),
 )
 
 urlpatterns += staticfiles_urlpatterns()
