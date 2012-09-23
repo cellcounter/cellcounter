@@ -1,6 +1,16 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
+<<<<<<< .merge_file_OFSppb
+=======
+<form action="/submit/" method="POST">
+    {% csrf_token %}
+    {{ cellcount.as_p }}
+    {{ bonemarrowbackground.as_p }}
+	<input type="hidden" id="counter" name="counter" value="">
+    <input type="submit" value="Submit" />
+</form>
+>>>>>>> .merge_file_43MIj8
 
         <div id="openkeyboard" class="btn">Open keyboard</div>
 
