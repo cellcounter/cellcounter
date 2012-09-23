@@ -1,6 +1,8 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
+<<<<<<< .merge_file_OFSppb
+=======
 <form action="/submit/" method="POST">
     {% csrf_token %}
     {{ cellcount.as_p }}
@@ -8,8 +10,11 @@
 	<input type="hidden" id="counter" name="counter" value="">
     <input type="submit" value="Submit" />
 </form>
+>>>>>>> .merge_file_43MIj8
 
-        <div id="openkeyboard">Open keyboard</div>
+        <div id="openkeyboard" class="btn">Open keyboard</div>
+
+        <br />
 
         <div id="counterbox" style="position: relative;">
           <div style="text-align: center; width: 100%"><div id="imagebox"><div id="imgdisplay"></div></div></div>
@@ -134,4 +139,14 @@
         <div id="total">0</div>
 
         </div>
+
+<form action="/submit/" method="POST">
+    {% csrf_token %}
+    {{ cellcount.as_p }}
+    {{ bonemarrowbackground.as_p }}
+	<input type="hidden" name=counter" id="counter" value="">
+    <input type="submit" value="Submit" />
+</form>
+
+
 {% endblock %}
