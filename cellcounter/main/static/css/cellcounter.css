@@ -28,10 +28,16 @@ body { background: #fff; text-align: center; font: 12px "Trebuchet MS", Arial, s
 .c3 { background: #85F }
 
 font1 { text-decoration: none; font-weight: bold; color: black; font-size: 32px }
-font2 { text-decoration: none; font-weight: bold; color: #AAA; font-size: 11px }
+font2 { text-decoration: none; font-weight: bold; color: #AAA; font-size: 12px }
 font3 { text-decoration: none; font-weight: bold; color: black; font-size: 18px }
+font4 { text-decoration: none; font-weight: bold; color: #AAA; font-size: 11px }
+font5 { text-decoration: none; font-weight: bold; color: #03A; font-size: 18px; padding-right:20px; }
+
+a { font-weight: bold; color: #00B; font-size: 18px; padding-right: 20px}
+
+linkfont{ font-weight: bold; color: #00B; font-size: 18px; padding-top: 20px;}
+
 
 #content { width: 700; text-align: left; border-width: 0 6px; margin: auto; padding: 10px }
 #content h1 { margin: 0; font-size: 36px; text-align: center; color: #264; background-color:#CCC; border:groove; border-color:black}
-#content h2 { margin: 0; font-size: 18px; font-style: italic; text-align: center; color: #00B;  }
 #content p { margin: 19px 0 0; padding: 0; text-align: justify; line-height: 19px }
