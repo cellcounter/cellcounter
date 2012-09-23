@@ -12,8 +12,8 @@ body { background: #fff; text-align: center; font: 12px "Trebuchet MS", Arial, s
 
 #boxholder1 { width: 800px; min-height: 80px; border: solid white 1px; margin: auto; }
 #boxholder2 { width: 720px; min-height: 80px; border: solid white 1px; margin: auto; }
-#boxholder3 { width: 948px; min-height: 80px; border: solid black 1px; margin: auto; }
-#boxholder3holder { width: 948px; min-height: 80px; border: solid white 1px; margin: auto; }
+#boxholder3 { width: 918px; min-height: 80px; border: solid black 1px; margin: auto; }
+#boxholder3holder { width: 918px; min-height: 80px; border: solid white 1px; margin: auto; }
 
 #boxholder_spacebar { width: 475px; min-height: 80px; border: white 1px; margin: auto; }
 #boxholder_shiftkey { width: 140px; min-height: 80px; border: white 1px; margin: auto; }
