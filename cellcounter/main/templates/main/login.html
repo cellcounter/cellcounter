@@ -1,11 +1,12 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
+
 {% if form.errors %}
     <p class="error">Sorry, that's not a valid username or password</p>
 {% endif %}
 
-<form action='/login/' method='post>
+<form action='/login/' method='post'>
     <label for="username">User name:</label>
     <input type="text" name="username" value="" id="username">
     <label for="password">Password:</label>
