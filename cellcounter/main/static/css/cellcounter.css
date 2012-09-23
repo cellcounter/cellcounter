@@ -36,6 +36,8 @@ font5 { text-decoration: none; font-weight: bold; color: #03A; font-size: 18px; 
 a.navbar { font-weight: bold; color: #00B; font-size: 18px; padding-right: 20px;}
 a.table { font-weight: bold; color: #00B; font-size: 12px;}
 
+a { font-weight: bold; color: #00B; font-size: 18px;}
+
 #content { text-align: left; border-width: 0 6px; margin: auto; padding: 10px }
 #content { font-size: 12px; }
 
