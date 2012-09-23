@@ -5,7 +5,7 @@
     {% csrf_token %}
     {{ cellcount.as_p }}
     {{ bonemarrowbackground.as_p }}
-	<input type="hidden" id="counter">
+	<input type="hidden" id="counter" name="counter" value="">
     <input type="submit" value="Submit" />
 </form>
 
