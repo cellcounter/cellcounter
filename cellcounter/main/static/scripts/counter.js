@@ -41,6 +41,19 @@ $('#openkeyboard').click(function() {
   $('#fuzz').click(function() {
      if($keyboard_active) {
        $keyboard_active = false;
+
+       $output = {}
+       for (var prop in $counters) {
+         if ($counters.hasOwnProperty(prop)) { 
+           // or if (Object.prototype.hasOwnProperty.call(obj,prop)) for safety...
+           $output[prop] = {}
+           $output[prop]["normal"] = $counters[prop]["count"];
+           $output[prop]["abnormal"] = $counters[prop]["abnormal"];
+         }
+       }
+       $results = $.toJSON($output);
+       $("input#counter").attr("value", $results);
+
        $('#counterbox').slideUp('slow', function() {
          $('#fuzz').fadeOut('slow', function() {
          });
@@ -56,16 +69,6 @@ $(window).bind("resize", function(){
    //$("#fuzz").css("height", $(document).height());
 
 $('#submit').click(function() {
-  $output = {}
-  for (var prop in $counters) {
-    if ($counters.hasOwnProperty(prop)) { 
-      // or if (Object.prototype.hasOwnProperty.call(obj,prop)) for safety...
-      $output[prop] = {}
-      $output[prop]["normal"] = $counters[prop]["count"];
-      $output[prop]["abnormal"] = $counters[prop]["abnormal"];
-    }
-  }
-
   $results = $.toJSON($output);
   $("#results").text($results);
 });
