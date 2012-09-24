@@ -42,16 +42,35 @@ $('#openkeyboard').click(function() {
      if($keyboard_active) {
        $keyboard_active = false;
 
-       $output = {}
+       $output = {};
+       $total = 0;
        for (var prop in $counters) {
          if ($counters.hasOwnProperty(prop)) { 
            // or if (Object.prototype.hasOwnProperty.call(obj,prop)) for safety...
            $output[prop] = {}
            $output[prop]["normal"] = $counters[prop]["count"];
            $output[prop]["abnormal"] = $counters[prop]["abnormal"];
+
+           $total += $counters[prop]["count"];
+           $total += $counters[prop]["abnormal"];
          }
        }
        $results = $.toJSON($output);
+
+	$percent = {};
+	$per = "";
+       for (var prop in $counters) {
+         if ($counters.hasOwnProperty(prop)) { 
+           // or if (Object.prototype.hasOwnProperty.call(obj,prop)) for safety...
+           $percent[prop] = ($counters[prop]["count"] + $counters[prop]["abnormal"]) / $total * 100;
+	$per += '<tr><td style="width: 20%">' + prop + '</td><td style="width: 20%">' + parseFloat($percent[prop]).toFixed(2) + "%</td></tr>";
+         }
+       }
+
+	if($total > 0) {
+         $('div#statistics').empty().append('<h3>Count statistics</h3><table id="statistics">' + $per + '</table>');
+	}
+
        $("input#counter").attr("value", $results);
 
        $('#counterbox').slideUp('slow', function() {
@@ -89,8 +108,9 @@ $('#submit').click(function() {
         return false;
         //$("div#imagebox").css("background-image", "");
       }
-      else if($key == "-") {
+      else if($code == 8) {
         $undo = true;
+        return false;
       }
       else {
         if($shift_pressed) {
@@ -151,7 +171,7 @@ $('#submit').click(function() {
 
         if($key == " ")
           $abnormal = false;
-        if($key == "-")
+        if($code == 8)
           $undo = false;
       }
     });
