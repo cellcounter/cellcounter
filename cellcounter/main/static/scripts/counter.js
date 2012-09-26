@@ -12,7 +12,7 @@
           function(){
               //access to element via $(this)
               $key = $(this).find('div#key').text();
-		$name = $(this).find('font2').text();
+        $name = $(this).find('font2').text();
               $img = $(this).find('a#img').text();
               $counters[$name] = {};
               $counters[$name]["key"] = $key.toUpperCase();
@@ -89,8 +89,9 @@ $('#submit').click(function() {
         return false;
         //$("div#imagebox").css("background-image", "");
       }
-      else if($key == "-") {
+      else if($code == 8) {
         $undo = true;
+        return false;
       }
       else {
         if($shift_pressed) {
@@ -151,7 +152,7 @@ $('#submit').click(function() {
 
         if($key == " ")
           $abnormal = false;
-        if($key == "-")
+        if($code == 8)
           $undo = false;
       }
     });
