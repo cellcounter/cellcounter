@@ -1,8 +1,7 @@
 import os
 import dj_database_url
-# Django settings for cellcounter project.
 
-DEBUG = True
+DEBUG = DEBUG = bool(os.environ.get('DEBUG', False))
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -11,7 +10,7 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASES = {'default': dj_database_url.config(default='postgres://localhost')}
+DATABASES = {'default': dj_database_url.config(default=os.environ['DATABASE_URL'])}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
