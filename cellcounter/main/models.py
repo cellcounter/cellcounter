@@ -81,23 +81,31 @@ class BoneMarrowBackground(models.Model):
 class CellType(models.Model):
     readable_name = models.CharField(max_length=50)
     machine_name = models.CharField(max_length=50)
-    comment = models.TextField()
+    comment = models.TextField(blank=True)
 
 class CellCount(models.Model):
     cell_count_instance = models.ForeignKey(CellCountInstance)
     cell = models.ForeignKey(CellType)
-    count = models.IntegerField()
+    normal_count = models.IntegerField()
+    abnormal_count = models.IntegerField()
     comment = models.TextField(blank=True)
 
 class ErythropoiesisFindings(models.Model):
     cell_count_instance = models.ForeignKey(CellCountInstance)
     dysplasia = models.CharField(max_length=50,
                                 choices=ERYTHROPOIESIS_DYSPLASIA)
-    comment = models.TextField()
+    comment = models.TextField(blank=True)
 
 class GranulopoiesisFindings(models.Model):
     cell_count_instance = models.ForeignKey(CellCountInstance)
     dysplasia = models.CharField(max_length=50,
                                 choices=GRANULOPOIESIS_DYSPLASIA)
-    comment = models.TextField()
+    comment = models.TextField(blank=True)
 
+class MegakaryocyteFeatures(models.Model):
+    cell_count_instance = models.ForeignKey(CellCountInstance)
+    relative_count = models.CharField(max_length=50,
+                                choices=MEGAKARYOCYTE_RELATIVE_COUNT)
+    dysplasia = models.CharField(max_length=50,
+                                choices=MEGAKARYOCYTE_DYSPLASIA)
+    comment = models.TextField(blank=True)
