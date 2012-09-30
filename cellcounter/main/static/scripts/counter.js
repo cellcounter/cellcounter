@@ -1,32 +1,31 @@
+//$counters = new Array();
+$counters = {};
+//$box = new Array();
+$abnormal = false;
+$undo = false;
+$keyboard_active = false;
+$img_displayed = false;
 
-    //$counters = new Array();
-    $counters = {};
-    //$box = new Array();
-    $abnormal = false;
-    $undo = false;
-    $keyboard_active = false;
-    $img_displayed = false;
+$(document).ready(function() {
+    $('.count').each(
+        function(){
+            //access to element via $(this)
+            $key = $(this).find('div#key').text();
+            $name = $(this).find('font2').text();
+            $img = $(this).find('a#img').text();
+            $counters[$name] = {};
+            $counters[$name]["key"] = $key.toUpperCase();
+            $counters[$name]["count"] = 0;
+            $counters[$name]["abnormal"] = 0;
+            $counters[$name]["box"] = $(this);
+            $counters[$name]["img"] = $img;
 
-    $(document).ready(function() {
-      $('.count').each(
-          function(){
-              //access to element via $(this)
-              $key = $(this).find('div#key').text();
-		$name = $(this).find('font2').text();
-              $img = $(this).find('a#img').text();
-              $counters[$name] = {};
-              $counters[$name]["key"] = $key.toUpperCase();
-              $counters[$name]["count"] = 0;
-              $counters[$name]["abnormal"] = 0;
-              $counters[$name]["box"] = $(this);
-              $counters[$name]["img"] = $img;
-
-              //$count[$key] = 0;
-              //$count[$key + "_abnormal"] = 0;
-              //$box[$key] = $(this);
-              //$box[$key + "_abnormal"] = $(this);
-          }
-      );
+            //$count[$key] = 0;
+            //$count[$key + "_abnormal"] = 0;
+            //$box[$key] = $(this);
+            //$box[$key + "_abnormal"] = $(this);
+        }
+    );
 
 $('#openkeyboard').click(function() {
   $('#fuzz').fadeIn('slow', function() {
@@ -55,23 +54,28 @@ $('#openkeyboard').click(function() {
            $total += $counters[prop]["abnormal"];
          }
        }
-       $results = $.toJSON($output);
 
-	$percent = {};
-	$per = "";
+    // Put counts into the ModelForms
+    for (var cell in $output) {
+        if ($output.hasOwnProperty(cell)) {
+            $("input[value="+cell+"]").siblings()[0].value=$counters[cell]["count"]
+            $("input[value="+cell+"]").siblings()[1].value=$counters[cell]["abnormal"]
+        }
+    }
+       
+    $percent = {};
+    $per = "";
        for (var prop in $counters) {
          if ($counters.hasOwnProperty(prop)) { 
            // or if (Object.prototype.hasOwnProperty.call(obj,prop)) for safety...
            $percent[prop] = ($counters[prop]["count"] + $counters[prop]["abnormal"]) / $total * 100;
-	$per += '<tr><td style="width: 20%">' + prop + '</td><td style="width: 20%">' + parseFloat($percent[prop]).toFixed(2) + "%</td></tr>";
+    $per += '<tr><td style="width: 20%">' + prop + '</td><td style="width: 20%">' + parseFloat($percent[prop]).toFixed(2) + "%</td></tr>";
          }
        }
 
-	if($total > 0) {
+    if($total > 0) {
          $('div#statistics').empty().append('<h3>Count statistics</h3><table id="statistics">' + $per + '</table>');
-	}
-
-       $("input#counter").attr("value", $results);
+    }
 
        $('#counterbox').slideUp('slow', function() {
          $('#fuzz').fadeOut('slow', function() {
