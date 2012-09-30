@@ -3,8 +3,8 @@
   "pk": 1, 
   "model": "main.celltype", 
   "fields": {
-   "readable_name": "Neutrophil",
-   "machine_name": "neutrophil"
+   "readable_name": "Neutrophils",
+   "machine_name": "neutrophils"
   }
  }, 
  {
