@@ -1,6 +1,7 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
+<p class="outputty"></p>
         <div id="openkeyboard" class="btn">Open keyboard</div>
 
         <br />
@@ -20,28 +21,28 @@
             <div class="box1 c2 count" id="u">
               <font1>u</font1><br>
               <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-              <font2>blast</font2>
+              <font2>blasts</font2>
               <div id="key">u</div>
               <a id="img">/static/images/101177.jpg</a>
             </div>
             <div class="box1 c2 count" id="i">
               <font1>i</font1><br>
               <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-              <font2>lymph</font2>
+              <font2>lymphocytes</font2>
               <div id="key">i</div>
 		<a id="img">/static/images/101291.jpg</a>
             </div>
             <div class="box1 c2 count" id="o">
               <font1>o</font1><br>
               <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-              <font2>prolymph</font2>
+              <font2>histiocytes</font2>
               <div id="key">o</div>
 		<a id="img">/static/images/101276.jpg</a>
             </div>
             <div class="box1 c2 count" id="p">
               <font1>p</font1><br>
               <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-              <font2>plasma</font2>
+              <font2>plasma_cells</font2>
               <div id="key">p</div>
 		<a id="img">/static/images/104107.jpg</a>
             </div>
@@ -53,32 +54,38 @@
             <div class="box1 c1"></div>
             <div class="box1 c1"></div>
             <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
+            <div class="box1 c2 count" id="g">
+              <font1>g</font1><br>
+              <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
+              <font2>other</font2>
+              <div id="key">g</div>
+		<a id="img"></a>
+            </div>
             <div class="box1 c2 count" id="h">
               <font1>h</font1><br>
               <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-              <font2>neut</font2>
+              <font2>neutrophils</font2>
               <div id="key">h</div>
 		<a id="img">/static/images/103609.jpg</a>
             </div>
             <div class="box1 c2 count" id="j">
               <font1>j</font1><br>
 		<div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-              <font2>meta</font2>
+              <font2>band_forms</font2>
               <div id="key">j</div>
-		<a id="img">/static/images/100007.jpg</a>
+		<a id="img"></a>
             </div>
             <div class="box1 c2 count" id="k">
               <font1>k</font1><br>
 		<div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-              <font2>myelo</font2>
+              <font2>myelocytes</font2>
               <div id="key">k</div>
 		<a id="img">/static/images/100004.jpg</a>
             </div>
             <div class="box1 c2 count" id="l">
               <font1>l</font1><br>
 		<div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-              <font2>promyelo</font2>
+              <font2>promyelocytes</font2>
               <div id="key">l</div>
 		<a id="img">/static/images/101970.jpg</a>
             </div>
@@ -87,34 +94,37 @@
           <!-- Row 3 -->
           <div id="boxholder3holder">
             <div class="box_shiftkey c3" id="shiftkey"><font3><br>view</font2></div>
-            <div class="box1 c1"></div><div class="box1 c1"></div><div class="box1 c1"></div><div class="box1 c1"></div>
+            <div class="box1 c1"></div>
+            <div class="box1 c1"></div>
+            <div class="box1 c1"></div>
+            <div class="box1 c1"></div>
             <div class="box1 c2 count" id="b">
               <font1>b</font1><br>
 		<div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-              <font2>erythro</font2>
+              <font2>basophils</font2>
               <div id="key">b</div>
-		<a id="img">/static/images/103721.jpg</a>
+		<a id="img"></a>
             </div>
             <div class="box1 c2 count" id="n">
               <font1>n</font1><br>
 		<div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-              <font2>eo</font2>
+              <font2>eosinophils</font2>
               <div id="key">n</div>
 		<a id="img">/static/images/100015.jpg</a>
             </div>
             <div class="box1 c2 count" id="m">
               <font1>m</font1><br>
 		<div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-              <font2>mono</font2>
+              <font2>monocytes</font2>
               <div id="key">m</div>
 		<a id="img">/static/images/103597.jpg</a>
             </div>
             <div class="box1 c2 count" id="comma">
               <font1>,</font1><br>
 		<div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-              <font2>promono</font2>
+              <font2>erythroid</font2>
               <div id="key">,</div>
-		<a id="img">/static/images/101862.jpg</a>
+		<a id="img"></a>
             </div>
             <div class="box2 c1"></div>
             <div class="box2 c1"></div>
@@ -133,11 +143,23 @@
 
 <form action="/submit/" method="POST">
     {% csrf_token %}
+    <h2>Count Information</h2>
     {{ cellcount.as_p }}
+    <h2>Background Findings</h2>
     {{ bonemarrowbackground.as_p }}
-	<input type="hidden" name="counter" id="counter" value="">
+    <h2>Granulopoiesis Findings</h2>
+    {{ granulopoiesis_form.as_p }}
+    <h2>Erythropoiesis Findings</h2>
+    {{ erythropoiesis_form.as_p }}
+    <h2>Megakaryocyte Features</h2>
+    {{ megakaryocyte_form.as_p }}
+    {{ cellcountformset.management_form }}
+    {% for form in cellcountformset %}
+        <div id="celltype-form">
+            {{ form.as_p }}
+        </div>
+    {% endfor %}
     <input type="submit" value="Submit" />
 </form>
-
 
 {% endblock %}
