@@ -1,7 +1,6 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-<p class="outputty"></p>
         <div id="openkeyboard" class="btn">Open keyboard</div>
 
         <br />
@@ -155,9 +154,10 @@
     {{ megakaryocyte_form.as_p }}
     {{ cellcountformset.management_form }}
     {% for form in cellcountformset %}
-        <div id="celltype-form">
-            {{ form.as_p }}
-        </div>
+    <div id="{{form.initial.cell.machine_name}}" class="cellcount-form">
+        {{ form.errors }}
+        {{ form.as_p }}
+    </div>
     {% endfor %}
     <input type="submit" value="Submit" />
 </form>
