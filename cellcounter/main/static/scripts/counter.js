@@ -58,8 +58,8 @@ $('#openkeyboard').click(function() {
     // Put counts into the ModelForms
     for (var cell in $output) {
         if ($output.hasOwnProperty(cell)) {
-            $("input[value="+cell+"]").siblings()[0].value=$counters[cell]["count"]
-            $("input[value="+cell+"]").siblings()[1].value=$counters[cell]["abnormal"]
+            $("#"+cell+"").children()[1].value=$output[cell]["normal"]
+            $("#"+cell+"").children()[2].value=$output[cell]["abnormal"]
         }
     }
        
