@@ -58,7 +58,7 @@ STATIC_ROOT = ''
 STATIC_URL = '/static/'
 
 # Additional locations of static files
-STATICFILES_DIRS = (os.path.join(PROJECT_DIR, 'static'),)
+#STATICFILES_DIRS = (os.path.join(PROJECT_DIR, 'static'),)
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -116,6 +116,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'gunicorn',
+    'storages',
     'cellcounter.main',
 )
 
@@ -147,3 +149,9 @@ LOGGING = {
         },
     }
 }
+
+if 'AWS_STORAGE_BUCKET_NAME' in os.environ:
+    AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
+    STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+    S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
+    STATIC_URL = S3_URL
