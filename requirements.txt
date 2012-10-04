@@ -1,7 +1,9 @@
 Django==1.4.1
 argparse==1.2.1
+boto==2.6.0
 distribute==0.6.24
 dj-database-url==0.2.1
+django-storages==1.1.5
 gunicorn==0.14.6
 psycopg2==2.4.5
 simplejson==2.6.2
