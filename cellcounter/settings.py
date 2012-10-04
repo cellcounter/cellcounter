@@ -1,5 +1,6 @@
 import os
 import dj_database_url
+import uuid
 
 DEBUG = DEBUG = bool(os.environ.get('DEBUG', False))
 TEMPLATE_DEBUG = DEBUG
@@ -68,7 +69,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '#o4x=2ww%q*km3z4^&amp;=n=1p0%hy%2xk_xp%nb9%qsoyf%m66ga'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', str(uuid.uuid4()))
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
