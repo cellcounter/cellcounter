@@ -2,10 +2,6 @@ language: python
 python:
   - "2.7"
 
-# Environment variables to use
-env:
-  - DATABASE_URL=sqlite:///test.db
-
 # command to install dependencies
 install: "pip install --use-mirrors -q -r requirements.txt"
 
