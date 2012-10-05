@@ -70,3 +70,9 @@ def new_count(request):
              'megakaryocyte_form': megakaryocyte_form,
              'cellcountformset': cellcount_formset,},
             context_instance=RequestContext(request))
+
+def view_count(request):
+    pass
+
+def edit_count(request):
+    pass
