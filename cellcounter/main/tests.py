@@ -9,7 +9,7 @@ class TestSubmitPageContext(TestCase):
         self.client = Client()
 
     def test_get_submit_page_context(self):
-        response = self.client.get(reverse('submit'))
+        response = self.client.get(reverse('new_count'))
 
         # Assert page responds 200 and with correct template
         self.assertEqual(response.status_code, 200)
