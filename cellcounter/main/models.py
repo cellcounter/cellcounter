@@ -56,8 +56,8 @@ GRANULOPOIESIS_DYSPLASIA = (
 class CellCountInstance(models.Model):
 
     user = models.ForeignKey(User)
-    datetime_submitted = models.DateTimeField()
-    datetime_updated = models.DateTimeField()
+    datetime_submitted = models.DateTimeField(auto_now_add=True)
+    datetime_updated = models.DateTimeField(auto_now=True)
     tissue_type = models.CharField(max_length=25, choices=TISSUE_TYPE)
     overall_comment = models.TextField(blank=True)
 
