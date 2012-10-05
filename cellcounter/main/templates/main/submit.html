@@ -140,7 +140,7 @@
 
 <div id="statistics"></div>
 
-<form action="/submit/" method="POST">
+<form action="/count/new/" method="POST">
     {% csrf_token %}
     <h2>Count Information</h2>
     {{ cellcount.as_p }}
