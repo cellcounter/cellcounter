@@ -2,6 +2,7 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import render_to_response, HttpResponseRedirect, get_object_or_404
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 
 from cellcounter.main.forms import CellCountInstanceForm, BoneMarrowBackgroundForm, CellCountForm, GranulopoiesisFindingsForm, ErythropoiesisFindingsForm, MegakaryocyteFeaturesForm
 
@@ -54,7 +55,7 @@ def new_count(request):
             megakaryocyte.cell_count_instance = cellcount
             megakaryocyte.save()
 
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect(reverse('view_count', kwargs={'count_id': cellcount.id}))
         else:
             return render_to_response('main/submit.html',
                     {'cellcount': count_instance, 
