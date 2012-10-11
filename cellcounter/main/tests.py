@@ -7,9 +7,16 @@ from django.core.urlresolvers import reverse
 from cellcounter.main.models import CellCountInstance
 
 class TestSubmitPageContext(TestCase):
+    fixtures = ['test_user.json', 'test_count.json']
 
-    def test_get_submit_page_context(self):
+    def test_get_submit_page_loggedout(self):
         client = Client()
+        response = client.get(reverse('new_count'), follow=True)
+        self.assertRedirects(response, 'http://testserver/login/?next=/count/new/')
+
+    def test_get_submit_page_loggedin(self):
+        client = Client()
+        print client.login(username='test', password='test')
         response = client.get(reverse('new_count'))
 
         # Assert page responds 200 and with correct template
