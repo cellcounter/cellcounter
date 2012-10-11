@@ -65,7 +65,7 @@ class CellCountInstance(models.Model):
         return u'Count %s' %(self.id)
 
 class BoneMarrowBackground(models.Model):
-    cell_count_instance = models.ForeignKey(CellCountInstance)
+    cell_count_instance = models.OneToOneField(CellCountInstance)
     trail_cellularity = models.CharField(max_length=50,
                                         choices=CELLULARITY_CHOICES)
     particle_cellularity = models.CharField(max_length=50,
@@ -90,20 +90,27 @@ class CellCount(models.Model):
     abnormal_count = models.IntegerField()
     comment = models.TextField(blank=True)
 
+    def percentage(self):
+        total = 0
+        count_list = self.cell_count_instance.cellcount_set.all()
+        for count in count_list:
+            total = total + count.normal_count + count.abnormal_count
+        return 100 * float(self.normal_count+self.abnormal_count)/float(total)
+
 class ErythropoiesisFindings(models.Model):
-    cell_count_instance = models.ForeignKey(CellCountInstance)
+    cell_count_instance = models.OneToOneField(CellCountInstance)
     dysplasia = models.CharField(max_length=50,
                                 choices=ERYTHROPOIESIS_DYSPLASIA)
     comment = models.TextField(blank=True)
 
 class GranulopoiesisFindings(models.Model):
-    cell_count_instance = models.ForeignKey(CellCountInstance)
+    cell_count_instance = models.OneToOneField(CellCountInstance)
     dysplasia = models.CharField(max_length=50,
                                 choices=GRANULOPOIESIS_DYSPLASIA)
     comment = models.TextField(blank=True)
 
 class MegakaryocyteFeatures(models.Model):
-    cell_count_instance = models.ForeignKey(CellCountInstance)
+    cell_count_instance = models.OneToOneField(CellCountInstance)
     relative_count = models.CharField(max_length=50,
                                 choices=MEGAKARYOCYTE_RELATIVE_COUNT)
     dysplasia = models.CharField(max_length=50,
