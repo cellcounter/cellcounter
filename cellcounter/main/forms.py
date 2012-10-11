@@ -5,7 +5,7 @@ from cellcounter.main.models import CellCount, CellCountInstance, BoneMarrowBack
 class CellCountInstanceForm(ModelForm):
     class Meta:
         model = CellCountInstance
-        exclude = ('cell_count_instance', 'datetime_created', 'datetime_updated')
+        exclude = ('cell_count_instance', 'datetime_created', 'datetime_updated', 'user')
 
 class BoneMarrowBackgroundForm(ModelForm):
     class Meta:

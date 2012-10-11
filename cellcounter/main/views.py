@@ -8,6 +8,7 @@ from cellcounter.main.forms import CellCountInstanceForm, BoneMarrowBackgroundFo
 from cellcounter.main.models import BoneMarrowBackground, CellCount, CellType, CellCountInstance
 from cellcounter.main.utils import get_cellcount_formset, get_celltype_list
 
+@login_required
 def new_count(request):
     if request.method == 'POST':
         cellcount_formset = get_cellcount_formset() 
@@ -26,7 +27,9 @@ def new_count(request):
                            cellcount_formset.is_valid()]
 
         if all(validation_list):
-            cellcount = count_instance.save()
+            cellcount = count_instance.save(commit=False)
+            cellcount.user = request.user
+            cellcount.save()
             bm_background = bm_background_info.save(commit=False)
             erythropoiesis = erythropoiesis_form.save(commit=False)
             granulopoiesis = granulopoiesis_form.save(commit=False)
