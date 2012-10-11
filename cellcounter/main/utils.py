@@ -1,15 +1,3 @@
 """Utility module for cellcounter"""
-from django.forms.models import modelformset_factory
 
-from cellcounter.main.models import CellCount, CellType
-from cellcounter.main.forms import CellCountForm
-
-def get_cellcount_formset():
-    return modelformset_factory(CellCount, form=CellCountForm, extra=len(get_celltype_list()))
-
-def get_celltype_list():
-    celltypes = CellType.objects.all()
-    celltype_list = []
-    for celltype in celltypes:
-        celltype_list.append({'cell': celltype})
-    return celltype_list
+POST_DATA = {u'bonemarrow-haemodilution': u'Mild', u'histiocytes-normal_count': u'0', u'band_forms-cell': u'3', u'granulopoiesis-comment': u'', u'erythroid-abnormal_count': u'0', u'myelocytes-normal_count': u'0', u'lymphocytes-cell': u'8', u'plasma_cells-normal_count': u'0', u'megakaryocyte-relative_count': u'Absent', u'erythropoiesis-comment': u'', u'basophils-normal_count': u'0', u'plasma_cells-abnormal_count': u'0', u'neutrophils-normal_count': u'18', u'blasts-cell': u'5', u'eosinophils-cell': u'6', u'megakaryocyte-dysplasia': u'None', u'megakaryocyte-comment': u'', u'promyelocytes-normal_count': u'0', u'promyelocytes-abnormal_count': u'0', u'histiocytes-abnormal_count': u'0', u'bonemarrow-site': u'Iliac Crest', u'lymphocytes-normal_count': u'14', u'other-normal_count': u'0', u'bonemarrow-particulate': u'No particles', u'bonemarrow-trail_cellularity': u'Hypo', u'csrfmiddlewaretoken': u'mL1Isnx303Jh8I89CXLL8fejAMLreE9K', u'monocytes-normal_count': u'0', u'cellcount-tissue_type': u'Bone marrow', u'myelocytes-abnormal_count': u'0', u'lymphocytes-abnormal_count': u'0', u'monocytes-cell': u'10', u'erythroid-cell': u'7', u'eosinophils-abnormal_count': u'0', u'neutrophils-cell': u'1', u'basophils-cell': u'12', u'eosinophils-normal_count': u'0', u'band_forms-normal_count': u'24', u'bonemarrow-particle_cellularity': u'Hypo', u'bonemarrow-ease_of_aspiration': u'Dry', u'granulopoiesis-dysplasia': u'None', u'other-cell': u'13', u'erythroid-normal_count': u'0', u'histiocytes-cell': u'11', u'promyelocytes-cell': u'4', u'cellcount-overall_comment': u'', u'erythropoiesis-dysplasia': u'None', u'blasts-normal_count': u'16', u'other-abnormal_count': u'0', u'myelocytes-cell': u'2', u'band_forms-abnormal_count': u'0', u'neutrophils-abnormal_count': u'0', u'basophils-abnormal_count': u'0', u'blasts-abnormal_count': u'0', u'monocytes-abnormal_count': u'0', u'plasma_cells-cell': u'9'}

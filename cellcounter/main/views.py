@@ -6,25 +6,30 @@ from django.contrib.auth.decorators import login_required
 from cellcounter.main.forms import CellCountInstanceForm, BoneMarrowBackgroundForm, CellCountForm, GranulopoiesisFindingsForm, ErythropoiesisFindingsForm, MegakaryocyteFeaturesForm
 
 from cellcounter.main.models import BoneMarrowBackground, CellCount, CellType, CellCountInstance
-from cellcounter.main.utils import get_cellcount_formset, get_celltype_list
 
 @login_required
 def new_count(request):
     if request.method == 'POST':
-        cellcount_formset = get_cellcount_formset() 
+        celltypes = CellType.objects.all()
+
         count_instance = CellCountInstanceForm(request.POST, prefix="cellcount")
         bm_background_info = BoneMarrowBackgroundForm(request.POST, prefix="bonemarrow")
         erythropoiesis_form = ErythropoiesisFindingsForm(request.POST, prefix="erythropoiesis")
         granulopoiesis_form =  GranulopoiesisFindingsForm(request.POST, prefix="granulopoiesis")
         megakaryocyte_form = MegakaryocyteFeaturesForm(request.POST, prefix="megakaryocyte")
-        cellcount_formset = cellcount_formset(request.POST, prefix='celltypecount')
+        
+        cellcount_forms_list = []
+        for celltype in celltypes:
+            cellcount_forms_list.append(CellCountForm(request.POST, prefix=celltype.machine_name))
 
         validation_list = [count_instance.is_valid(),
                            bm_background_info.is_valid(),
                            erythropoiesis_form.is_valid(),
                            granulopoiesis_form.is_valid(),
-                           megakaryocyte_form.is_valid(),
-                           cellcount_formset.is_valid()]
+                           megakaryocyte_form.is_valid(),]
+
+        for cellcount_form in cellcount_forms_list:
+            validation_list.append(cellcount_form.is_valid())
 
         if all(validation_list):
             cellcount = count_instance.save(commit=False)
@@ -34,6 +39,11 @@ def new_count(request):
             erythropoiesis = erythropoiesis_form.save(commit=False)
             granulopoiesis = granulopoiesis_form.save(commit=False)
             megakaryocyte = megakaryocyte_form.save(commit=False)
+            
+            for cellcount_form in cellcount_forms_list:
+                form = cellcount_form.save(commit=False)
+                form.cell_count_instance = cellcount
+                form.save()
 
             bm_background.cell_count_instance = cellcount
             bm_background.save()
@@ -44,10 +54,6 @@ def new_count(request):
             megakaryocyte.cell_count_instance = cellcount
             megakaryocyte.save()
 
-            for cell_count in cellcount_formset.save(commit=False):
-                cell_count.cell_count_instance = cellcount
-                cell_count.save()
-
             return HttpResponseRedirect('/')
         else:
             return render_to_response('main/submit.html',
@@ -56,24 +62,27 @@ def new_count(request):
                      'erythropoiesis_form': erythropoiesis_form, 
                      'granulopoiesis_form': granulopoiesis_form,
                      'megakaryocyte_form': megakaryocyte_form,
-                     'cellcount_formset': cellcount_formset},
+                     'cellcountformslist': cellcount_form_list,},
                     context_instance=RequestContext(request))
     else:
+        
         cellcount_form = CellCountInstanceForm(prefix="cellcount")
-        cellcount_formset = get_cellcount_formset() 
         bonemarrowbackground = BoneMarrowBackgroundForm(prefix="bonemarrow")
         erythropoiesis_form = ErythropoiesisFindingsForm(prefix="erythropoiesis")
         granulopoiesis_form = GranulopoiesisFindingsForm(prefix="granulopoiesis")
         megakaryocyte_form = MegakaryocyteFeaturesForm(prefix="megakaryocyte")
-        cellcount_formset = cellcount_formset(initial=get_celltype_list(), prefix='celltypecount')
 
-    return render_to_response('main/submit.html',
+        cellcount_form_list = []
+        for celltype in CellType.objects.all():
+            cellcount_form_list.append(CellCountForm(initial={'cell': celltype}, prefix=celltype.machine_name))
+
+        return render_to_response('main/submit.html',
             {'cellcount': cellcount_form,
              'bonemarrowbackground': bonemarrowbackground,
              'erythropoiesis_form': erythropoiesis_form,
              'granulopoiesis_form': granulopoiesis_form,
              'megakaryocyte_form': megakaryocyte_form,
-             'cellcountformset': cellcount_formset,},
+             'cellcountformslist': cellcount_form_list,},
             context_instance=RequestContext(request))
 
 @login_required
