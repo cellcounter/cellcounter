@@ -2,8 +2,90 @@
 
 {% block content %}
 
-<!-- Data display below keyboard -->
+<h3 align=left class="push_2">Report</h1>
+<table class="reporttable grid_11 push_2">
+	<th>Sample</th>
+	<tr>
+		<td width=150px>Site</td>
+        <td width=100px>{{bonemarrowbackground.site}}</td>
+		<td width=150px>Ease of Aspiration</td>
+        <td width=100px>{{bonemarrowbackground.ease_of_aspiration}}</td>	
+	</tr>
+	<tr>
+		<td>Particle Number</td>
+        <td>{{bonemarrowbackground.particulate}}</td>
+		<td>Cellularity</td>
+        <td>{{bonemarrowbackground.particle_cellularity}}</td>
+	</tr>
+	<tr>
+		<td>Trail Cellularity</td>
+        <td>{{bonemarrowbackground.trail_cellularity}}</td>
+	</tr>
+	<tr>
+		<td>Haemodilution</td>
+        <td>{{bonemarrowbackground.haemodilution}}</td>
+	</tr>
+</table>
 
+<table class="reporttable grid_11 push_2">
+    <tr><th>Cell Type</th><th>Normal Count</th><th>Abnormal Count</th><th>Percentage</th></tr>
+    {% for count in cellcount_list %}
+    <tr><td>{{count.cell.readable_name}}</td><td>{{count.normal_count}}</td><td>{{count.abnormal_count}}</td><td>{{count.percentage}}</td></tr>
+    <tr><td colspan=4>{{count.comment}}</td></tr>
+    {% endfor %}
+</table>
+
+<!--
+		<td>Myeloid/Erythroid Ratio</td>
+		<td>xxx</td>
+-->     
+        
+<table class="grid_11 push_2">
+	<th>Megakaryocytes</th>
+	<tr>
+		<td width=150px>Number</td>
+        <td width=100px>{{megakaryocytes.relative_count}}</td>
+	</tr>
+	<tr>
+		<td>Features</td>
+		<td>{{megakaryocytes.dysplasia}}</td>
+	</tr>
+	<tr>
+		<td>Comment</td>
+		<td>{{megakaryocytes.comment}}</td>
+	</tr>
+</table>
+
+<table class="grid_11 push_2">
+	<th>Erythropoiesis</th>
+	<tr>
+		<td width=150px>Features</td>
+		<td width=100px>{{erythropoiesis.dysplasia}}</td>
+	</tr>
+	<tr>
+		<td width=150px>Comment</td>
+        <td width=100px>{{erythropoiesis.comment}}</td>
+	</tr>
+</table>
+
+<table class="grid_11 push_2">
+	<th>Granulopoiesis</th>
+	<tr>
+		<td width=150px>Features</td>
+        <td width=100px>{{granulopoiesis.dysplasia}}</td>
+	</tr>
+	<tr>
+		<td>Comment</td>
+        <td>{{granulopoiesis.comment}}</td>
+	</tr>
+</table>
+
+<table class="grid_11 push_2">
+	<tr>
+		<td width=150px><b>Final Report</b></td>
+		<td width=100px><final report></td>
+	</tr>
+</table>
 
 <table width=700px class="content push_2" align=center>
 <tbody><tr>
@@ -26,142 +108,5 @@
 </tr>
 </tbody></table>
 <p class="push_4"><i>With thanks to www.bloodref.com</i></p>
-
-
-
-<br><br>
-<h3 align=left class="push_2">Report</h1>
-<table class="reporttable grid_11 push_2">
-	<th>Sample</th>
-	<tr>
-		<td width=150px>Site</td>
-        <td width=100px>{{cellcount_list.site}}</td>
-		<td width=150px>Ease of Aspiration</td>
-        <td width=100px>{{cellcount_list.ease_of_aspiration}}</td>	
-	</tr>
-	<tr>
-		<td>Particle Number</td>
-        <td>xxx<td>
-		<td>Cellularity</td>
-        <td>xxx</td>
-	</tr>
-	<tr>
-		<td>Trail Cellularity</td>
-        <td>xxx</td>
-	</tr>
-	<tr>
-		<td>Haemodilution</td>
-        <td>xxx</td>
-	</tr>
-</table>
-
-
-<table class="grid_11 push_2">
-	<th>Differential</th><th>Percentages</th>
-	<tr>
-		<td width=150px>Blasts</td>
-		<td width=100px>{{cellcount_list.counts.blast.normal}}</td>
-	</tr>
-	<tr>
-		<td>Promyelocytes</td>
-		<td>{{cellcount_list.counts.promyelo.normal}}</td>
-	</tr>
-	<tr>
-		<td>Myelocytes</td>
-		<td>{{cellcount_list.counts.myelo.normal}}</td>
-	</tr>
-	<tr>
-		<td>Metamyelocytes</td>
-		<td>{{cellcount_list.counts.meta.normal}}</td>
-	</tr>
-	<tr>
-		<td>Neutrophils</td>
-		<td>{{cellcount_list.counts.neut.normal}}</td>
-	</tr>
-	<tr>
-		<td>Eosinophils</td>
-		<td>{{cellcount_list.counts.eo.normal}}</td>
-	</tr>
-	<tr>
-		<td>Basophils</td>
-		<td>{{cellcount_list.counts.baso.normal}}</td>
-	</tr>
-	<tr>
-		<td>Monocytes</td>
-		<td>{{cellcount_list.counts.mono.normal}}</td>
-	</tr>
-	<tr>
-		<td>Plasma Cells</td>
-		<td>{{cellcount_list.counts.plasma.normal}}</td>
-	</tr>
-<!--<tr>
-		<td>Histiocytes</td>
-		<td>xxx</td>
-	</tr>
-	<tr>
-		<td>Other</td>
-		<td>xxx</td>
-	</tr>
-	<tr>
-		<td>Total Count</td>
-		<td>xxx</td>
-	</tr>
-	<tr>
-		<td>Myeloid/Erythroid Ratio</td>
-		<td>xxx</td>
-	</tr>
--->
-</table>
-<!--
-<table class="grid_11 push_2">
-	<th>Megakaryocytes</th>
-	<tr>
-		<td width=150px>Number</td>
-		<td width=100px>xxx</td>
-	</tr>
-	<tr>
-		<td>Features</td>
-		<td>{{cellcount_list.counts.megafeatures.normal}}</td>
-	</tr>
-	<tr>
-		<td>Comment</td>
-		<td>{{cellcount_list.counts.megacomment.normal}}</td>
-	</tr>
-</table>
-
-
-<table class="grid_11 push_2">
-	<th>Erythropoiesis</th>
-	<tr>
-		<td width=150px>Features</td>
-		<td width=100px>{{cellcount_list.counts.erythofeatures.normal}}</td>
-	</tr>
-	<tr>
-		<td width=150px>Comment</td>
-		<td width=100px>xxx</td>
-	</tr>
-</table>
-
-
-<table class="grid_11 push_2">
-	<th>Granulopoiesis</th>
-	<tr>
-		<td width=150px>Features</td>
-		<td width=100px>xxx</td>
-	</tr>
-	<tr>
-		<td>Comment</td>
-		<td>xxx</td>
-	</tr>
-</table>
--->
-
-<table class="grid_11 push_2">
-	<tr>
-		<td width=150px><b>Final Report</b></td>
-		<td width=100px><final report></td>
-	</tr>
-</table>
-
 
 {% endblock %}
