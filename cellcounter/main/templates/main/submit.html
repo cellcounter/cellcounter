@@ -152,8 +152,8 @@
     {{ erythropoiesis_form.as_p }}
     <h2>Megakaryocyte Features</h2>
     {{ megakaryocyte_form.as_p }}
-    {{ cellcountformset.management_form }}
-    {% for form in cellcountformset %}
+
+    {% for form in cellcountformslist %}
     <div id="{{form.initial.cell.machine_name}}" class="cellcount-form">
         {{ form.errors }}
         {{ form.as_p }}

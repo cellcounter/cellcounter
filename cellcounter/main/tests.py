@@ -5,6 +5,7 @@ from django.test.client import Client
 from django.core.urlresolvers import reverse
 
 from cellcounter.main.models import CellCountInstance
+from cellcounter.main.utils import POST_DATA
 
 class TestSubmitPageContext(TestCase):
     fixtures = ['test_user.json', 'test_count.json']
@@ -16,19 +17,24 @@ class TestSubmitPageContext(TestCase):
 
     def test_get_submit_page_loggedin(self):
         client = Client()
-        print client.login(username='test', password='test')
+        client.login(username='test', password='test')
         response = client.get(reverse('new_count'))
 
-        # Assert page responds 200 and with correct template
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'main/submit.html')
-
-        # Assert we have the requisite forms in context
         self.assertIn('cellcount', response.context)
         self.assertIn('bonemarrowbackground', response.context)
         self.assertIn('erythropoiesis_form', response.context)
         self.assertIn('granulopoiesis_form', response.context)
         self.assertIn('megakaryocyte_form', response.context)
+        self.assertIn('cellcountformslist', response.context)
+
+    def test_post_submit_page(self):
+        client = Client()
+        client.login(username='test', password='test')
+        response = client.post(reverse('new_count'), POST_DATA)
+
+        self.assertRedirects(response, 'http://testserver/')
 
 class TestViewCount(TestCase):
 
