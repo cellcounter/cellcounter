@@ -16,11 +16,11 @@ urlpatterns = patterns('',
 
     url(r'^count/$', new_count, name="count_home"),
     url(r'^count/new/$', new_count, name="new_count"),
-    url(r'^count/(?P<pk>\d+)/$', view_count, name="view_count"),
-    url(r'^count/(?P<pk>\d+)/edit/$', edit_count, name="edit_count"),
+    url(r'^count/(?P<count_id>\d+)/$', view_count, name="view_count"),
+    url(r'^count/(?P<count_id>\d+)/edit/$', edit_count, name="edit_count"),
 
-    (r'^login/$', login, {'template_name': 'main/login.html'}),
-    (r'^logout/$', logout),
+    url(r'^login/$', login, {'template_name': 'main/login.html'}, name='login'),
+    url(r'^logout/$', logout, name='logout'),
     
     url(r'^admin/', include(admin.site.urls)),
 )
