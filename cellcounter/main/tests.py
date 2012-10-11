@@ -34,7 +34,7 @@ class TestSubmitPageContext(TestCase):
         client.login(username='test', password='test')
         response = client.post(reverse('new_count'), POST_DATA)
 
-        self.assertRedirects(response, 'http://testserver/')
+        self.assertRedirects(response, reverse('view_count', kwargs={'count_id': 3}))
 
 class TestViewCount(TestCase):
 
