@@ -1,15 +1,5 @@
 /* Base cellcounter css */
 
-nav {
-    text-align: right;
-    padding: 0.75em;
-    padding-bottom: 0em;
-    background: #1B1B1B;
-    height: 2em;
-}
-
-body { background: #fff; text-align: center; font: 12px "Trebuchet MS", Arial, sans-serif; margin: 20px; padding: 0 }
-
 #boxholder1 { width: 800px; min-height: 80px; border: solid white 1px; margin: auto; }
 #boxholder2 { width: 720px; min-height: 80px; border: solid white 1px; margin: auto; }
 #boxholder3 { width: 888px; min-height: 80px; border: solid black 1px; margin: auto; }
@@ -32,18 +22,3 @@ font2 { text-decoration: none; font-weight: bold; color: #AAA; font-size: 12px }
 font3 { text-decoration: none; font-weight: bold; color: black; font-size: 18px }
 font4 { text-decoration: none; font-weight: bold; color: #AAA; font-size: 11px }
 font5 { text-decoration: none; font-weight: bold; color: #03A; font-size: 18px; padding-right:20px; }
-
-a.navbar { font-weight: bold; color: #00B; font-size: 18px; padding-right: 20px;}
-a.table { font-weight: bold; color: #00B; font-size: 12px;}
-
-a { font-weight: bold; color: #00B; font-size: 18px;}
-
-#content { text-align: left; border-width: 0 6px; margin: auto; padding: 10px }
-#content { font-size: 12px; }
-
-th.content { border-bottom:1px solid black; border-top:1px solid black; padding:5px; background:#CCC; }
-tr.content {padding:5px;}
-table.content { border-bottom:1px solid black; background:#EEE; valign:top;}
-
-table {text-align:left; margin:10px; border:none}
-td {margin-left:10px }
