@@ -4,16 +4,19 @@ from django.test.client import Client
 
 from django.core.urlresolvers import reverse
 
-from cellcounter.main.models import CellCountInstance
-from cellcounter.main.utils import POST_DATA
+from cellcounter.main.models import CellCountInstance, CellType
 
 class TestSubmitPageContext(TestCase):
     fixtures = ['test_user.json', 'test_count.json']
 
+    POST_DATA = {u'bonemarrow-haemodilution': [u'Mild'], u'band_forms-cell': [u'3'], u'granulopoiesis-dysplasia': [u'None'], u'granulopoiesis-comment': [u''], u'erythroid-abnormal_count': [u'4'], u'myelocytes-normal_count': [u'11'], u'lymphocytes-cell': [u'8'], u'blasts-normal_count': [u'0'], u'megakaryocyte-relative_count': [u'Absent'], u'erythropoiesis-comment': [u''], u'basophils-normal_count': [u'1'], u'plasma_cells-abnormal_count': [u'7'], u'histiocytes-normal_count': [u'8'], u'neutrophils-normal_count': [u'9'], u'blasts-cell': [u'5'], u'blasts-abnormal_count': [u'4'], u'megakaryocyte-dysplasia': [u'None'], u'eosinophils-normal_count': [u'5'], u'megakaryocyte-comment': [u''], u'promyelocytes-normal_count': [u'9'], u'promyelocytes-abnormal_count': [u'6'], u'histiocytes-abnormal_count': [u'6'], u'bonemarrow-site': [u'Iliac Crest'], u'lymphocytes-normal_count': [u'6'], u'other-normal_count': [u'0'], u'bonemarrow-trail_cellularity': [u'Hypo'], u'csrfmiddlewaretoken': [u'3FUNtetaJt2SF9W11RYd6SxvMnqaTXzG'], u'monocytes-normal_count': [u'2'], u'cellcount-tissue_type': [u'Bone marrow'], u'myelocytes-abnormal_count': [u'7'], u'basophils-abnormal_count': [u'5'], u'eosinophils-cell': [u'6'], u'histiocytes-cell': [u'11'], u'monocytes-cell': [u'10'], u'erythroid-cell': [u'7'], u'eosinophils-abnormal_count': [u'6'], u'neutrophils-cell': [u'1'], u'monocytes-abnormal_count': [u'3'], u'bonemarrow-ease_of_aspiration': [u'Dry'], u'band_forms-normal_count': [u'14'], u'bonemarrow-particle_cellularity': [u'Hypo'], u'band_forms-abnormal_count': [u'8'], u'basophils-cell': [u'12'], u'erythropoiesis-dysplasia': [u'None'], u'other-cell': [u'13'], u'erythroid-normal_count': [u'3'], u'plasma_cells-normal_count': [u'5'], u'promyelocytes-cell': [u'4'], u'cellcount-overall_comment': [u''], u'other-abnormal_count': [u'0'], u'myelocytes-cell': [u'2'], u'bonemarrow-particulate': [u'No particles'], u'neutrophils-abnormal_count': [u'6'], u'lymphocytes-abnormal_count': [u'6'], u'plasma_cells-cell': [u'9']}
+
     def test_get_submit_page_loggedout(self):
         client = Client()
         response = client.get(reverse('new_count'), follow=True)
-        self.assertRedirects(response, 'http://testserver/login/?next=/count/new/')
+        self.assertRedirects(response, 
+                "%s?next=%s" %(reverse('login'),
+                               reverse('new_count')))
 
     def test_get_submit_page_loggedin(self):
         client = Client()
@@ -29,12 +32,20 @@ class TestSubmitPageContext(TestCase):
         self.assertIn('megakaryocyte_form', response.context)
         self.assertIn('cellcountformslist', response.context)
 
-    def test_post_submit_page(self):
+    def test_post_submit_page_redirects(self):
         client = Client()
         client.login(username='test', password='test')
-        response = client.post(reverse('new_count'), POST_DATA)
+        response = client.post(reverse('new_count'), self.POST_DATA)
 
         self.assertRedirects(response, reverse('view_count', kwargs={'count_id': 3}))
+
+    def test_post_submit_page_creates_count(self):
+        client = Client()
+        client.login(username='test', password='test')
+        response = client.post(reverse('new_count'), self.POST_DATA)
+
+        cell_count = CellCountInstance.objects.get(id=3)
+        self.assertEqual(3, cell_count.id)
 
 class TestViewCount(TestCase):
 
