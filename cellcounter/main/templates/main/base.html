@@ -26,7 +26,11 @@
             <li><a href="/count/new/">Work</a></li>
             <li><a href="http://wai2k.smugmug.com/bloodcount">Discover</a></li>
             <li><a href="/share/">Share</a></li>
+            {% if user.is_authenticated %}
+            <li><a class="btn btn-danger" href="/logout/">Logout</a></li>
+            {% else %}
             <li><a class="btn btn-warning" href="/login/">Login</a></li>
+            {% endif %}
         </ul>
     </div>
 </div>
