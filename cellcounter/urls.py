@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     url(r'^count/(?P<count_id>\d+)/edit/$', edit_count, name="edit_count"),
 
     url(r'^login/$', login, {'template_name': 'main/login.html'}, name='login'),
-    url(r'^logout/$', logout, name='logout'),
+    url(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
     
     url(r'^admin/', include(admin.site.urls)),
 )
