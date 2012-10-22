@@ -95,7 +95,11 @@ class CellCount(models.Model):
         count_list = self.cell_count_instance.cellcount_set.all()
         for count in count_list:
             total = total + count.normal_count + count.abnormal_count
-        return 100 * float(self.normal_count+self.abnormal_count)/float(total)
+
+        if total != 0:
+            return 100 * float(self.normal_count+self.abnormal_count)/float(total)
+        else:
+            return 0
 
 class ErythropoiesisFindings(models.Model):
     cell_count_instance = models.OneToOneField(CellCountInstance)
