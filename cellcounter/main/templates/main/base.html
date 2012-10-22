@@ -9,7 +9,8 @@
     <link href="{{ STATIC_URL }}css/keyboard.css" rel="stylesheet">
 
     <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}scripts/counter.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/counter.js"></script>
 </head>
 <body>
     
@@ -38,6 +39,16 @@
 <div id="fuzz"></div>
 
 <div id="content" class="row">
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            {% if message.tags %}<h4>{{message.tags}}</h4>{% endif %}
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
     <div class="span12">
         {% block content %}{% endblock %}
     </div>
