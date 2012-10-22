@@ -2,36 +2,47 @@
 
 {% block content %}
 
-<h3 align=left class="push_2">Report</h1>
-<table class="reporttable grid_11 push_2">
-	<th>Sample</th>
+<h1>Report</h1>
+
+<h4>Count Stats</h4>
+<table class="table table-bordered">
 	<tr>
-		<td width=150px>Site</td>
-        <td width=100px>{{bonemarrowbackground.site}}</td>
-		<td width=150px>Ease of Aspiration</td>
-        <td width=100px>{{bonemarrowbackground.ease_of_aspiration}}</td>	
+		<th>Site</th>
+        <td>{{bonemarrowbackground.site}}</td>
 	</tr>
 	<tr>
-		<td>Particle Number</td>
+		<th>Ease of Aspiration</th>
+        <td>{{bonemarrowbackground.ease_of_aspiration}}</td>	
+	</tr>
+	<tr>
+		<th>Particle Number</th>
         <td>{{bonemarrowbackground.particulate}}</td>
-		<td>Cellularity</td>
+	</tr>
+	<tr>
+		<th>Cellularity</th>
         <td>{{bonemarrowbackground.particle_cellularity}}</td>
 	</tr>
 	<tr>
-		<td>Trail Cellularity</td>
+		<th>Trail Cellularity</th>
         <td>{{bonemarrowbackground.trail_cellularity}}</td>
 	</tr>
 	<tr>
-		<td>Haemodilution</td>
+		<th>Haemodilution</th>
         <td>{{bonemarrowbackground.haemodilution}}</td>
 	</tr>
 </table>
 
-<table class="reporttable grid_11 push_2">
+<h4>Cell Counts</h4>
+<table class="table table-bordered table-striped">
     <tr><th>Cell Type</th><th>Normal Count</th><th>Abnormal Count</th><th>Percentage</th></tr>
     {% for count in cellcount_list %}
-    <tr><td>{{count.cell.readable_name}}</td><td>{{count.normal_count}}</td><td>{{count.abnormal_count}}</td><td>{{count.percentage}}</td></tr>
-    <tr><td colspan=4>{{count.comment}}</td></tr>
+    <tr>
+        <td>{{count.cell.readable_name}}</td>
+        <td>{{count.normal_count}}</td>
+        <td>{{count.abnormal_count}}</td>
+        <td>{{count.percentage}}</td>
+    </tr>
+    {% if count.comment %}<tr><td colspan=4>{{count.comment}}</td></tr>{% endif %}
     {% endfor %}
 </table>
 
@@ -40,62 +51,53 @@
 		<td>xxx</td>
 -->     
         
-<table class="grid_11 push_2">
-	<th>Megakaryocytes</th>
+<h4>Megakaryocytes</h4>
+<table class="table table-bordered">
 	<tr>
-		<td width=150px>Number</td>
-        <td width=100px>{{megakaryocytes.relative_count}}</td>
+		<th>Number</th>
+        <td>{{megakaryocytes.relative_count}}</td>
 	</tr>
 	<tr>
-		<td>Features</td>
+		<th>Features</th>
 		<td>{{megakaryocytes.dysplasia}}</td>
 	</tr>
 	<tr>
-		<td>Comment</td>
-		<td>{{megakaryocytes.comment}}</td>
+        <td colspan=2><b>Comment:</b> {% if not megakaryocytes.comment%}None{% else %}{{megakaryocytes.comment}}{%endif%}</td>
 	</tr>
 </table>
 
-<table class="grid_11 push_2">
-	<th>Erythropoiesis</th>
+<h4>Erythropoiesis</h4>
+<table class="table table-bordered">
 	<tr>
-		<td width=150px>Features</td>
-		<td width=100px>{{erythropoiesis.dysplasia}}</td>
+		<th>Features</th>
+		<td>{{erythropoiesis.dysplasia}}</td>
 	</tr>
 	<tr>
-		<td width=150px>Comment</td>
-        <td width=100px>{{erythropoiesis.comment}}</td>
-	</tr>
-</table>
-
-<table class="grid_11 push_2">
-	<th>Granulopoiesis</th>
-	<tr>
-		<td width=150px>Features</td>
-        <td width=100px>{{granulopoiesis.dysplasia}}</td>
-	</tr>
-	<tr>
-		<td>Comment</td>
-        <td>{{granulopoiesis.comment}}</td>
+        <td colspan=2><b>Comment:</b> {% if not erythropoiesis.comment%}None{% else %}{{erythropoiesis.comment}}{%endif%}</td>
 	</tr>
 </table>
 
-<table class="grid_11 push_2">
+<h4>Granulopoiesis</h4>
+<table class="table table-bordered">
 	<tr>
-		<td width=150px><b>Final Report</b></td>
-		<td width=100px><final report></td>
+		<th>Features</th>
+        <td>{{granulopoiesis.dysplasia}}</td>
+	</tr>
+	<tr>
+        <td colspan=2><b>Comment:</b> {% if not granulopoiesis.comment%}None{% else %}{{granulopoiesis.comment}}{%endif%}</td>
 	</tr>
 </table>
 
-<table width=700px class="content push_2" align=center>
+<h2>Reference Links</h2>
+<table class="table table-bordered">
 <tbody><tr>
-<th class="content">Lymphoid</th>
-<th class="content">Myeloid</th>
-<th class="content">Myeloma</th>
-<th class="content">MPD</th>
-<th class="content">Transplant</th>
-<th class="content">Haemostasis</th>
-<th class="content">Miscellany</th>
+<th>Lymphoid</th>
+<th>Myeloid</th>
+<th>Myeloma</th>
+<th>MPD</th>
+<th>Transplant</th>
+<th>Haemostasis</th>
+<th>Miscellany</th>
 </tr>
 <tr>
 <td><a href="http://www.bloodref.com/lymphoid/ann-arbor">Ann Arbor</a><br><a href="http://www.bloodref.com/lymphoid/cll-immunophenotyping">CLL score</a><br><a href="http://www.bloodref.com/lymphoid/binet-rai">CLL staging</a><br><a href="http://www.bloodref.com/lymphoid/cll-response">CLL response</a><br><a href="http://www.bloodref.com/lymphoid/ipi">IPI</a><br><a href="http://www.bloodref.com/lymphoid/r-ipi">R-IPI</a><br><a href="http://www.bloodref.com/lymphoid/isswm">ISSWM</a><br><a href="http://www.bloodref.com/lymphoid/flipi">FLIPI</a><br><a href="http://www.bloodref.com/lymphoid/flipi2">FLIPI-2</a><br><a href="http://www.bloodref.com/lymphoid/lugano">Lugano staging</a><br><a href="http://www.bloodref.com/lymphoid/hasenclever">Hasenclever</a><br><a href="http://www.bloodref.com/lymphoid/mipi">MIPI</a><br><a href="http://www.bloodref.com/lymphoid/ptcl-pit">PIT</a></td>
@@ -107,6 +109,6 @@
 </td><td><a href="http://www.bloodref.com/miscellaneous/calculators">Calculators</a><br><a href="http://www.bloodref.com/myeloid/hlh-diagnosis">HLH diagnosis</a><br><a href="http://www.bloodref.com/miscellaneous/performance-status">Performance status</a></td>
 </tr>
 </tbody></table>
-<p class="push_4"><i>With thanks to www.bloodref.com</i></p>
+<p><i>With thanks to www.bloodref.com</i></p>
 
 {% endblock %}
