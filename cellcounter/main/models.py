@@ -64,6 +64,22 @@ class CellCountInstance(models.Model):
     def __unicode__(self):
         return u'Count %s' %(self.id)
 
+    def myeloid_erythroid_ratio(self):
+        """Returns M/E ratio for a given count"""
+        total = 0
+        erythroid = CellType.objects.get(machine_name='erythroid')
+        
+        for count in self.cellcount_set.exclude(cell=erythroid):
+            total = total + count.normal_count + count.abnormal_count
+
+        erythroid_count = self.cellcount_set.get(cell=erythroid)
+        erythroid_total = erythroid_count.normal_count + erythroid_count.abnormal_count
+        if not erythroid_total:
+            return 'Unable to calculate, erythroid count = 0'
+        else:
+            me_ratio = float(total)/float(erythroid_total)
+            return me_ratio
+
 class BoneMarrowBackground(models.Model):
     cell_count_instance = models.OneToOneField(CellCountInstance)
     trail_cellularity = models.CharField(max_length=50,
