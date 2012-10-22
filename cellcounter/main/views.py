@@ -57,8 +57,7 @@ def new_count(request):
             megakaryocyte.save()
 
             messages.add_message(request, messages.INFO, 'Count submitted successfully')
-
-            return HttpResponseRedirect(reverse('view_count', kwargs={'count_id': cellcount.id}))
+            return HttpResponseRedirect(reverse('edit_count', kwargs={'count_id': cellcount.id}))
 
         else:
             return render_to_response('main/submit.html',
