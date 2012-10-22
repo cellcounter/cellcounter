@@ -63,7 +63,7 @@ def new_count(request):
                      'erythropoiesis_form': erythropoiesis_form, 
                      'granulopoiesis_form': granulopoiesis_form,
                      'megakaryocyte_form': megakaryocyte_form,
-                     'cellcountformslist': cellcount_form_list,},
+                     'cellcountformslist': cellcount_forms_list,},
                     context_instance=RequestContext(request))
     else:
         
@@ -94,11 +94,6 @@ def view_count(request, count_id):
         return HttpResponseForbidden()
 
     cellcount_list = cell_count.cellcount_set.all()
-
-    count_total = 0
-    for count in cellcount_list:
-        count_total = count_total + count.normal_count
-        count_total = count_total + count.abnormal_count
 
     return render_to_response('main/report.html',
             {'cellcount': cell_count,
