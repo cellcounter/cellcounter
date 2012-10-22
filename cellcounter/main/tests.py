@@ -37,7 +37,7 @@ class TestSubmitPageContext(TestCase):
         client.login(username='test', password='test')
         response = client.post(reverse('new_count'), self.POST_DATA)
 
-        self.assertRedirects(response, reverse('view_count', kwargs={'count_id': 3}))
+        self.assertRedirects(response, reverse('edit_count', kwargs={'count_id': 3}))
 
     def test_post_submit_page_creates_count(self):
         client = Client()

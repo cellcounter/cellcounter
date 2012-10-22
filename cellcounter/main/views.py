@@ -55,7 +55,7 @@ def new_count(request):
             megakaryocyte.cell_count_instance = cellcount
             megakaryocyte.save()
 
-            return HttpResponseRedirect(reverse('view_count', kwargs={'count_id': cellcount.id}))
+            return HttpResponseRedirect(reverse('edit_count', kwargs={'count_id': cellcount.id}))
 
         else:
             return render_to_response('main/submit.html',
