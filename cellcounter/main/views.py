@@ -167,6 +167,7 @@ def edit_count(request, count_id):
             for cellcount_form in cellcount_form_list:
                 cellcount_form.save()
 
+            messages.add_message(request, messages.INFO, 'Count edited successfully')
             return HttpResponseRedirect(reverse('view_count', kwargs={'count_id': cell_count.id}))
 
         else:
