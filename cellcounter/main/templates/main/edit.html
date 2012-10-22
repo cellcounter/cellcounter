@@ -1,0 +1,27 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<h1>Edit Existing Count</h1>
+
+<form action="/count/{{cellcountinstance_form.instance.id}}/edit/" method="POST">
+    {% csrf_token %}
+    <h2>Count Information</h2>
+    {{ cellcountinstance_form.as_p }}
+    <h2>Background Findings</h2>
+    {{ bonemarrowbackground_form.as_p }}
+    <h2>Granulopoiesis Findings</h2>
+    {{ granulopoiesis_form.as_p }}
+    <h2>Erythropoiesis Findings</h2>
+    {{ erythropoiesis_form.as_p }}
+    <h2>Megakaryocyte Features</h2>
+    {{ megakaryocyte_form.as_p }}
+
+    {% for form in cellcount_form_list %}
+    <h2>{{ form.instance.cell.readable_name}}</h2>
+    {{ form.as_p }}
+    {% endfor %}
+    <input type="submit" value="Submit" />
+</form>
+
+{% endblock %}

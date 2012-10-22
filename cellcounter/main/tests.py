@@ -49,7 +49,9 @@ class TestViewCount(TestCase):
     def test_view_nonexistent_page_loggedout(self):
         client = Client()
         response = client.get(reverse('view_count', kwargs={'count_id': 25}), follow=True)
-        self.assertRedirects(response, 'http://testserver/login/?next=/count/25/')
+        self.assertRedirects(response, 
+                "%s?next=%s" %(reverse('login'),
+                               reverse('view_count', kwargs={'count_id': 25})))
 
     def test_view_existing_page_loggedin(self):
         client = Client()
@@ -60,7 +62,9 @@ class TestViewCount(TestCase):
     def test_view_existing_page_loggedout(self):
         client = Client()
         response = client.get(reverse('view_count', kwargs={'count_id': 1}), follow=True)
-        self.assertRedirects(response, 'http://testserver/login/?next=/count/1/')
+        self.assertRedirects(response, 
+                "%s?next=%s" %(reverse('login'),
+                               reverse('view_count', kwargs={'count_id': 1})))
 
     def test_view_own_page(self):
         client = Client()
@@ -80,4 +84,39 @@ class TestViewCount(TestCase):
         client = Client()
         client.login(username='test', password='test')
         response = client.get(reverse('view_count', kwargs={'count_id': 2}))
+        self.assertEqual(response.status_code, 403)
+
+class TestEditCount(TestCase):
+    fixtures = ['test_user.json', 'test_count.json']
+
+    def test_edit_nonexistent_count_loggedin(self):
+        client = Client()
+        client.login(username='test', password='test')
+        response = client.get(reverse('edit_count', kwargs={'count_id': 25}))
+        self.assertEqual(response.status_code, 404)
+    
+    def test_edit_nonexistent_page_loggedout(self):
+        client = Client()
+        response = client.get(reverse('edit_count', kwargs={'count_id': 25}), follow=True)
+        self.assertRedirects(response, 
+                "%s?next=%s" %(reverse('login'),
+                               reverse('edit_count', kwargs={'count_id': 25})))
+    
+    def test_edit_existing_page_loggedout(self):
+        client = Client()
+        response = client.get(reverse('edit_count', kwargs={'count_id': 1}), follow=True)
+        self.assertRedirects(response, 
+                "%s?next=%s" %(reverse('login'),
+                               reverse('edit_count', kwargs={'count_id': 1})))
+
+    def test_edit_own_page_loggedin(self):
+        client = Client()
+        client.login(username='test', password='test')
+        response = client.get(reverse('edit_count', kwargs={'count_id': 1}))
+        self.assertEqual(response.status_code, 200)
+    
+    def test_edit_other_page(self):
+        client = Client()
+        client.login(username='test', password='test')
+        response = client.get(reverse('edit_count', kwargs={'count_id': 2}))
         self.assertEqual(response.status_code, 403)
