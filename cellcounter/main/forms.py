@@ -5,7 +5,7 @@ from cellcounter.main.models import CellCount, CellCountInstance, BoneMarrowBack
 class CellCountInstanceForm(ModelForm):
     class Meta:
         model = CellCountInstance
-        exclude = ('cell_count_instance', 'datetime_created', 'datetime_updated', 'user')
+        exclude = ('datetime_created', 'datetime_updated', 'user')
 
 class BoneMarrowBackgroundForm(ModelForm):
     class Meta:
@@ -28,8 +28,6 @@ class MegakaryocyteFeaturesForm(ModelForm):
         exclude = ('cell_count_instance',) 
 
 class CellCountForm(ModelForm):
-    auto_id = False
-
     class Meta:
         model = CellCount
         widgets = {
@@ -37,3 +35,8 @@ class CellCountForm(ModelForm):
                 'normal_count': HiddenInput,
                 'abnormal_count': HiddenInput}
         exclude = ('cell_count_instance', 'comment',)
+
+class CellCountEditForm(ModelForm):
+    class Meta:
+        model = CellCount
+        fields = ('normal_count', 'abnormal_count', 'comment')
