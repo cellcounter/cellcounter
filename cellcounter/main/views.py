@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response, HttpResponseRedirect, get_objec
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.contrib import messages
 
 from cellcounter.main.forms import CellCountInstanceForm, BoneMarrowBackgroundForm, CellCountForm, GranulopoiesisFindingsForm, ErythropoiesisFindingsForm, MegakaryocyteFeaturesForm, CellCountEditForm
 
@@ -54,6 +55,8 @@ def new_count(request):
             granulopoiesis.save()
             megakaryocyte.cell_count_instance = cellcount
             megakaryocyte.save()
+
+            messages.add_message(request, messages.INFO, 'Count submitted successfully')
 
             return HttpResponseRedirect(reverse('view_count', kwargs={'count_id': cellcount.id}))
 
