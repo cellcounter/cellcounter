@@ -131,3 +131,36 @@ class TestEditCount(TestCase):
         client.login(username='test', password='test')
         response = client.get(reverse('edit_count', kwargs={'count_id': 2}))
         self.assertEqual(response.status_code, 403)
+
+class TestCellCount(TestCase):
+    fixtures = ['test_user.json', 'test_count.json']
+
+    def test_percentage_count(self):
+        cellcount = CellCountInstance.objects.get(id=1)
+        cellcount_set = cellcount.cellcount_set.all()
+
+        self.assertEqual(cellcount_set[0].cell.machine_name, 'neutrophils')
+        self.assertEqual(cellcount_set[0].percentage(), 12.0)
+
+class TestCellCountInstance(TestCase):
+    fixtures = ['test_user.json', 'test_count.json']
+
+    def test_total_count(self):
+        cellcount = CellCountInstance.objects.get(id=1)
+        self.assertEqual(125, cellcount.total_cellcount())
+
+    def test_erythroid_count(self):
+        cellcount = CellCountInstance.objects.get(id=1)
+        self.assertEqual(6, cellcount.erythroid_cellcount())
+
+    def test_myeloid_count(self):
+        cellcount = CellCountInstance.objects.get(id=1)
+        self.assertEqual(119, cellcount.myeloid_cellcount())
+
+    def test_me_ratio(self):
+        cellcount = CellCountInstance.objects.get(id=1)
+        self.assertEqual(19.833333333333332, cellcount.myeloid_erythroid_ratio())
+
+    def test_me_ratio_erythroids_0(self):
+        cellcount = CellCountInstance.objects.get(id=2)
+        self.assertEqual('Unable to calculate, erythroid count = 0', cellcount.myeloid_erythroid_ratio())
