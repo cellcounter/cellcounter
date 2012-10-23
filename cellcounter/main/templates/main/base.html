@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CellCount</title>
     <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ STATIC_URL }}css/bootstrap-responsive.min.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}css/cellcounter.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}css/keyboard.css" rel="stylesheet">
 
@@ -16,27 +15,27 @@
 <body>
     
 <div class="container">
-<div class="row header">
+    <div class="row header">
     <div class="span2">
         <a class="brand" href="/"><img src="{{ STATIC_URL }}images/logo.png"></img></a>
     </div>
-    <div class="span3">
+    <div class="span6">
         <a class="logo" href="/"><span class="logocell">Cell</span><span class="logocount">Count</span></a>
     </div>
-    <div class="span3 navbar">
+    <div class="span4 userbar">
+        {% if user.is_authenticated %}
+        <span class="username">Welcome {{user.username}}</span>
+        <a class="btn btn-danger pull-right" href="/logout/">Logout</a></li>
+        {% else %}
+        <a class="btn btn-success pull-right" href="/login/">Login</a></li>
+        {% endif %}
+    </div>
+    <div class="span10 navbar">
         <ul class="nav">
             <li><a href="/count/new/">Work</a></li>
             <li><a href="http://wai2k.smugmug.com/bloodcount">Discover</a></li>
             <li><a href="/share/">Share</a></li>
         </ul>
-    </div>
-    <div class="span3 userbar">
-        {% if user.is_authenticated %}
-        <span class="username">Welcome {{user.username}}</span>
-        <a class="btn btn-danger" href="/logout/">Logout</a></li>
-        {% else %}
-        <a class="btn btn-success" href="/login/">Login</a></li>
-        {% endif %}
     </div>
 </div>
 
