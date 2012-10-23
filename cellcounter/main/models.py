@@ -66,19 +66,32 @@ class CellCountInstance(models.Model):
 
     def myeloid_erythroid_ratio(self):
         """Returns M/E ratio for a given count"""
-        total = 0
-        erythroid = CellType.objects.get(machine_name='erythroid')
-        
-        for count in self.cellcount_set.exclude(cell=erythroid):
-            total = total + count.normal_count + count.abnormal_count
-
-        erythroid_count = self.cellcount_set.get(cell=erythroid)
-        erythroid_total = erythroid_count.normal_count + erythroid_count.abnormal_count
-        if not erythroid_total:
+        if not self.erythroid_cellcount():
             return 'Unable to calculate, erythroid count = 0'
         else:
-            me_ratio = float(total)/float(erythroid_total)
-            return me_ratio
+            return float(self.myeloid_cellcount())/float(self.erythroid_cellcount())
+
+    def total_cellcount(self):
+        """Returns a total count of all cells in count"""
+        total = 0
+        for count in self.cellcount_set.all():
+            total = total + count.normal_count + count.abnormal_count
+        return total
+
+    def myeloid_cellcount(self):
+        """Returns a total count of all myeloid cellc in count"""
+        total = 0
+        erythroid = CellType.objects.get(machine_name='erythroid')
+        for count in self.cellcount_set.exclude(cell=erythroid):
+            total = total + count.normal_count + count.abnormal_count
+        return total
+
+    def erythroid_cellcount(self):
+        """Returns a total count of all erythroid cells in count"""
+        erythroid = CellType.objects.get(machine_name='erythroid')
+        erythroid_count = self.cellcount_set.get(cell=erythroid)
+        total = erythroid_count.normal_count + erythroid_count.abnormal_count
+        return total
 
 class BoneMarrowBackground(models.Model):
     cell_count_instance = models.OneToOneField(CellCountInstance)
@@ -107,11 +120,7 @@ class CellCount(models.Model):
     comment = models.TextField(blank=True)
 
     def percentage(self):
-        total = 0
-        count_list = self.cell_count_instance.cellcount_set.all()
-        for count in count_list:
-            total = total + count.normal_count + count.abnormal_count
-
+        total = self.cell_count_instance.total_cellcount()
         if total != 0:
             return 100 * float(self.normal_count+self.abnormal_count)/float(total)
         else:
