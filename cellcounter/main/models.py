@@ -96,7 +96,7 @@ class BoneMarrowBackground(models.Model):
 
 class CellType(models.Model):
     readable_name = models.CharField(max_length=50)
-    machine_name = models.CharField(max_length=50)
+    machine_name = models.CharField(max_length=50, unique=True)
     comment = models.TextField(blank=True)
 
 class CellCount(models.Model):
