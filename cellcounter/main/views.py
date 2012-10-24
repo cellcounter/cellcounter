@@ -41,7 +41,7 @@ class UserDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(UserDetailView, self).get_context_data(**kwargs)
-        context['cellcount_list'] = CellCountInstance.objects.filter(user=self.request.user).order_by('datetime_submitted')[:5]
+        context['cellcount_list'] = CellCountInstance.objects.filter(user=self.request.user).order_by('-datetime_submitted')[:5]
         return context
 
 @login_required
