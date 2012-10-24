@@ -45,6 +45,11 @@ class UserDetailView(DetailView):
         return context
 
 @login_required
+def home(request):
+    return HttpResponseRedirect(
+            reverse('user_home', kwargs={'pk': request.user.id}))
+
+@login_required
 def new_count(request):
     if request.method == 'POST':
         celltypes = CellType.objects.all()
