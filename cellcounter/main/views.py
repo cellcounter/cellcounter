@@ -5,11 +5,15 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
+from django.contrib.auth.models import User
+from django.core import exceptions
 
 from cellcounter.main.forms import CellCountInstanceForm, BoneMarrowBackgroundForm, CellCountForm, GranulopoiesisFindingsForm, ErythropoiesisFindingsForm, MegakaryocyteFeaturesForm, CellCountEditForm
 
 from cellcounter.main.models import BoneMarrowBackground, ErythropoiesisFindings, GranulopoiesisFindings, MegakaryocyteFeatures, CellCount, CellType, CellCountInstance
+
+from cellcounter.main.decorators import user_is_owner
 
 class ListMyCountsView(ListView):
 
@@ -22,6 +26,22 @@ class ListMyCountsView(ListView):
 
     def get_queryset(self):
         return CellCountInstance.objects.filter(user=self.request.user)
+
+class UserDetailView(DetailView):
+
+    template_name = "main/user_detail.html"
+    context_object_name = "user"
+    model = User
+
+    @method_decorator(login_required)
+    @method_decorator(user_is_owner)
+    def dispatch(self, *args, **kwargs):
+        return super(UserDetailView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(UserDetailView, self).get_context_data(**kwargs)
+        context['cellcount_list'] = CellCountInstance.objects.filter(user=self.request.user).order_by('datetime_submitted')[:5]
+        return context
 
 @login_required
 def new_count(request):
