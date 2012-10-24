@@ -1,10 +1,12 @@
 {% extends 'main/base.html' %}
 {% block content %}
 <h2>My Counts</h2>
-<table class="table table-bordered table-striped">
+<p>To sort your counts within the table, click the title of the column you wish to sort by.</p>
+<table id="myCounts" class="table table-bordered table-striped">
     <thead>
         <tr><th>Count</th><th>Created</th><th>Modified</th><th>Tissue Type</th><th>Actions</th></tr>
     </thead>
+    <tbody>
     {% for count in count_list %}
     <tr>
         <td><b>{{ count }}</b></td>
@@ -27,5 +29,6 @@
             <a class="btn btn-small btn-block btn-success" href="/count/new/" title="New"><i class="icon-plus icon-white"></i> New Count</a>
         </td>
     </tr>
+    </tbody>
 </table>
 {% endblock %}
