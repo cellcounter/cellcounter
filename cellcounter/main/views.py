@@ -21,6 +21,7 @@ class ListMyCountsView(ListView):
     context_object_name = "count_list"
 
     @method_decorator(login_required)
+    @method_decorator(user_is_owner)
     def dispatch(self, *args, **kwargs):
         return super(ListMyCountsView, self).dispatch(*args, **kwargs)
 
