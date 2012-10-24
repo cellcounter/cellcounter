@@ -7,6 +7,9 @@ $keyboard_active = false;
 $img_displayed = false;
 
 $(document).ready(function() {
+
+    $("#myCounts").tablesorter();
+
     $('.count').each(
         function(){
             //access to element via $(this)
@@ -180,7 +183,7 @@ $('#submit').click(function() {
       }
     });
 
-    });
+});
 
 /*window.onkeydown=function(e){
 if(e.keyCode==32){
