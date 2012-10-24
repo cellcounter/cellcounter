@@ -62,7 +62,7 @@ class CellCountInstance(models.Model):
     overall_comment = models.TextField(blank=True)
 
     def __unicode__(self):
-        return u'Count %s' %(self.id)
+        return u'Count ID #%s' %(self.id)
 
     def myeloid_erythroid_ratio(self):
         """Returns M/E ratio for a given count"""
