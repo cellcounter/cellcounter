@@ -117,6 +117,34 @@ class TestViewMyCount(TestCase):
         self.assertTemplateUsed(response, 'main/count_list.html')
         self.assertIn('count_list', response.context)
 
+class TestViewUser(TestCase):
+    fixtures = ['test_user.json', 'test_count.json']
+
+    def test_view_home_loggedout(self):
+        client = Client()
+        response = client.get(reverse('user_home', kwargs={'pk': 1}), follow=True)
+        self.assertRedirects(response, 
+                "%s?next=%s" %(reverse('login'),
+                               reverse('user_home', kwargs={'pk':1 })))
+
+    def test_view_own_home_loggedin(self):
+        client = Client()
+        client.login(username='test', password='test')
+        response = client.get(reverse('user_home', kwargs={'pk': 1}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'main/user_detail.html')
+        self.assertIn('cellcount_list', response.context)
+        self.assertIn('user', response.context)
+        self.assertLessEqual(len(response.context['cellcount_list']), 5)
+
+    def test_view_other_home_loggedin(self):
+        client = Client()
+        client.login(username='test', password='test')
+        response = client.get(reverse('user_home', kwargs={'pk': 2}))
+
+        self.assertEqual(response.status_code, 403)
+
 class TestEditCount(TestCase):
     fixtures = ['test_user.json', 'test_count.json']
 
