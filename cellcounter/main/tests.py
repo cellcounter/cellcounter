@@ -103,19 +103,26 @@ class TestViewMyCount(TestCase):
 
     def test_view_my_count_loggedout(self):
         client = Client()
-        response = client.get(reverse('my_counts'), follow=True)
+        response = client.get(reverse('my_counts', kwargs={'pk':1}), follow=True)
         self.assertRedirects(response, 
                 "%s?next=%s" %(reverse('login'),
-                               reverse('my_counts')))
+                               reverse('my_counts', kwargs={'pk':1})))
 
     def test_view_my_count_loggedin(self):
         client = Client()
         client.login(username='test', password='test')
-        response = client.get(reverse('my_counts'))
+        response = client.get(reverse('my_counts', kwargs={'pk':1}))
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'main/count_list.html')
         self.assertIn('count_list', response.context)
+    
+    def test_view_my_count_home_loggedin(self):
+        client = Client()
+        client.login(username='test', password='test')
+        response = client.get(reverse('my_counts', kwargs={'pk': 2}))
+
+        self.assertEqual(response.status_code, 403)
 
 class TestViewUser(TestCase):
     fixtures = ['test_user.json', 'test_count.json']
