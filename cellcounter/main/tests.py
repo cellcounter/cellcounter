@@ -97,6 +97,26 @@ class TestViewCount(TestCase):
         response = client.get(reverse('view_count', kwargs={'count_id': 2}))
         self.assertEqual(response.status_code, 403)
 
+class TestViewMyCount(TestCase):
+
+    fixtures = ['test_user.json', 'test_count.json']
+
+    def test_view_my_count_loggedout(self):
+        client = Client()
+        response = client.get(reverse('my_counts'), follow=True)
+        self.assertRedirects(response, 
+                "%s?next=%s" %(reverse('login'),
+                               reverse('my_counts')))
+
+    def test_view_my_count_loggedin(self):
+        client = Client()
+        client.login(username='test', password='test')
+        response = client.get(reverse('my_counts'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'main/count_list.html')
+        self.assertIn('count_list', response.context)
+
 class TestEditCount(TestCase):
     fixtures = ['test_user.json', 'test_count.json']
 
