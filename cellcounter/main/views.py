@@ -2,12 +2,26 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import render_to_response, HttpResponseRedirect, get_object_or_404
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from django.contrib import messages
+from django.views.generic import ListView
 
 from cellcounter.main.forms import CellCountInstanceForm, BoneMarrowBackgroundForm, CellCountForm, GranulopoiesisFindingsForm, ErythropoiesisFindingsForm, MegakaryocyteFeaturesForm, CellCountEditForm
 
 from cellcounter.main.models import BoneMarrowBackground, ErythropoiesisFindings, GranulopoiesisFindings, MegakaryocyteFeatures, CellCount, CellType, CellCountInstance
+
+class ListMyCountsView(ListView):
+
+    template_name = "main/count_list.html"
+    context_object_name = "count_list"
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ListMyCountsView, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        return CellCountInstance.objects.filter(user=self.request.user)
 
 @login_required
 def new_count(request):
