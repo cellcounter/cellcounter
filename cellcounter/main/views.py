@@ -7,9 +7,9 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.views.generic import ListView
 
-from cellcounter.main.forms import CellCountInstanceForm, BoneMarrowBackgroundForm, CellCountForm, GranulopoiesisFindingsForm, ErythropoiesisFindingsForm, MegakaryocyteFeaturesForm, CellCountEditForm
+from cellcounter.main.forms import CellCountInstanceForm, BoneMarrowBackgroundForm, CellCountForm, GranulopoiesisFindingsForm, ErythropoiesisFindingsForm, MegakaryocyteFeaturesForm, CellCountEditForm, IronStainForm
 
-from cellcounter.main.models import BoneMarrowBackground, ErythropoiesisFindings, GranulopoiesisFindings, MegakaryocyteFeatures, CellCount, CellType, CellCountInstance
+from cellcounter.main.models import BoneMarrowBackground, ErythropoiesisFindings, GranulopoiesisFindings, MegakaryocyteFeatures, CellCount, CellType, CellCountInstance, IronStain
 
 class ListMyCountsView(ListView):
 
@@ -33,6 +33,7 @@ def new_count(request):
         erythropoiesis_form = ErythropoiesisFindingsForm(request.POST, prefix="erythropoiesis")
         granulopoiesis_form =  GranulopoiesisFindingsForm(request.POST, prefix="granulopoiesis")
         megakaryocyte_form = MegakaryocyteFeaturesForm(request.POST, prefix="megakaryocyte")
+        ironstain_form = IronStainForm(request.POST, prefix="ironstain")
         
         cellcount_forms_list = []
         for celltype in celltypes:
@@ -42,7 +43,8 @@ def new_count(request):
                            bm_background_info.is_valid(),
                            erythropoiesis_form.is_valid(),
                            granulopoiesis_form.is_valid(),
-                           megakaryocyte_form.is_valid(),]
+                           megakaryocyte_form.is_valid(),
+                           ironstain_form.is_valid()]
 
         for cellcount_form in cellcount_forms_list:
             validation_list.append(cellcount_form.is_valid())
@@ -55,6 +57,7 @@ def new_count(request):
             erythropoiesis = erythropoiesis_form.save(commit=False)
             granulopoiesis = granulopoiesis_form.save(commit=False)
             megakaryocyte = megakaryocyte_form.save(commit=False)
+            ironstain = ironstain_form.save(commit=False)
             
             for cellcount_form in cellcount_forms_list:
                 form = cellcount_form.save(commit=False)
@@ -69,6 +72,8 @@ def new_count(request):
             granulopoiesis.save()
             megakaryocyte.cell_count_instance = cellcount
             megakaryocyte.save()
+            ironstain.cell_count_instance = cellcount
+            ironstain.save()
 
             messages.add_message(request, messages.INFO, 'Count submitted successfully')
             return HttpResponseRedirect(reverse('edit_count', kwargs={'count_id': cellcount.id}))
@@ -80,6 +85,7 @@ def new_count(request):
                      'erythropoiesis_form': erythropoiesis_form, 
                      'granulopoiesis_form': granulopoiesis_form,
                      'megakaryocyte_form': megakaryocyte_form,
+                     'ironstain_form': ironstain_form,
                      'cellcountformslist': cellcount_forms_list,},
                     context_instance=RequestContext(request))
     else:
@@ -89,6 +95,7 @@ def new_count(request):
         erythropoiesis_form = ErythropoiesisFindingsForm(prefix="erythropoiesis")
         granulopoiesis_form = GranulopoiesisFindingsForm(prefix="granulopoiesis")
         megakaryocyte_form = MegakaryocyteFeaturesForm(prefix="megakaryocyte")
+        ironstain_form = IronStainForm(prefix="ironstain")
 
         cellcount_form_list = []
         for celltype in CellType.objects.all():
@@ -100,6 +107,7 @@ def new_count(request):
              'erythropoiesis_form': erythropoiesis_form,
              'granulopoiesis_form': granulopoiesis_form,
              'megakaryocyte_form': megakaryocyte_form,
+             'ironstain_form': ironstain_form,
              'cellcountformslist': cellcount_form_list,},
             context_instance=RequestContext(request))
 
@@ -118,6 +126,7 @@ def view_count(request, count_id):
              'erythropoiesis': cell_count.erythropoiesisfindings,
              'granulopoiesis': cell_count.granulopoiesisfindings,
              'megakaryocytes': cell_count.megakaryocytefeatures,
+             'ironstain': cell_count.ironstain,
              'cellcount_list': cell_count.cellcount_set.all()},
             context_instance=RequestContext(request))
 
@@ -154,6 +163,11 @@ def edit_count(request, count_id):
                                                        prefix="megakaryocyte",
                                                        instance=instance)
 
+        instance = IronStain.objects.get(cell_count_instance=cell_count)
+        ironstain_form = IronStainForm(request.POST,
+                                       prefix="ironstain",
+                                       instance=instance)
+
         cellcount_form_list = []
         for celltype in celltypes:
             instance = CellCount.objects.get(cell_count_instance=cell_count,
@@ -166,7 +180,8 @@ def edit_count(request, count_id):
                            bm_background_info.is_valid(),
                            erythropoiesis_form.is_valid(),
                            granulopoiesis_form.is_valid(),
-                           megakaryocyte_form.is_valid(),]
+                           megakaryocyte_form.is_valid(),
+                           ironstain_form.is_valid()]
 
         for cellcount_form in cellcount_form_list:
             validation_list.append(cellcount_form.is_valid())
@@ -177,6 +192,7 @@ def edit_count(request, count_id):
             erythropoiesis_form.save()
             granulopoiesis_form.save()
             megakaryocyte_form.save()
+            ironstain_form.save()
 
             for cellcount_form in cellcount_form_list:
                 cellcount_form.save()
@@ -191,6 +207,7 @@ def edit_count(request, count_id):
                      'erythropoiesis_form': erythropoiesis_form, 
                      'granulopoiesis_form': granulopoiesis_form,
                      'megakaryocyte_form': megakaryocyte_form,
+                     'ironstain_form': ironstain_form,
                      'cellcount_form_list': cellcount_form_list,},
                     context_instance=RequestContext(request))
 
@@ -200,6 +217,7 @@ def edit_count(request, count_id):
         erythropoiesis_form = ErythropoiesisFindingsForm(prefix="erythropoiesis", instance=cell_count.erythropoiesisfindings)
         granulopoiesis_form = GranulopoiesisFindingsForm(prefix="granulopoiesis", instance=cell_count.granulopoiesisfindings)
         megakaryocyte_form = MegakaryocyteFeaturesForm(prefix="megakaryocyte", instance=cell_count.megakaryocytefeatures)
+        ironstain_form = IronStainForm(prefix="ironstain", instance=cell_count.ironstain)
 
         cellcount_form_list = []
         for cellcount in cell_count.cellcount_set.all():
@@ -212,5 +230,6 @@ def edit_count(request, count_id):
                 'erythropoiesis_form': erythropoiesis_form,
                 'granulopoiesis_form': granulopoiesis_form,
                 'megakaryocyte_form': megakaryocyte_form,
+                'ironstain_form': ironstain_form,
                 'cellcount_form_list': cellcount_form_list},
                 context_instance=RequestContext(request))
