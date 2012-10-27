@@ -1,6 +1,6 @@
 from django.forms import ModelForm, HiddenInput
 
-from cellcounter.main.models import CellCount, CellCountInstance, BoneMarrowBackground, ErythropoiesisFindings, GranulopoiesisFindings, MegakaryocyteFeatures
+from cellcounter.main.models import CellCount, CellCountInstance, BoneMarrowBackground, ErythropoiesisFindings, GranulopoiesisFindings, MegakaryocyteFeatures, IronStain
 
 class CellCountInstanceForm(ModelForm):
     class Meta:
@@ -40,3 +40,8 @@ class CellCountEditForm(ModelForm):
     class Meta:
         model = CellCount
         fields = ('normal_count', 'abnormal_count', 'comment')
+
+class IronStainForm(ModelForm):
+    class Meta:
+        model = IronStain
+        exclude = ('cell_count_instance',) 

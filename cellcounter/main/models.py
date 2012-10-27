@@ -145,3 +145,20 @@ class MegakaryocyteFeatures(models.Model):
     dysplasia = models.CharField(max_length=50,
                                 choices=MEGAKARYOCYTE_DYSPLASIA)
     comment = models.TextField(blank=True)
+
+class IronStain(models.Model):
+    ABSENT = 0
+    GRADE_1 = 1
+    GRADE_2 = 2
+    GRADE_3 = 3
+    GRADE_4 = 4
+    IRON_STAIN_GRADE = ((ABSENT, 'Absent'),
+                        (GRADE_1, 'Grade 1'),
+                        (GRADE_2, 'Grade 2'),
+                        (GRADE_3, 'Grade 3'),
+                        (GRADE_4, 'Grade 4'))
+    cell_count_instance = models.OneToOneField(CellCountInstance)
+    stain_performed = models.BooleanField()
+    iron_content = models.IntegerField(choices=IRON_STAIN_GRADE)
+    ringed_sideroblasts = models.BooleanField()
+    comment = models.TextField(blank=True)
