@@ -30,6 +30,7 @@ class TestSubmitPageContext(TestCase):
         self.assertIn('erythropoiesis_form', response.context)
         self.assertIn('granulopoiesis_form', response.context)
         self.assertIn('megakaryocyte_form', response.context)
+        self.assertIn('ironstain_form', response.context)
         self.assertIn('cellcountformslist', response.context)
 
     def test_post_submit_page_redirects(self):
@@ -89,6 +90,7 @@ class TestViewCount(TestCase):
         self.assertIn('erythropoiesis', response.context)
         self.assertIn('granulopoiesis', response.context)
         self.assertIn('megakaryocytes', response.context)
+        self.assertIn('ironstain', response.context)
         self.assertIn('cellcount_list', response.context)
 
     def test_view_other_page(self):
@@ -145,6 +147,13 @@ class TestEditCount(TestCase):
         client.login(username='test', password='test')
         response = client.get(reverse('edit_count', kwargs={'count_id': 1}))
         self.assertEqual(response.status_code, 200)
+        self.assertIn('cellcount', response.context)
+        self.assertIn('bonemarrowbackground', response.context)
+        self.assertIn('erythropoiesis_form', response.context)
+        self.assertIn('granulopoiesis_form', response.context)
+        self.assertIn('megakaryocyte_form', response.context)
+        self.assertIn('ironstain_form', response.context)
+        self.assertIn('cellcountformslist', response.context)
     
     def test_edit_other_page(self):
         client = Client()
