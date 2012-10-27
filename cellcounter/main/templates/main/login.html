@@ -6,13 +6,25 @@
     <p class="error">Sorry, that's not a valid username or password</p>
 {% endif %}
 
-<form action="" method='post'>
+<form action="" method="POST" class="form-horizontal">
     {% csrf_token %}
-    <p><label for="username">User name:</label></p>
-    <p><input type="text" name="username" value="" id="username"></p>
-    <p><label for="password">Password:</label></p>
-    <p><input type="password" name="password" value="" id="password"></p>
-    <p><input class="btn btn-success" type="submit" value="login" /></p>
+    <div class="control-group">
+        <label class="control-label" for="username">Username</label>
+        <div class="controls">
+            <input type="text" name="username" id="username" placeholder="Username">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="password">Password</label>
+        <div class="controls">
+            <input type="password" name="password" id="password" placeholder="Password">
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <input class="btn" type="submit" value="login" />
+        </div>
+    </div>
 </form>
     
 {% endblock %}
