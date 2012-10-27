@@ -141,20 +141,119 @@
 
 <div id="statistics"></div>
 
-<form action="" method="POST">
+<form action="" method="POST" class="form-horizontal">
     {% csrf_token %}
-    <h2>Count Information</h2>
-    {{ cellcount.as_p }}
-    <h2>Background Findings</h2>
-    {{ bonemarrowbackground.as_p }}
-    <h2>Granulopoiesis Findings</h2>
-    {{ granulopoiesis_form.as_p }}
-    <h2>Erythropoiesis Findings</h2>
-    {{ erythropoiesis_form.as_p }}
-    <h2>Megakaryocyte Features</h2>
-    {{ megakaryocyte_form.as_p }}
-    <h2>Iron Stain</h2>
-    {{ ironstain_form.as_p }}
+    <legend>Count Information</legend>
+    <div class="control-group">
+        <label class="control-label" for="{{ cellcount.tissue_type.auto_id }}">{{ cellcount.tissue_type.label}}</label>
+        <div class="controls">
+            {{ cellcount.tissue_type }}
+        </div>
+    </div>
+    <legend>Background Findings</legend>
+    <div class="row">
+        <div class="span6">
+        {% for field in bonemarrowbackground %}
+        {% if forloop.counter == 4 %}
+        </div>
+        <div class="span6">
+        {% endif %}
+        <div class="control-group">
+            <label class="control-label" for="{{ field.auto_id }}">{{field.label}}</label>
+            <div class="controls">
+                {{ field }}
+            </div>
+        </div>
+        {% if forloop.last %}
+        </div>
+        {% endif %}
+    {% endfor %}
+    </div>
+    <legend>Granulopoiesis Findings</legend>
+    <div class="row">
+        <div class="span6">
+        {% for field in granulopoiesis_form %}
+        {% if forloop.counter == 2 %}
+        </div>
+        <div class="span6">
+        {% endif %}
+        <div class="control-group">
+            <label class="control-label" for="{{ field.auto_id }}">{{field.label}}</label>
+            <div class="controls">
+                {{ field }}
+            </div>
+        </div>
+        {% if forloop.last %}
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    <legend>Erythropoiesis Findings</legend>
+    <div class="row">
+        <div class="span6">
+        {% for field in erythropoiesis_form %}
+        {% if forloop.counter == 2 %}
+        </div>
+        <div class="span6">
+        {% endif %}
+        <div class="control-group">
+            <label class="control-label" for="{{ field.auto_id }}">{{field.label}}</label>
+            <div class="controls">
+                {{ field }}
+            </div>
+        </div>
+        {% if forloop.last %}
+        </div>
+    {% endif %}
+    {% endfor %}
+    </div>
+    <legend>Megakaryocyte Features</legend>
+    <div class="row">
+        <div class="span6">
+        {% for field in megakaryocyte_form %}
+        {% if forloop.counter == 3 %}
+        </div>
+        <div class="span6">
+        {% endif %}
+        <div class="control-group">
+            <label class="control-label" for="{{ field.auto_id }}">{{field.label}}</label>
+            <div class="controls">
+                {{ field }}
+            </div>
+        </div>
+        {% if forloop.last %}
+        </div>
+    {% endif %}
+    {% endfor %}
+    </div>
+    <legend>Iron Stain</legend>
+    <div class="row">
+        <div class="span6">
+            <div class="control-group">
+                <label class="control-label" for="{{ ironstain_form.iron_content.auto_id}}">{{ironstain_form.iron_content.label}}</label>
+                <div class="controls">
+                {{ironstain_form.iron_content }}
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="{{ ironstain_form.comment.auto_id}}">{{ironstain_form.comment.label}}</label>
+                <div class="controls">
+                {{ironstain_form.iron_content}}
+                </div>
+            </div>
+        </div>
+        <div class="span6">
+            <div class="control-group">
+                <label class="checkbox control-label" for="{{ ironstain_form.stain_performed.auto_id }}">{{ironstain_form.stain_performed.label}} {{ironstain_form.stain_performed}}</label>
+            </div>
+            <div class="control-group">
+                <label class="checkbox control-label" for="{{ ironstain_form.ringed_sideroblasts.auto_id }}">{{ironstain_form.ringed_sideroblasts.label}} {{ironstain_form.ringed_sideroblasts}}</label>
+            </div>
+        </div>
+    </div>
+    <legend>Overall Comment</legend>
+    <p>{{ cellcount.overall_comment.label }}</p>
+    {{ cellcount.overall_comment }}
 
     {% for form in cellcountformslist %}
     <div id="{{form.initial.cell.machine_name}}" class="cellcount-form">
@@ -162,6 +261,7 @@
         {{ form.as_p }}
     </div>
     {% endfor %}
+    <br>
     <input class="btn btn-success" type="submit" value="Submit" />
 </form>
 
