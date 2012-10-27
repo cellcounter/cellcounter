@@ -87,6 +87,25 @@
 	</tr>
 </table>
 
+<h4>Iron Stain Findings</h4>
+<table class="table table-bordered">
+{% if not ironstain.stain_performed %}
+    <tr>
+        <td>Not performed</td>
+    </tr>
+{% else %}
+    <tr>
+        <th>Iron</th><td>{{ironstain.get_iron_content_display}}</td>
+    </tr>
+    <tr>
+        <th>Ringed Sideroblasts</th><td>{%if ironstain.ringed_sideroblasts %}Present{% else %}Absent{%endif%}</td>
+    </tr>
+    <tr>
+        <td colspan=2><b>Comment:</b>{% if not ironstain.comment%}None{% else %}{{ironstain.comment}}{%endif%}</td>
+    </tr>
+{% endif %}
+</table>
+
 <h2>Reference Links</h2>
 <table class="table table-bordered">
 <tbody><tr>
