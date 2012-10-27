@@ -1,6 +1,6 @@
 from django.forms import ModelForm, HiddenInput
 
-from cellcounter.main.models import CellCount, CellCountInstance, BoneMarrowBackground, ErythropoiesisFindings, GranulopoiesisFindings, MegakaryocyteFeatures
+from cellcounter.main.models import CellCount, CellCountInstance, BoneMarrowBackground, ErythropoiesisFindings, GranulopoiesisFindings, MegakaryocyteFeatures, IronStain
 
 class CellCountInstanceForm(ModelForm):
     class Meta:
