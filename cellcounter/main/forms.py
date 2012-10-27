@@ -40,3 +40,8 @@ class CellCountEditForm(ModelForm):
     class Meta:
         model = CellCount
         fields = ('normal_count', 'abnormal_count', 'comment')
+
+class IronStainForm(ModelForm):
+    class Meta:
+        model = IronStain
+        exclude = ('cell_count_instance',) 
