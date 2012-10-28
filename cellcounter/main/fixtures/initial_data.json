@@ -94,21 +94,12 @@
         "model": "main.celltype",
         "fields": {
             "comment": "",
-            "readable_name": "Histiocytes",
-            "machine_name": "histiocytes"
-        }
-    },
-    {
-        "pk": 12,
-        "model": "main.celltype",
-        "fields": {
-            "comment": "",
             "readable_name": "Basophils",
             "machine_name": "basophils"
         }
     },
     {
-        "pk": 13,
+        "pk": 12,
         "model": "main.celltype",
         "fields": {
             "comment": "",
