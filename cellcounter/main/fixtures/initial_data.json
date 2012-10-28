@@ -13,8 +13,8 @@
         "model": "main.celltype",
         "fields": {
             "comment": "",
-            "readable_name": "Myelocytes",
-            "machine_name": "myelocytes"
+            "readable_name": "Band Forms",
+            "machine_name": "band_forms"
         }
     },
     {
@@ -22,8 +22,8 @@
         "model": "main.celltype",
         "fields": {
             "comment": "",
-            "readable_name": "Band forms",
-            "machine_name": "band_forms"
+            "readable_name": "Myelocytes",
+            "machine_name": "myelocytes"
         }
     },
     {
@@ -49,12 +49,21 @@
         "model": "main.celltype",
         "fields": {
             "comment": "",
+            "readable_name": "Basophils",
+            "machine_name": "basophils"
+        }
+    },
+    {
+        "pk": 7,
+        "model": "main.celltype",
+        "fields": {
+            "comment": "",
             "readable_name": "Eosinophils",
             "machine_name": "eosinophils"
         }
     },
     {
-        "pk": 7,
+        "pk": 8,
         "model": "main.celltype",
         "fields": {
             "comment": "",
@@ -63,21 +72,12 @@
         }
     },
     {
-        "pk": 8,
+        "pk": 9,
         "model": "main.celltype",
         "fields": {
             "comment": "",
             "readable_name": "Lymphocytes",
             "machine_name": "lymphocytes"
-        }
-    },
-    {
-        "pk": 9,
-        "model": "main.celltype",
-        "fields": {
-            "comment": "",
-            "readable_name": "Plasma Cells",
-            "machine_name": "plasma_cells"
         }
     },
     {
@@ -94,8 +94,8 @@
         "model": "main.celltype",
         "fields": {
             "comment": "",
-            "readable_name": "Basophils",
-            "machine_name": "basophils"
+            "readable_name": "Plasma cells",
+            "machine_name": "plasma_cells"
         }
     },
     {
