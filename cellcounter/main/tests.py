@@ -223,7 +223,7 @@ class TestCellCountInstance(TestCase):
 
     def test_me_ratio(self):
         cellcount = CellCountInstance.objects.get(id=1)
-        self.assertEqual(3.33, cellcount.myeloid_erythroid_ratio())
+        self.assertEqual(13.0, cellcount.myeloid_erythroid_ratio())
 
     def test_me_ratio_erythroids_0(self):
         cellcount = CellCountInstance.objects.get(id=2)
