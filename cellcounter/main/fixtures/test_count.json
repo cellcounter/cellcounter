@@ -131,7 +131,7 @@
             "cell": 8,
             "comment": "",
             "cell_count_instance": 1,
-            "abnormal_count": 4,
+            "abnormal_count": 2,
             "normal_count": 4
         }
     },
@@ -264,7 +264,7 @@
             "comment": "",
             "cell_count_instance": 2,
             "abnormal_count": 0,
-            "normal_count": 14
+            "normal_count": 0
         }
     },
     {
