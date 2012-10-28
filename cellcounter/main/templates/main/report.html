@@ -34,13 +34,13 @@
 
 <h4>Differential</h4>
 <table class="table table-bordered table-striped">
-    <tr><th>Cell Type</th><th>Normal Count</th><th>Abnormal Count</th><th>Percentage</th></tr>
+    <tr><th>Cell Type</th><th>Percentage</th><th>Normal Count</th><th>Abnormal Count</th></tr>
     {% for count in cellcount_list %}
     <tr>
         <td>{{count.cell.readable_name}}</td>
+        <td>{{count.percentage}}</td>
         <td>{{count.normal_count}}</td>
         <td>{{count.abnormal_count}}</td>
-        <td>{{count.percentage}}</td>
     </tr>
     {% if count.comment %}<tr><td colspan=4>{{count.comment}}</td></tr>{% endif %}
     {% endfor %}
