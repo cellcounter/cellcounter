@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User
 
 class CellCountInstance(models.Model):
@@ -32,15 +33,19 @@ class CellCountInstance(models.Model):
     def myeloid_cellcount(self):
         """Returns a total count of all myeloid cells in count"""
         total = 0
-        erythroid = CellType.objects.get(machine_name='erythroid')
-        for count in self.cellcount_set.exclude(cell=erythroid):
+        for count in self.cellcount_set.filter(Q(cell__machine_name='blasts') | 
+                                               Q(cell__machine_name='neutrophils') |
+                                               Q(cell__machine_name='band_forms') |
+                                               Q(cell__machine_name='myelocytes') |
+                                               Q(cell__machine_name='promyelocytes') | 
+                                               Q(cell__machine_name='basophils') |
+                                               Q(cell__machine_name='eosinophils')):
             total = total + count.get_total_count()
         return total
 
     def erythroid_cellcount(self):
         """Returns a total count of all erythroid cells in count"""
-        erythroid = CellType.objects.get(machine_name='erythroid')
-        erythroid_count = self.cellcount_set.get(cell=erythroid)
+        erythroid_count = self.cellcount_set.get(cell__machine_name='erythroid')
         total = erythroid_count.get_total_count()
         return total
 
