@@ -1,59 +1,11 @@
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User
 
-TISSUE_TYPE = (
+class CellCountInstance(models.Model):
+    TISSUE_TYPE = (
         ('Blood film', 'Blood film'),
         ('Bone marrow', 'Bone marrow'))
-
-CELLULARITY_CHOICES = (
-        ('Hypo', 'Hypo'),
-        ('Normal', 'Normal'),
-        ('Hyper', 'Hyper'),
-        ('Acellular', 'Acellular'))
-
-BM_PARTICULATE = (
-        ('No particles', 'No particles'),
-        ('Few particles', 'Few particles'),
-        ('Adequate particles', 'Adequate particles'))
-
-BM_HAEMODILUTION =(
-        ('Mild', 'Mild'),
-        ('Moderate', 'Moderate'),
-        ('Severe', 'Severe'),)
-
-BM_EASE_OF_ASPIRATION = (
-        ('Dry', 'Dry'),
-        ('Easy', 'Easy'),
-        ('Moderate', 'Moderate'),
-        ('Hard', 'Hard'),
-        ('Indeterminate', 'Indeterminate'))
-
-ERYTHROPOIESIS_DYSPLASIA = (
-        ('None', 'None'),
-        ('Nuclear asynchrony', 'Nuclear asynchrony'),
-        ('Multinucleated Forms', 'Multinucleated Forms'),
-        ('Ragged haemoglobinisation', 'Ragged haemoglobinisation'),
-        ('Megaloblastic change', 'Megaloblastic change'))
-
-MEGAKARYOCYTE_RELATIVE_COUNT = (
-        ('Absent', 'Absent'),
-        ('Reduced', 'Reduced'),
-        ('Normal', 'Normal'),
-        ('Increased', 'Increased'))
-
-MEGAKARYOCYTE_DYSPLASIA = (
-        ('None', 'None'),
-        ('Hypolobulated', 'Hypolobulated'),
-        ('Fragmented', 'Fragmented'))
-
-GRANULOPOIESIS_DYSPLASIA = (
-        ('None', 'None'),
-        ('Hypogranular', 'Hypogranular'),
-        ('Pelger', 'Pelger'),
-        ('Nuclear atypia', 'Nuclear atypia'),
-        ('Dohle bodies', 'Dohle bodies'))
-
-class CellCountInstance(models.Model):
 
     user = models.ForeignKey(User)
     datetime_submitted = models.DateTimeField(auto_now_add=True)
@@ -69,31 +21,51 @@ class CellCountInstance(models.Model):
         if not self.erythroid_cellcount():
             return 'Unable to calculate, erythroid count = 0'
         else:
-            return float(self.myeloid_cellcount())/float(self.erythroid_cellcount())
+            return round((float(self.myeloid_cellcount())/float(self.erythroid_cellcount())), 2)
 
     def total_cellcount(self):
         """Returns a total count of all cells in count"""
         total = 0
         for count in self.cellcount_set.all():
-            total = total + count.normal_count + count.abnormal_count
+            total = total + count.get_total_count()
         return total
 
     def myeloid_cellcount(self):
-        """Returns a total count of all myeloid cellc in count"""
+        """Returns a total count of all myeloid cells in count"""
         total = 0
-        erythroid = CellType.objects.get(machine_name='erythroid')
-        for count in self.cellcount_set.exclude(cell=erythroid):
-            total = total + count.normal_count + count.abnormal_count
+        for count in self.cellcount_set.filter(Q(cell__machine_name='blasts') | 
+                                               Q(cell__machine_name='neutrophils') |
+                                               Q(cell__machine_name='band_forms') |
+                                               Q(cell__machine_name='myelocytes') |
+                                               Q(cell__machine_name='promyelocytes') | 
+                                               Q(cell__machine_name='basophils') |
+                                               Q(cell__machine_name='eosinophils')):
+            total = total + count.get_total_count()
         return total
 
     def erythroid_cellcount(self):
         """Returns a total count of all erythroid cells in count"""
-        erythroid = CellType.objects.get(machine_name='erythroid')
-        erythroid_count = self.cellcount_set.get(cell=erythroid)
-        total = erythroid_count.normal_count + erythroid_count.abnormal_count
+        erythroid_count = self.cellcount_set.get(cell__machine_name='erythroid')
+        total = erythroid_count.get_total_count()
         return total
 
 class BoneMarrowBackground(models.Model):
+    CELLULARITY_CHOICES = (('Hypo', 'Hypo'),
+                           ('Normal', 'Normal'),
+                           ('Hyper', 'Hyper'),
+                           ('Acellular', 'Acellular'))
+    BM_PARTICULATE = (('No particles', 'No particles'),
+                      ('Few particles', 'Few particles'),
+                      ('Adequate particles', 'Adequate particles'))
+    BM_HAEMODILUTION =(('Mild', 'Mild'),
+                       ('Moderate', 'Moderate'),
+                       ('Severe', 'Severe'),)
+    BM_EASE_OF_ASPIRATION = (('Dry', 'Dry'),
+                             ('Easy', 'Easy'),
+                             ('Moderate', 'Moderate'),
+                             ('Hard', 'Hard'),
+                             ('Indeterminate', 'Indeterminate'))
+
     cell_count_instance = models.OneToOneField(CellCountInstance)
     trail_cellularity = models.CharField(max_length=50,
                                         choices=CELLULARITY_CHOICES)
@@ -119,6 +91,9 @@ class CellCount(models.Model):
     abnormal_count = models.IntegerField()
     comment = models.TextField(blank=True)
 
+    def get_total_count(self):
+        return self.normal_count + self.abnormal_count
+
     def percentage(self):
         total = self.cell_count_instance.total_cellcount()
         if total != 0:
@@ -127,18 +102,38 @@ class CellCount(models.Model):
             return 0
 
 class ErythropoiesisFindings(models.Model):
+    ERYTHROPOIESIS_DYSPLASIA = (('None', 'None'),
+            ('Nuclear asynchrony', 'Nuclear asynchrony'),
+            ('Multinucleated Forms', 'Multinucleated Forms'),
+            ('Ragged haemoglobinisation', 'Ragged haemoglobinisation'),
+            ('Megaloblastic change', 'Megaloblastic change'))
+
     cell_count_instance = models.OneToOneField(CellCountInstance)
     dysplasia = models.CharField(max_length=50,
                                 choices=ERYTHROPOIESIS_DYSPLASIA)
     comment = models.TextField(blank=True)
 
 class GranulopoiesisFindings(models.Model):
+    GRANULOPOIESIS_DYSPLASIA = (('None', 'None'),
+                                ('Hypogranular', 'Hypogranular'),
+                                ('Pelger', 'Pelger'),
+                                ('Nuclear atypia', 'Nuclear atypia'),
+                                ('Dohle bodies', 'Dohle bodies'))
+    
     cell_count_instance = models.OneToOneField(CellCountInstance)
     dysplasia = models.CharField(max_length=50,
                                 choices=GRANULOPOIESIS_DYSPLASIA)
     comment = models.TextField(blank=True)
 
 class MegakaryocyteFeatures(models.Model):
+    MEGAKARYOCYTE_RELATIVE_COUNT = (('Absent', 'Absent'),
+                                    ('Reduced', 'Reduced'),
+                                    ('Normal', 'Normal'),
+                                    ('Increased', 'Increased'))
+    MEGAKARYOCYTE_DYSPLASIA = (('None', 'None'),
+                               ('Hypolobulated', 'Hypolobulated'),
+                               ('Fragmented', 'Fragmented'))
+
     cell_count_instance = models.OneToOneField(CellCountInstance)
     relative_count = models.CharField(max_length=50,
                                 choices=MEGAKARYOCYTE_RELATIVE_COUNT)
@@ -157,6 +152,7 @@ class IronStain(models.Model):
                         (GRADE_2, 'Grade 2'),
                         (GRADE_3, 'Grade 3'),
                         (GRADE_4, 'Grade 4'))
+    
     cell_count_instance = models.OneToOneField(CellCountInstance)
     stain_performed = models.BooleanField()
     iron_content = models.IntegerField(choices=IRON_STAIN_GRADE)
