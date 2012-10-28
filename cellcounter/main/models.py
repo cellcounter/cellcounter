@@ -97,7 +97,7 @@ class CellCount(models.Model):
     def percentage(self):
         total = self.cell_count_instance.total_cellcount()
         if total != 0:
-            return 100 * float(self.normal_count+self.abnormal_count)/float(total)
+            return round((100 * float(self.normal_count+self.abnormal_count)/float(total)))
         else:
             return 0
 
