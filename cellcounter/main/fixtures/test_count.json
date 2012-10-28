@@ -164,7 +164,7 @@
             "cell": 11,
             "comment": "",
             "cell_count_instance": 1,
-            "abnormal_count": 4,
+            "abnormal_count": 2,
             "normal_count": 5
         }
     },
@@ -175,23 +175,12 @@
             "cell": 12,
             "comment": "",
             "cell_count_instance": 1,
-            "abnormal_count": 2,
-            "normal_count": 5
-        }
-    },
-    {
-        "pk": 13,
-        "model": "main.cellcount",
-        "fields": {
-            "cell": 13,
-            "comment": "",
-            "cell_count_instance": 1,
             "abnormal_count": 5,
             "normal_count": 4
         }
     },
     {
-        "pk": 14,
+        "pk": 13,
         "model": "main.cellcount",
         "fields": {
             "cell": 1,
@@ -202,7 +191,7 @@
         }
     },
     {
-        "pk": 15,
+        "pk": 14,
         "model": "main.cellcount",
         "fields": {
             "cell": 2,
@@ -213,7 +202,7 @@
         }
     },
     {
-        "pk": 16,
+        "pk": 15,
         "model": "main.cellcount",
         "fields": {
             "cell": 3,
@@ -224,7 +213,7 @@
         }
     },
     {
-        "pk": 17,
+        "pk": 16,
         "model": "main.cellcount",
         "fields": {
             "cell": 4,
@@ -235,7 +224,7 @@
         }
     },
     {
-        "pk": 18,
+        "pk": 17,
         "model": "main.cellcount",
         "fields": {
             "cell": 5,
@@ -246,7 +235,7 @@
         }
     },
     {
-        "pk": 19,
+        "pk": 18,
         "model": "main.cellcount",
         "fields": {
             "cell": 6,
@@ -257,7 +246,7 @@
         }
     },
     {
-        "pk": 20,
+        "pk": 19,
         "model": "main.cellcount",
         "fields": {
             "cell": 7,
@@ -268,7 +257,7 @@
         }
     },
     {
-        "pk": 21,
+        "pk": 20,
         "model": "main.cellcount",
         "fields": {
             "cell": 8,
@@ -279,7 +268,7 @@
         }
     },
     {
-        "pk": 22,
+        "pk": 21,
         "model": "main.cellcount",
         "fields": {
             "cell": 9,
@@ -290,7 +279,7 @@
         }
     },
     {
-        "pk": 23,
+        "pk": 22,
         "model": "main.cellcount",
         "fields": {
             "cell": 10,
@@ -301,7 +290,7 @@
         }
     },
     {
-        "pk": 24,
+        "pk": 23,
         "model": "main.cellcount",
         "fields": {
             "cell": 11,
@@ -312,21 +301,10 @@
         }
     },
     {
-        "pk": 25,
+        "pk": 24,
         "model": "main.cellcount",
         "fields": {
             "cell": 12,
-            "comment": "",
-            "cell_count_instance": 2,
-            "abnormal_count": 0,
-            "normal_count": 0
-        }
-    },
-    {
-        "pk": 26,
-        "model": "main.cellcount",
-        "fields": {
-            "cell": 13,
             "comment": "",
             "cell_count_instance": 2,
             "abnormal_count": 0,
