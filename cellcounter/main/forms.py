@@ -1,4 +1,4 @@
-from django.forms import ModelForm, HiddenInput, Textarea
+from django.forms import ModelForm, HiddenInput, Textarea, CheckboxInput, Select
 
 from cellcounter.main.models import CellCount, CellCountInstance, BoneMarrowBackground, ErythropoiesisFindings, GranulopoiesisFindings, MegakaryocyteFeatures, IronStain
 
@@ -53,4 +53,10 @@ class IronStainForm(ModelForm):
     class Meta:
         model = IronStain
         exclude = ('cell_count_instance',) 
-        widgets = COMMENT_WIDGET
+        widgets = {'comment': Textarea(attrs={'rows': 2,
+                                              'placeholder': 'Comments',
+                                              'disabled': True}),
+                   'iron_content': Select(attrs={'disabled': True}),
+                   'stain_performed': CheckboxInput(attrs={'onclick': 'ironstain();'}),
+                   'ringed_sideroblasts': CheckboxInput(attrs={'disabled': True}),
+                   }

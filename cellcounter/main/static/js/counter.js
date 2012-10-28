@@ -190,3 +190,16 @@ if(e.keyCode==32){
 return false;
 }
 }; */
+
+function ironstain() {
+    if (document.getElementById("id_ironstain-stain_performed").checked == true) {
+        document.getElementById("id_ironstain-ringed_sideroblasts").disabled = false;
+        document.getElementById("id_ironstain-iron_content").disabled = false;
+        document.getElementById("id_ironstain-comment").disabled = false;
+    } else {
+        document.getElementById("id_ironstain-ringed_sideroblasts").disabled = true;
+        document.getElementById("id_ironstain-iron_content").disabled = true;
+        document.getElementById("id_ironstain-comment").disabled = true;
+    }
+}
+
