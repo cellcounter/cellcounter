@@ -20,28 +20,28 @@ class CellCountInstance(models.Model):
         if not self.erythroid_cellcount():
             return 'Unable to calculate, erythroid count = 0'
         else:
-            return float(self.myeloid_cellcount())/float(self.erythroid_cellcount())
+            return round((float(self.myeloid_cellcount())/float(self.erythroid_cellcount())), 2)
 
     def total_cellcount(self):
         """Returns a total count of all cells in count"""
         total = 0
         for count in self.cellcount_set.all():
-            total = total + count.normal_count + count.abnormal_count
+            total = total + count.get_total_count()
         return total
 
     def myeloid_cellcount(self):
-        """Returns a total count of all myeloid cellc in count"""
+        """Returns a total count of all myeloid cells in count"""
         total = 0
         erythroid = CellType.objects.get(machine_name='erythroid')
         for count in self.cellcount_set.exclude(cell=erythroid):
-            total = total + count.normal_count + count.abnormal_count
+            total = total + count.get_total_count()
         return total
 
     def erythroid_cellcount(self):
         """Returns a total count of all erythroid cells in count"""
         erythroid = CellType.objects.get(machine_name='erythroid')
         erythroid_count = self.cellcount_set.get(cell=erythroid)
-        total = erythroid_count.normal_count + erythroid_count.abnormal_count
+        total = erythroid_count.get_total_count()
         return total
 
 class BoneMarrowBackground(models.Model):
