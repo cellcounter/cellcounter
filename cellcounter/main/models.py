@@ -1,59 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-TISSUE_TYPE = (
+class CellCountInstance(models.Model):
+    TISSUE_TYPE = (
         ('Blood film', 'Blood film'),
         ('Bone marrow', 'Bone marrow'))
-
-CELLULARITY_CHOICES = (
-        ('Hypo', 'Hypo'),
-        ('Normal', 'Normal'),
-        ('Hyper', 'Hyper'),
-        ('Acellular', 'Acellular'))
-
-BM_PARTICULATE = (
-        ('No particles', 'No particles'),
-        ('Few particles', 'Few particles'),
-        ('Adequate particles', 'Adequate particles'))
-
-BM_HAEMODILUTION =(
-        ('Mild', 'Mild'),
-        ('Moderate', 'Moderate'),
-        ('Severe', 'Severe'),)
-
-BM_EASE_OF_ASPIRATION = (
-        ('Dry', 'Dry'),
-        ('Easy', 'Easy'),
-        ('Moderate', 'Moderate'),
-        ('Hard', 'Hard'),
-        ('Indeterminate', 'Indeterminate'))
-
-ERYTHROPOIESIS_DYSPLASIA = (
-        ('None', 'None'),
-        ('Nuclear asynchrony', 'Nuclear asynchrony'),
-        ('Multinucleated Forms', 'Multinucleated Forms'),
-        ('Ragged haemoglobinisation', 'Ragged haemoglobinisation'),
-        ('Megaloblastic change', 'Megaloblastic change'))
-
-MEGAKARYOCYTE_RELATIVE_COUNT = (
-        ('Absent', 'Absent'),
-        ('Reduced', 'Reduced'),
-        ('Normal', 'Normal'),
-        ('Increased', 'Increased'))
-
-MEGAKARYOCYTE_DYSPLASIA = (
-        ('None', 'None'),
-        ('Hypolobulated', 'Hypolobulated'),
-        ('Fragmented', 'Fragmented'))
-
-GRANULOPOIESIS_DYSPLASIA = (
-        ('None', 'None'),
-        ('Hypogranular', 'Hypogranular'),
-        ('Pelger', 'Pelger'),
-        ('Nuclear atypia', 'Nuclear atypia'),
-        ('Dohle bodies', 'Dohle bodies'))
-
-class CellCountInstance(models.Model):
 
     user = models.ForeignKey(User)
     datetime_submitted = models.DateTimeField(auto_now_add=True)
@@ -94,6 +45,22 @@ class CellCountInstance(models.Model):
         return total
 
 class BoneMarrowBackground(models.Model):
+    CELLULARITY_CHOICES = (('Hypo', 'Hypo'),
+                           ('Normal', 'Normal'),
+                           ('Hyper', 'Hyper'),
+                           ('Acellular', 'Acellular'))
+    BM_PARTICULATE = (('No particles', 'No particles'),
+                      ('Few particles', 'Few particles'),
+                      ('Adequate particles', 'Adequate particles'))
+    BM_HAEMODILUTION =(('Mild', 'Mild'),
+                       ('Moderate', 'Moderate'),
+                       ('Severe', 'Severe'),)
+    BM_EASE_OF_ASPIRATION = (('Dry', 'Dry'),
+                             ('Easy', 'Easy'),
+                             ('Moderate', 'Moderate'),
+                             ('Hard', 'Hard'),
+                             ('Indeterminate', 'Indeterminate'))
+
     cell_count_instance = models.OneToOneField(CellCountInstance)
     trail_cellularity = models.CharField(max_length=50,
                                         choices=CELLULARITY_CHOICES)
@@ -127,18 +94,38 @@ class CellCount(models.Model):
             return 0
 
 class ErythropoiesisFindings(models.Model):
+    ERYTHROPOIESIS_DYSPLASIA = (('None', 'None'),
+            ('Nuclear asynchrony', 'Nuclear asynchrony'),
+            ('Multinucleated Forms', 'Multinucleated Forms'),
+            ('Ragged haemoglobinisation', 'Ragged haemoglobinisation'),
+            ('Megaloblastic change', 'Megaloblastic change'))
+
     cell_count_instance = models.OneToOneField(CellCountInstance)
     dysplasia = models.CharField(max_length=50,
                                 choices=ERYTHROPOIESIS_DYSPLASIA)
     comment = models.TextField(blank=True)
 
 class GranulopoiesisFindings(models.Model):
+    GRANULOPOIESIS_DYSPLASIA = (('None', 'None'),
+                                ('Hypogranular', 'Hypogranular'),
+                                ('Pelger', 'Pelger'),
+                                ('Nuclear atypia', 'Nuclear atypia'),
+                                ('Dohle bodies', 'Dohle bodies'))
+    
     cell_count_instance = models.OneToOneField(CellCountInstance)
     dysplasia = models.CharField(max_length=50,
                                 choices=GRANULOPOIESIS_DYSPLASIA)
     comment = models.TextField(blank=True)
 
 class MegakaryocyteFeatures(models.Model):
+    MEGAKARYOCYTE_RELATIVE_COUNT = (('Absent', 'Absent'),
+                                    ('Reduced', 'Reduced'),
+                                    ('Normal', 'Normal'),
+                                    ('Increased', 'Increased'))
+    MEGAKARYOCYTE_DYSPLASIA = (('None', 'None'),
+                               ('Hypolobulated', 'Hypolobulated'),
+                               ('Fragmented', 'Fragmented'))
+
     cell_count_instance = models.OneToOneField(CellCountInstance)
     relative_count = models.CharField(max_length=50,
                                 choices=MEGAKARYOCYTE_RELATIVE_COUNT)
@@ -157,6 +144,7 @@ class IronStain(models.Model):
                         (GRADE_2, 'Grade 2'),
                         (GRADE_3, 'Grade 3'),
                         (GRADE_4, 'Grade 4'))
+    
     cell_count_instance = models.OneToOneField(CellCountInstance)
     stain_performed = models.BooleanField()
     iron_content = models.IntegerField(choices=IRON_STAIN_GRADE)
