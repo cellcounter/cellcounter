@@ -86,6 +86,9 @@ class CellCount(models.Model):
     abnormal_count = models.IntegerField()
     comment = models.TextField(blank=True)
 
+    def get_total_count(self):
+        return self.normal_count + self.abnormal_count
+
     def percentage(self):
         total = self.cell_count_instance.total_cellcount()
         if total != 0:
