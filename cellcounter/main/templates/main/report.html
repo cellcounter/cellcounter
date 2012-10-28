@@ -30,10 +30,6 @@
 		<th>Haemodilution</th>
         <td>{{bonemarrowbackground.haemodilution}}</td>
 	</tr>
-	<tr>
-		<th>Myeloid/Erythroid Ratio</th>
-        <td>{{cellcount.myeloid_erythroid_ratio}}</td>
-	</tr>
 </table>
 
 <h4>Differential</h4>
@@ -48,6 +44,7 @@
     </tr>
     {% if count.comment %}<tr><td colspan=4>{{count.comment}}</td></tr>{% endif %}
     {% endfor %}
+    <tr><td>Myeloid:Erythroid ratio</td><td colspan=3>{{cellcount.myeloid_erythroid_ratio}}</td></tr>
 </table>
 
 <h4>Megakaryocytes</h4>
