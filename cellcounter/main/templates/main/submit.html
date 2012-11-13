@@ -224,10 +224,16 @@
     <div class="row">
         <div class="span6">
             <div class="control-group">
-                <label class="checkbox control-label" for="{{ ironstain_form.stain_performed.auto_id }}">{{ironstain_form.stain_performed.label}} {{ironstain_form.stain_performed}}</label>
+                <label class="control-label" for="{{ ironstain_form.stain_performed.auto_id }}">{{ironstain_form.stain_performed.label}}</label>
+                <div class="controls">
+                    {{ironstain_form.stain_performed}}
+                </div>
             </div>
             <div class="control-group">
-                <label class="checkbox control-label" for="{{ ironstain_form.ringed_sideroblasts.auto_id }}">{{ironstain_form.ringed_sideroblasts.label}} {{ironstain_form.ringed_sideroblasts}}</label>
+                <label class="control-label" for="{{ ironstain_form.ringed_sideroblasts.auto_id }}">{{ironstain_form.ringed_sideroblasts.label}}</label>
+                <div class="controls">
+                    {{ironstain_form.ringed_sideroblasts}}
+                </div>
             </div>
         </div>
         <div class="span6">
