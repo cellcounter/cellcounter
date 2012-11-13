@@ -155,6 +155,6 @@ class IronStain(models.Model):
     
     cell_count_instance = models.OneToOneField(CellCountInstance)
     stain_performed = models.BooleanField()
-    iron_content = models.IntegerField(choices=IRON_STAIN_GRADE)
-    ringed_sideroblasts = models.BooleanField()
+    iron_content = models.IntegerField(choices=IRON_STAIN_GRADE, blank=True, null=True)
+    ringed_sideroblasts = models.NullBooleanField(blank=True, null=True)
     comment = models.TextField(blank=True)
