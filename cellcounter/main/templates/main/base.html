@@ -45,11 +45,11 @@
 <div id="content" class="row">
     {% if messages %}
     {% for message in messages %}
-        <div class="alert">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            {% if message.tags %}<h4>{{message.tags|upper}}</h4>{% endif %}
-            {{ message }}
-        </div>
+    <div class="alert {% if message.tags == "error" %}alert-error{% endif%}">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        {% if message.tags %}<h4>{{message.tags|upper}}</h4>{% endif %}
+        {{ message }}
+    </div>
     {% endfor %}
     {% endif %}
 
