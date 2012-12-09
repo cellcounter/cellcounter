@@ -87,8 +87,8 @@ class CellType(models.Model):
 class CellCount(models.Model):
     cell_count_instance = models.ForeignKey(CellCountInstance)
     cell = models.ForeignKey(CellType)
-    normal_count = models.IntegerField()
-    abnormal_count = models.IntegerField()
+    normal_count = models.IntegerField(default=0)
+    abnormal_count = models.IntegerField(default=0)
     comment = models.TextField(blank=True)
 
     def get_total_count(self):
