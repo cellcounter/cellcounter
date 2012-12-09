@@ -102,44 +102,65 @@ class CellCount(models.Model):
             return 0
 
 class ErythropoiesisFindings(models.Model):
-    ERYTHROPOIESIS_DYSPLASIA = (('None', 'None'),
-            ('Nuclear asynchrony', 'Nuclear asynchrony'),
-            ('Multinucleated Forms', 'Multinucleated Forms'),
-            ('Ragged haemoglobinisation', 'Ragged haemoglobinisation'),
-            ('Megaloblastic change', 'Megaloblastic change'))
-
     cell_count_instance = models.OneToOneField(CellCountInstance)
-    dysplasia = models.CharField(max_length=50,
-                                choices=ERYTHROPOIESIS_DYSPLASIA)
+    no_dysplasia = models.BooleanField(default=True)
+    nuclear_asynchrony = models.BooleanField(default=False)
+    multinucleated_forms = models.BooleanField(default=False)
+    ragged_haemoglobinisation = models.BooleanField(default=False)
+    megaloblastic_change = models.BooleanField(default=False)
     comment = models.TextField(blank=True)
+
+    def get_dysplasia(self):
+        if self.no_dysplasia:
+            return None
+        else:
+            return [x[0] for x in [('Nuclear asynchrony', self.nuclear_asynchrony),
+                                   ('Multinucleated forms', self.multinucleated_forms),
+                                   ('Ragged haemoglobinisation', self.ragged_haemoglobinisation),
+                                   ('Megaloblastic change', self.megaloblastic_change)]
+                                   if x[1]]
 
 class GranulopoiesisFindings(models.Model):
-    GRANULOPOIESIS_DYSPLASIA = (('None', 'None'),
-                                ('Hypogranular', 'Hypogranular'),
-                                ('Pelger', 'Pelger'),
-                                ('Nuclear atypia', 'Nuclear atypia'),
-                                ('Dohle bodies', 'Dohle bodies'))
-    
     cell_count_instance = models.OneToOneField(CellCountInstance)
-    dysplasia = models.CharField(max_length=50,
-                                choices=GRANULOPOIESIS_DYSPLASIA)
+    no_dysplasia = models.BooleanField(default=True)
+    hypogranular = models.BooleanField(default=False)
+    pelger = models.BooleanField(default=False)
+    nuclear_atypia = models.BooleanField(default=False)
+    dohle_bodies = models.BooleanField(default=False)
     comment = models.TextField(blank=True)
+
+    def get_dysplasia(self):
+        if self.no_dysplasia:
+            return None
+        else:
+            return [x[0] for x in [('Hypogranular', self.hypogranular),
+                                   ('Pelger', self.pelger),
+                                   ('Nuclear atypia', self.nuclear_atypia),
+                                   ('Dohle bodies', self.dohle_bodies)]
+                                   if x[1]]
 
 class MegakaryocyteFeatures(models.Model):
     MEGAKARYOCYTE_RELATIVE_COUNT = (('Absent', 'Absent'),
                                     ('Reduced', 'Reduced'),
                                     ('Normal', 'Normal'),
                                     ('Increased', 'Increased'))
-    MEGAKARYOCYTE_DYSPLASIA = (('None', 'None'),
-                               ('Hypolobulated', 'Hypolobulated'),
-                               ('Fragmented', 'Fragmented'))
-
     cell_count_instance = models.OneToOneField(CellCountInstance)
     relative_count = models.CharField(max_length=50,
                                 choices=MEGAKARYOCYTE_RELATIVE_COUNT)
-    dysplasia = models.CharField(max_length=50,
-                                choices=MEGAKARYOCYTE_DYSPLASIA)
+    no_dysplasia = models.BooleanField(default=True)
+    hypolobulated = models.BooleanField(default=False)
+    fragmented = models.BooleanField(default=False)
+    micromegakaryocytes = models.BooleanField(default=False)
     comment = models.TextField(blank=True)
+
+    def get_dysplasia(self):
+        if self.no_dysplasia:
+            return None
+        else:
+            return [x[0] for x in [('Hypolobulated', self.hypolobulated),
+                                   ('Fragmented', self.fragmented),
+                                   ('Micromegakaryocytes', self.micromegakaryocytes)]
+                                   if x[1]]
 
 class IronStain(models.Model):
     ABSENT = 0
