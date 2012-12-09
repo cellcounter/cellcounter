@@ -227,6 +227,7 @@ def edit_count(request, count_id):
             return HttpResponseRedirect(reverse('view_count', kwargs={'count_id': cell_count.id}))
 
         else:
+            messages.add_message(request, messages.ERROR, 'Invalid data provided for edit')
             return render_to_response('main/edit.html',
                     {'cellcountinstance_form': count_instance, 
                      'bonemarrowbackground_form': bm_background_info, 
