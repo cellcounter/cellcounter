@@ -11,6 +11,7 @@
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}scripts/counter.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}scripts/jquery.json-2.3.min.js"></script>
+    {% block head %}{% endblock %}
 </head>
 
 <body class="container_16">
@@ -20,7 +21,7 @@
     <a class="brand grid_2 alpha" href="#"><img src="static/images/title_slide.jpg"></img>
 	</a>
 	<a class="brand grid_3 alpha" href="#"><img src="static/images/title_logo.png"></img>
-	</a>		
+	</a>
 
     <ul class="nav">
       <li class="grid_2"><a href="/submit/" class="navbar"><font_titlelink>Work</a></li>
@@ -33,12 +34,12 @@
   </div>
 </div>
 
-        
+
  <div id="fuzz"></div>
-          
+
     <div id="content" class="grid_16">
         {% block content %}{% endblock %}
     </div>
 </body>
-    
+
 </html>

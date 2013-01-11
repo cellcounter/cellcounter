@@ -1,3 +1,6 @@
+import os
+print(os.__file__)
+
 import simplejson as json
 
 from django.shortcuts import render_to_response, HttpResponseRedirect
@@ -18,6 +21,32 @@ def submit(request):
 
         for cell in data.keys():
             cellcount_list['counts'][cell] = data[cell]
+
+        # calculate total cell count for calculating percentages
+        total = 0
+        for celltype in cellcount_list['counts'].keys():
+            total = total + cellcount_list['counts'][celltype]['normal']
+
+        cellcount_list['total'] = total
+        
+        for celltype in cellcount_list['counts'].keys():
+            cellcount_list['counts'][celltype]['percent'] = "%.2f" % (float(cellcount_list['counts'][celltype]['normal'] * 100) / total)
+
+        # build a string containing the cell count data for charting purposes
+        chartdata = '[';
+        for celltype in cellcount_list['counts'].keys():
+            chartdata = chartdata + "['%s', %d]," % (celltype, cellcount_list['counts'][celltype]['normal'])
+        chartdata = chartdata + ']'
+        
+        cellcount_list['chartdata'] = chartdata;
+
+        if cellcount_list['counts']['myelo']['normal'] == 0 and cellcount_list['counts']['erythro']['normal'] == 0:
+            cellcount_list['meratio'] = "N/A"
+        else:
+            try:
+                cellcount_list['meratio'] = "%.2f" % (float(cellcount_list['counts']['myelo']['normal'])/float(cellcount_list['counts']['erythro']['normal']))
+            except ZeroDivisionError:
+                cellcount_list['meratio'] = "Inf"
 
         cellcount_list['site'] = request.POST['bonemarrow-site']
         cellcount_list['ease_of_aspiration'] = request.POST['bonemarrow-ease_of_aspiration']
