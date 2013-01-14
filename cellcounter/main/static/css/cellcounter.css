@@ -47,3 +47,16 @@ table.content { border-bottom:1px solid black; background:#EEE; valign:top;}
 
 table {text-align:left; margin:10px; border:none}
 td {margin-left:10px }
+
+div#cellcountfields,div#bonemarrowfields {
+  border: 1px solid rgb(212, 212, 212);
+  border-radius: 4px 4px 4px 4px;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.067);
+}
+
+div#cellcountfields table td,div#bonemarrowfields table td {
+  text-align: right;
+  padding-left:10px;
+  padding-right: 10px;
+}
+

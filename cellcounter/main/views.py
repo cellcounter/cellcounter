@@ -1,6 +1,3 @@
-import os
-print(os.__file__)
-
 import simplejson as json
 
 from django.shortcuts import render_to_response, HttpResponseRedirect
