@@ -53,9 +53,10 @@
 		<th>Number</th>
         <td>{{megakaryocytes.relative_count}}</td>
 	</tr>
-	<tr>
-		<th>Features</th>
-		<td>{{megakaryocytes.dysplasia}}</td>
+    <tr>
+        <th>Features</th>
+        {% if megakaryocytes.get_dysplasia == None %}<td>None</td>{%else%}
+        <td>{%for dysplasia in megakaryocytes.get_dysplasia %}{% if not forloop.last %}{{dysplasia}}, {%else%}{{dysplasia}}{%endif%}{%endfor%}{%endif%}</td>
 	</tr>
 	<tr>
         <td colspan=2><b>Comment:</b> {% if not megakaryocytes.comment%}None{% else %}{{megakaryocytes.comment}}{%endif%}</td>
@@ -66,7 +67,8 @@
 <table class="table table-bordered">
 	<tr>
 		<th>Features</th>
-		<td>{{erythropoiesis.dysplasia}}</td>
+        {% if erythropoiesis.get_dysplasia == None %}<td>None</td>{%else%}
+        <td>{%for dysplasia in erythropoiesis.get_dysplasia %}{% if not forloop.last %}{{dysplasia}}, {%else%}{{dysplasia}}{%endif%}{%endfor%}{%endif%}</td>
 	</tr>
 	<tr>
         <td colspan=2><b>Comment:</b> {% if not erythropoiesis.comment%}None{% else %}{{erythropoiesis.comment}}{%endif%}</td>
@@ -77,7 +79,8 @@
 <table class="table table-bordered">
 	<tr>
 		<th>Features</th>
-        <td>{{granulopoiesis.dysplasia}}</td>
+        {% if granulopoiesis.get_dysplasia == None %}<td>None</td>{%else%}
+        <td>{%for dysplasia in granulopoiesis.get_dysplasia %}{% if not forloop.last %}{{dysplasia}}, {%else%}{{dysplasia}}{%endif%}{%endfor%}{%endif%}</td>
 	</tr>
 	<tr>
         <td colspan=2><b>Comment:</b> {% if not granulopoiesis.comment%}None{% else %}{{granulopoiesis.comment}}{%endif%}</td>

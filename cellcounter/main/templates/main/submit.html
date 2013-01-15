@@ -2,6 +2,8 @@
 
 {% block content %}
 
+{{ formset }}
+
 <p>To begin a new count, click 'Open Keyboard', perform the count using your keyboard and the keys displayed. Should you wish to see example images of the cells in question, press 'Shift+Letter', to enter an abnormal variant of a cell, press 'Space+Letter', and to remove a count, press 'Backspace+Letter'. To close the keyboard, click on the grey area outside the keyboard. Once you have completed a count, fill in the remaining information in the form below, and click 'Submit'.</p>
 
         <div id="openkeyboard" class="btn btn-primary">Open keyboard</div>
@@ -167,7 +169,7 @@
     <div class="row">
         <div class="span6">
         {% for field in granulopoiesis_form %}
-        {% if forloop.counter == 2 %}
+        {% if forloop.counter == 4 %}
         </div>
         <div class="span6">
         {% endif %}
@@ -186,7 +188,7 @@
     <div class="row">
         <div class="span6">
         {% for field in erythropoiesis_form %}
-        {% if forloop.counter == 2 %}
+        {% if forloop.counter == 4 %}
         </div>
         <div class="span6">
         {% endif %}
@@ -205,7 +207,7 @@
     <div class="row">
         <div class="span6">
         {% for field in megakaryocyte_form %}
-        {% if forloop.counter == 3 %}
+        {% if forloop.counter == 4 %}
         </div>
         <div class="span6">
         {% endif %}
@@ -224,10 +226,16 @@
     <div class="row">
         <div class="span6">
             <div class="control-group">
-                <label class="checkbox control-label" for="{{ ironstain_form.stain_performed.auto_id }}">{{ironstain_form.stain_performed.label}} {{ironstain_form.stain_performed}}</label>
+                <label class="control-label" for="{{ ironstain_form.stain_performed.auto_id }}">{{ironstain_form.stain_performed.label}}</label>
+                <div class="controls">
+                    {{ironstain_form.stain_performed}}
+                </div>
             </div>
             <div class="control-group">
-                <label class="checkbox control-label" for="{{ ironstain_form.ringed_sideroblasts.auto_id }}">{{ironstain_form.ringed_sideroblasts.label}} {{ironstain_form.ringed_sideroblasts}}</label>
+                <label class="control-label" for="{{ ironstain_form.ringed_sideroblasts.auto_id }}">{{ironstain_form.ringed_sideroblasts.label}}</label>
+                <div class="controls">
+                    {{ironstain_form.ringed_sideroblasts}}
+                </div>
             </div>
         </div>
         <div class="span6">
