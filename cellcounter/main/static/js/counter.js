@@ -194,14 +194,67 @@ return false;
 
 function ironstain() {
     "use strict";
-    if (document.getElementById("id_ironstain-stain_performed").checked === true) {
-        document.getElementById("id_ironstain-ringed_sideroblasts").disabled = false;
-        document.getElementById("id_ironstain-iron_content").disabled = false;
-        document.getElementById("id_ironstain-comment").disabled = false;
+    if ($("#id_ironstain-stain_performed").prop("checked")) {
+        $("#id_ironstain-ringed_sideroblasts").prop("disabled", false);
+        $("#id_ironstain-iron_content").prop("disabled", false);
+        $("#id_ironstain-comment").prop("disabled", false);
     } else {
-        document.getElementById("id_ironstain-ringed_sideroblasts").disabled = true;
-        document.getElementById("id_ironstain-iron_content").disabled = true;
-        document.getElementById("id_ironstain-comment").disabled = true;
+        $("#id_ironstain-ringed_sideroblasts").prop("disabled", true);
+        $("#id_ironstain-iron_content").prop("disabled", true);
+        $("#id_ironstain-comment").prop("disabled", true);
     }
 }
 
+function granulopoiesis() {
+    "use strict";
+    if ($("#id_granulopoiesis-no_dysplasia").prop("checked")) {
+        $("#id_granulopoiesis-hypogranular").prop("disabled", true);
+        $("#id_granulopoiesis-hypogranular").prop("checked", false);
+        $("#id_granulopoiesis-pelger").prop("disabled", true);
+        $("#id_granulopoiesis-pelger").prop("checked", false);
+        $("#id_granulopoiesis-nuclear_atypia").prop("disabled", true);
+        $("#id_granulopoiesis-nuclear_atypia").prop("checked", false);
+        $("#id_granulopoiesis-dohle_bodies").prop("disabled", true);
+        $("#id_granulopoiesis-dohle_bodies").prop("checked", false);
+   } else {
+        $("#id_granulopoiesis-hypogranular").prop("disabled", false);
+        $("#id_granulopoiesis-pelger").prop("disabled", false);
+        $("#id_granulopoiesis-nuclear_atypia").prop("disabled", false);
+        $("#id_granulopoiesis-dohle_bodies").prop("disabled", false);
+    }
+}
+
+function erythropoiesis() {
+    "use strict";
+    if ($("#id_erythropoiesis-no_dysplasia").prop("checked")) {
+        $("#id_erythropoiesis-nuclear_asynchrony").prop("disabled", true);
+        $("#id_erythropoiesis-nuclear_asynchrony").prop("checked", false);
+        $("#id_erythropoiesis-multinucleated_forms").prop("disabled", true);
+        $("#id_erythropoiesis-multinucleated_forms").prop("checked", false);
+        $("#id_erythropoiesis-ragged_haemoglobinisation").prop("disabled", true);
+        $("#id_erythropoiesis-ragged_haemoglobinisation").prop("checked", false);
+        $("#id_erythropoiesis-megaloblastic_change").prop("disabled", true);
+        $("#id_erythropoiesis-megaloblastic_change").prop("checked", false);
+    } else {
+        $("#id_erythropoiesis-nuclear_asynchrony").prop("disabled", false);
+        $("#id_erythropoiesis-multinucleated_forms").prop("disabled", false);
+        $("#id_erythropoiesis-ragged_haemoglobinisation").prop("disabled", false);
+        $("#id_erythropoiesis-megaloblastic_change").prop("disabled", false);
+    }
+}
+
+function megakaryocytes() {
+    "use strict";
+    if ($("#id_megakaryocyte-no_dysplasia").prop("checked")) {
+        $("#id_megakaryocyte-hypolobulated").prop("disabled", true);
+        $("#id_megakaryocyte-hypolobulated").prop("checked", false);
+        $("#id_megakaryocyte-fragmented").prop("disabled", true);
+        $("#id_megakaryocyte-fragmented").prop("checked", false);
+        $("#id_megakaryocyte-micromegakaryocytes").prop("disabled", true);
+        $("#id_megakaryocyte-micromegakaryocytes").prop("checked", false);
+    } else {
+        $("#id_megakaryocyte-hypolobulated").prop("disabled", false);
+        $("#id_megakaryocyte-fragmented").prop("disabled", false);
+        $("#id_megakaryocyte-micromegakaryocytes").prop("disabled", false);
+    }
+}
