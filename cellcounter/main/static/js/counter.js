@@ -141,7 +141,7 @@ $(document).ready(function() {
             abnormal_total = 0;
             for (var prop in counters) {
                 if (counters.hasOwnProperty(prop))  {
-                    if (counters[prop].key === key) {
+                    if (counters[prop].key === key && !(shift_pressed)) {
                         if(abnormal === true) {
                             if(undo) {
                                 if(counters[prop].abnormal > 0) {
