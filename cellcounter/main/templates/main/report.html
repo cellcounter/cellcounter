@@ -6,10 +6,18 @@
 
 <h4>Count Stats</h4>
 <table class="table table-bordered">
+    <tr>
+        <th>Date Created</th>
+        <td>{{ cellcountinstance.datetime_submitted|date:"r" }}</td>
+    </tr>
+    <tr>
+        <th>Last Updated</th>
+        <td>{{ cellcountinstance.datetime_updated|date:"r" }}</td>
+    </tr>
 	<tr>
 		<th>Site</th>
         <td>{{bonemarrowbackground.site}}</td>
-	</tr>
+    </tr>
 	<tr>
 		<th>Ease of Aspiration</th>
         <td>{{bonemarrowbackground.ease_of_aspiration}}</td>	
