@@ -148,7 +148,7 @@ def view_count(request, count_id):
     cellcount_list = cell_count.cellcount_set.all()
 
     return render_to_response('main/report.html',
-            {'cellcount': cell_count,
+            {'cellcountinstance': cell_count,
              'bonemarrowbackground': cell_count.bonemarrowbackground,
              'erythropoiesis': cell_count.erythropoiesisfindings,
              'granulopoiesis': cell_count.granulopoiesisfindings,
