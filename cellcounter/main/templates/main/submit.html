@@ -2,8 +2,6 @@
 
 {% block content %}
 
-{{ formset }}
-
 <p>To begin a new count, click 'Open Keyboard', perform the count using your keyboard and the keys displayed. Should you wish to see example images of the cells in question, press 'Shift+Letter', to enter an abnormal variant of a cell, press 'Space+Letter', and to remove a count, press 'Backspace+Letter'. To close the keyboard, click on the grey area outside the keyboard. Once you have completed a count, fill in the remaining information in the form below, and click 'Submit'.</p>
 
 {% include "main/keyboard_snippet.html" %}
@@ -14,6 +12,7 @@
     {% csrf_token %}
     <legend>Count Information</legend>
     <div class="control-group">
+        {{ cellcount.tissue_type.errors }}
         <label class="control-label" for="{{ cellcount.tissue_type.auto_id }}">{{ cellcount.tissue_type.label}}</label>
         <div class="controls">
             {{ cellcount.tissue_type }}
@@ -28,6 +27,7 @@
         <div class="span6">
         {% endif %}
         <div class="control-group">
+            {{ field.errors }}
             <label class="control-label" for="{{ field.auto_id }}">{{field.label}}</label>
             <div class="controls">
                 {{ field }}
@@ -47,6 +47,7 @@
         <div class="span6">
         {% endif %}
         <div class="control-group">
+            {{ field.errors }}
             <label class="control-label" for="{{ field.auto_id }}">{{field.label}}</label>
             <div class="controls">
                 {{ field }}
@@ -66,6 +67,7 @@
         <div class="span6">
         {% endif %}
         <div class="control-group">
+            {{ field.errors }}
             <label class="control-label" for="{{ field.auto_id }}">{{field.label}}</label>
             <div class="controls">
                 {{ field }}
@@ -85,6 +87,7 @@
         <div class="span6">
         {% endif %}
         <div class="control-group">
+            {{ field.errors }}
             <label class="control-label" for="{{ field.auto_id }}">{{field.label}}</label>
             <div class="controls">
                 {{ field }}
@@ -99,12 +102,14 @@
     <div class="row">
         <div class="span6">
             <div class="control-group">
+                {{ ironstain_form.stain_performed.errors }}
                 <label class="control-label" for="{{ ironstain_form.stain_performed.auto_id }}">{{ironstain_form.stain_performed.label}}</label>
                 <div class="controls">
                     {{ironstain_form.stain_performed}}
                 </div>
             </div>
             <div class="control-group">
+                {{ ironstain_form.ringed_sideroblasts.errors }}
                 <label class="control-label" for="{{ ironstain_form.ringed_sideroblasts.auto_id }}">{{ironstain_form.ringed_sideroblasts.label}}</label>
                 <div class="controls">
                     {{ironstain_form.ringed_sideroblasts}}
@@ -113,12 +118,14 @@
         </div>
         <div class="span6">
             <div class="control-group">
+                {{ ironstain_form.iron_content.errors }}
                 <label class="control-label" for="{{ ironstain_form.iron_content.auto_id}}">{{ironstain_form.iron_content.label}}</label>
                 <div class="controls">
                 {{ironstain_form.iron_content }}
                 </div>
             </div>
             <div class="control-group">
+                {{ ironstain_form.comment.errors }}
                 <label class="control-label" for="{{ ironstain_form.comment.auto_id}}">{{ironstain_form.comment.label}}</label>
                 <div class="controls">
                 {{ironstain_form.comment}}
@@ -127,6 +134,7 @@
         </div>
     </div>
     <legend>Overall Comment</legend>
+    {{ cellcount.overall_comment.errors }}
     <p>{{ cellcount.overall_comment.label }}</p>
     {{ cellcount.overall_comment }}
 
