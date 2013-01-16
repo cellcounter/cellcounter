@@ -107,8 +107,8 @@ def new_count(request):
         else:
             messages.add_message(request, messages.ERROR, 'Invalid data provided for count')
             return render_to_response('main/submit.html',
-                    {'cellcount': count_instance, 
-                     'bonemarrowbackground': bm_background_info, 
+                    {'cellcountinstance_form': count_instance, 
+                     'bonemarrowbackground_form': bm_background_info, 
                      'erythropoiesis_form': erythropoiesis_form, 
                      'granulopoiesis_form': granulopoiesis_form,
                      'megakaryocyte_form': megakaryocyte_form,
@@ -129,8 +129,8 @@ def new_count(request):
             cellcount_form_list.append(CellCountForm(initial={'cell': celltype}, prefix=celltype.machine_name))
 
         return render_to_response('main/submit.html',
-            {'cellcount': cellcount_form,
-             'bonemarrowbackground': bonemarrowbackground,
+            {'cellcountinstance_form': cellcount_form,
+             'bonemarrowbackground_form': bonemarrowbackground,
              'erythropoiesis_form': erythropoiesis_form,
              'granulopoiesis_form': granulopoiesis_form,
              'megakaryocyte_form': megakaryocyte_form,
