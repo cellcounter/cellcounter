@@ -44,7 +44,7 @@
     </tr>
     {% if count.comment %}<tr><td colspan=4>{{count.comment}}</td></tr>{% endif %}
     {% endfor %}
-    <tr><td>Myeloid:Erythroid ratio</td><td colspan=3>{{cellcount.myeloid_erythroid_ratio}}</td></tr>
+    <tr><td>Myeloid:Erythroid ratio</td><td colspan=3>{{cellcountinstance.myeloid_erythroid_ratio}}</td></tr>
 </table>
 
 <h4>Megakaryocytes</h4>
@@ -104,6 +104,17 @@
         <td colspan=2><b>Comment:</b>{% if not ironstain.comment%}None{% else %}{{ironstain.comment}}{%endif%}</td>
     </tr>
 {% endif %}
+</table>
+
+<h4>Overall Comment</h4>
+<table class="table table-bordered">
+    <tr>
+        {% if cellcountinstance.overall_comment %}
+        <td>{{ cellcountinstance.overall_comment }}</td>
+        {% else %}
+        <td>None</td>
+        {% endif %}
+    </tr>
 </table>
 
 <h2>Reference Links</h2>
