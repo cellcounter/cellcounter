@@ -9,61 +9,56 @@ var img_displayed = false;
 
 $(document).ready(function() {
     "use strict";
-    var key, name, img;
+    var key, name, img, count_total;
     $("#myCounts").tablesorter();
 
     $('.count').each(function () {
-            //access to element via $(this)
-            key = $(this).find('div#key').text();
-            name = $(this).find('font2').text();
-            img = $(this).find('a#img').text();
-            counters[name] = {};
-            counters[name].key = key.toUpperCase();
-            counters[name].count = 0;
-            counters[name].abnormal = 0;
-            counters[name].box = $(this);
-            counters[name].img = img;
+        //access to element via $(this)
+        key = $(this).find('div#key').text();
+        name = $(this).find('font2').text();
+        img = $(this).find('a#img').text();
+        counters[name] = {};
+        counters[name].key = key.toUpperCase();
+        counters[name].count = parseInt($("#id_"+name+"-normal_count").prop("value"));
+        counters[name].abnormal = parseInt($("#id_"+name+"-abnormal_count").prop("value"));
+        counters[name].box = $(this);
+        counters[name].img = img;
 
-            //$count[key] = 0;
-            //$count[key + "_abnormal"] = 0;
-            //$box[key] = $(this);
-            //$box[key + "_abnormal"] = $(this);
+        $(counters[name].box).find("span#countval").text(counters[name].count);
+        $(counters[name].box).find("span#abnormal").text(counters[name].abnormal);
     });
 
     $('#openkeyboard').click(function () {
         $('#fuzz').fadeIn('slow', function () {
             $('#counterbox').slideDown('slow', function () {
-            $("#fuzz").css("height", $(document).height());
-            keyboard_active = true;
+                $("#fuzz").css("height", $(document).height());
+                keyboard_active = true;
             });
         });
+        count_total = 0;
+        for (var prop in counters) {
+            if (counters.hasOwnProperty(prop))  {
+                count_total += counters[prop].abnormal;
+                count_total += counters[prop].count;
+            }
+        $("#total").text(count_total);
+        }
     });
 
     $('#fuzz').click(function () {
-        var output, total, percent, per;
+        var total, percent, per;
         
         if (keyboard_active) {
             keyboard_active = false;
-            output = {};
             total = 0;
 
-            for (var prop in counters) {
-                if (counters.hasOwnProperty(prop)) { 
-                    // or if (Object.prototype.hasOwnProperty.call(obj,prop)) for safety...
-                    output[prop] = {};
-                    output[prop].normal = counters[prop].count;
-                    output[prop].abnormal = counters[prop].abnormal;
-
-                    total += counters[prop].count;
-                    total += counters[prop].count;
-                }
-            }
-
-            // Put counts into the ModelForms
-            for (var cell in output) {
-                if (output.hasOwnProperty(cell)) {
-                    $("#"+cell+"").children()[1].value=output[cell].normal;
-                    $("#"+cell+"").children()[2].value=output[cell].abnormal;
+            // Put counts into the ModelForms, increment total
+            for (var cell in counters) {
+                if (counters.hasOwnProperty(cell)) {
+                    $("#id_"+cell+"-normal_count").prop("value", counters[cell].count);
+                    $("#id_"+cell+"-abnormal_count").prop("value", counters[cell].abnormal);
+                    total += counters[cell].count;
+                    total += counters[cell].abnormal;
                 }
             }
        
@@ -136,7 +131,7 @@ $(document).ready(function() {
                 img_displayed = false;
                 return;
             }
-            
+
             count_total = 0;
             abnormal_total = 0;
             for (var prop in counters) {
@@ -161,8 +156,8 @@ $(document).ready(function() {
                         }
                     }
                 }
-                count_total += counters[prop].abnormal;
                 count_total += counters[prop].count;
+                count_total += counters[prop].abnormal;
             }
             $("#total").text(count_total);
         }
