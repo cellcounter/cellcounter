@@ -3,10 +3,8 @@ from django.forms import ModelForm, HiddenInput, Textarea, CheckboxInput, Select
 from cellcounter.main.models import CellCount, CellCountInstance, BoneMarrowBackground, ErythropoiesisFindings, GranulopoiesisFindings, MegakaryocyteFeatures, IronStain
 
 COMMENT_WIDGET = {'comment': Textarea(attrs={'rows': 2, 'placeholder': 'Comments'})}
-OVERALLCOMMENT_WIDGET = {'overall_comment': 
-                            Textarea(attrs={'rows': 1,
-                                            'class': 'span12',
-                                            'placeholder': 'Overall comments'})}
+OVERALLCOMMENT_WIDGET = {'overall_comment': Textarea(attrs={'rows': 1, 
+                         'class': 'span12', 'placeholder': 'Overall comments'})}
 
 class CellCountInstanceForm(ModelForm):
     class Meta:
@@ -120,7 +118,9 @@ class CellCountEditForm(ModelForm):
     class Meta:
         model = CellCount
         fields = ('normal_count', 'abnormal_count', 'comment')
-        widgets = COMMENT_WIDGET
+        widgets = {'comment': Textarea(attrs={'rows': 2, 'placeholder': 'Comments'}),
+                   'normal_count': HiddenInput,
+                   'abnormal_count': HiddenInput}
 
 class IronStainForm(ModelForm):
     class Meta:
