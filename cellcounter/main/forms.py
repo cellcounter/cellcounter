@@ -118,7 +118,8 @@ class CellCountEditForm(ModelForm):
     class Meta:
         model = CellCount
         fields = ('normal_count', 'abnormal_count', 'comment')
-        widgets = {'comment': Textarea(attrs={'rows': 2, 'placeholder': 'Comments'}),
+        widgets = {'comment': Textarea(attrs={'rows': 2, 'class': 'span12', 
+                                              'placeholder': 'Comments'}),
                    'normal_count': HiddenInput,
                    'abnormal_count': HiddenInput}
 
