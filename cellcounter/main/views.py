@@ -105,6 +105,7 @@ def new_count(request):
             return HttpResponseRedirect(reverse('edit_count', kwargs={'count_id': cellcount.id}))
 
         else:
+            messages.add_message(request, messages.ERROR, 'Invalid data provided for count')
             return render_to_response('main/submit.html',
                     {'cellcount': count_instance, 
                      'bonemarrowbackground': bm_background_info, 
