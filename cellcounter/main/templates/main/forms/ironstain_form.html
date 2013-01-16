@@ -1,0 +1,35 @@
+<legend>Iron Stain</legend>
+<div class="row">
+    <div class="span6">
+        <div class="control-group">
+            {{ ironstain_form.stain_performed.errors }}
+            <label class="control-label" for="{{ ironstain_form.stain_performed.auto_id }}">{{ironstain_form.stain_performed.label}}</label>
+            <div class="controls">
+                {{ironstain_form.stain_performed}}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ ironstain_form.ringed_sideroblasts.errors }}
+            <label class="control-label" for="{{ ironstain_form.ringed_sideroblasts.auto_id }}">{{ironstain_form.ringed_sideroblasts.label}}</label>
+            <div class="controls">
+                {{ironstain_form.ringed_sideroblasts}}
+            </div>
+        </div>
+    </div>
+    <div class="span6">
+        <div class="control-group">
+            {{ ironstain_form.iron_content.errors }}
+            <label class="control-label" for="{{ ironstain_form.iron_content.auto_id}}">{{ironstain_form.iron_content.label}}</label>
+            <div class="controls">
+            {{ironstain_form.iron_content }}
+            </div>
+        </div>
+        <div class="control-group">
+            {{ ironstain_form.comment.errors }}
+            <label class="control-label" for="{{ ironstain_form.comment.auto_id}}">{{ironstain_form.comment.label}}</label>
+            <div class="controls">
+            {{ironstain_form.comment}}
+            </div>
+        </div>
+    </div>
+</div>

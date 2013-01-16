@@ -6,25 +6,26 @@
 
 {% include "main/keyboard_snippet.html" %}
 
-<form action="" method="POST">
+<form action="" method="POST" class="form-horizontal">
     {% csrf_token %}
-    <h2>Count Information</h2>
-    {{ cellcountinstance_form.as_p }}
-    <h2>Background Findings</h2>
-    {{ bonemarrowbackground_form.as_p }}
-    <h2>Granulopoiesis Findings</h2>
-    {{ granulopoiesis_form.as_p }}
-    <h2>Erythropoiesis Findings</h2>
-    {{ erythropoiesis_form.as_p }}
-    <h2>Megakaryocyte Features</h2>
-    {{ megakaryocyte_form.as_p }}
-    <h2>Iron Stain</h2>
-    {{ ironstain_form.as_p }}
 
+    {% include "main/forms/cellcountinstance_form.html" %}
+    {% include "main/forms/bonemarrowbackground_form.html" %}
+    {% include "main/forms/granulopoiesis_form.html" %}
+    {% include "main/forms/erythropoiesis_form.html" %}
+    {% include "main/forms/megakaryocytefeatures_form.html" %}
+    {% include "main/forms/ironstain_form.html" %}
+    {% include "main/forms/overallcomment_form.html" %}
+
+    <legend>Comments for cell types</legend>
     {% for form in cellcount_form_list %}
-    <h2>{{ form.instance.cell.readable_name}}</h2>
-    {{ form.as_p }}
+    <h4>{{ form.instance.cell.readable_name}}</h4>
+    {% for field in form %}
+    {{ field.errors }}
+    {{ field }}
     {% endfor %}
+    {% endfor %}
+
     <input class="btn btn-success" type="submit" value="Submit" />
 </form>
 <script type="text/javascript">erythropoiesis(); granulopoiesis(); megakaryocytes();</script>
