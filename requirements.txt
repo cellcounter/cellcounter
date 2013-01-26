@@ -9,3 +9,5 @@ psycopg2==2.4.6
 wsgiref==0.1.2
 simplejson
 django-extensions
+ipython
+ipdb
