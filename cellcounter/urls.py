@@ -28,7 +28,8 @@ urlpatterns = patterns('',
 
     url(r'^login/$', login, {'template_name': 'main/login.html'}, name='login'),
     url(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
-    
+
+    url(r'^accounts/', include('cellcounter.accounts.urls')),
     url(r'^admin/', include(admin.site.urls)),
 )
 

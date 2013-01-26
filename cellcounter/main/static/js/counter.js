@@ -6,13 +6,68 @@ var abnormal = false;
 var undo = false;
 var keyboard_active = false;
 var img_displayed = false;
+var keyboard_map = { 'u': {'name': 'neutro'} };
+var doughnut = {};
+var pie = {};
+var arc = {};
+var data = [];
+    var size = 200;
 
 $(document).ready(function() {
     "use strict";
     var key, name, img, count_total;
     $("#myCounts").tablesorter();
 
-    $('.count').each(function () {
+    $.getJSON("/accounts/keyboard/", function(data) {
+
+        keyboard_map = data;
+
+        var keyboard_keys = $("#terbox").find("div.box1");
+
+        for (var i = 0; i < keyboard_keys.length; i++) {
+
+            var item = $(keyboard_keys[i]);
+            var key = item.attr("id");
+
+            if(keyboard_map[key]!==undefined) {
+                item.removeClass("c1");
+                item.addClass("c2");
+
+                var key_data = keyboard_map[item.attr("id")];
+
+                var name = key_data.name;
+                counters[name] = {};
+                counters[name].key = key.toUpperCase();
+            
+                counters[name].count = 0; //parseInt($("#id_"+name+"-normal_count").prop("value"));
+                counters[name].abnormal = 0; //parseInt($("#id_"+name+"-abnormal_count").prop("value"));
+                counters[name].box = item;
+                counters[name].colour = key_data.colour;
+
+                item.append("<div class=\"name\">"+name+"</div>");
+                item.append("<div class=\"count\"><span class=\"countval\">"+counters[name].count+"</span> (<span class=\"abnormal\">"+counters[name].abnormal+"</span>)</div>");
+                counters[name].img = "";
+            }
+        }
+
+        init_visualisation();
+    });
+
+        /*
+        name = item.name;
+        key = item.key;
+
+        counters[name] = {};
+        counters[name].key = key.toUpperCase();
+
+        $("")
+        counters[name].count = parseInt($("#id_"+name+"-normal_count").prop("value"));
+        counters[name].abnormal = parseInt($("#id_"+name+"-abnormal_count").prop("value"));
+        counters[name].box = $(this);
+        counters[name].img = img;
+        */
+
+    /*$('.count').each(function () {
         //access to element via $(this)
         key = $(this).find('div#key').text();
         name = $(this).find('font2').text();
@@ -26,7 +81,7 @@ $(document).ready(function() {
 
         $(counters[name].box).find("span#countval").text(counters[name].count);
         $(counters[name].box).find("span#abnormal").text(counters[name].abnormal);
-    });
+    });*/
 
     $('#openkeyboard').click(function () {
         $('#fuzz').fadeIn('slow', function () {
@@ -43,6 +98,7 @@ $(document).ready(function() {
             }
         $("#total").text(count_total);
         }
+        //edit_keyboard();
     });
 
     $('#fuzz').click(function () {
@@ -141,18 +197,20 @@ $(document).ready(function() {
                             if(undo) {
                                 if(counters[prop].abnormal > 0) {
                                     counters[prop].abnormal--;
+                                    $(counters[prop].box).find("span.abnormal").text(counters[prop].abnormal);
                                 }
                             } else {
                                 counters[prop].abnormal++;
-                                $(counters[prop].box).find("span#abnormal").text(counters[prop].abnormal);
+                                $(counters[prop].box).find("span.abnormal").text(counters[prop].abnormal);
                             }
                         } else if(undo) {
                             if(counters[prop].count > 0) {
                                 counters[prop].count--;
+                                $(counters[prop].box).find("span.countval").text(counters[prop].count);
                             }
                         } else {
                             counters[prop].count++;
-                            $(counters[prop].box).find("span#countval").text(counters[prop].count);
+                            $(counters[prop].box).find("span.countval").text(counters[prop].count);
                         }
                     }
                 }
@@ -161,6 +219,7 @@ $(document).ready(function() {
             }
             $("#total").text(count_total);
         }
+        update_visualisation();
     });
 
     jQuery(document).bind('keyup', function (e){
@@ -186,6 +245,26 @@ if(e.keyCode==32){
 return false;
 }
 }; */
+
+function edit_keyboard() {
+    "use strict";
+    var keyboard_keys = $("#terbox").find("div.box1");
+
+    for (var i = 0; i < keyboard_keys.length; i++) {
+
+        var item = $(keyboard_keys[i]);
+        var key = item.attr("id");
+
+        var name = "";
+        if(keyboard_map[key]!==undefined) {
+            var name = keyboard_map[key].name;
+            //var key_data = keyboard_map[item.attr("id")];
+
+            //var name = key_data.name;
+        }
+        item.append("<input name=\""+key+"\" type=\"text\" value=\""+name+"\" />");
+    }
+}
 
 function ironstain() {
     "use strict";

@@ -8,9 +8,11 @@
     <link href="{{ STATIC_URL }}css/cellcounter.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}css/keyboard.css" rel="stylesheet">
 
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-latest.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/d3.v3.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/counter.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/visualise.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.tablesorter.min.js"></script>
 </head>
 <body>
@@ -41,6 +43,8 @@
 </div>
 
 <div id="fuzz"></div>
+
+<div id='doughnut'></div>
 
 <div id="content" class="row">
     {% if messages %}

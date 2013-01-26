@@ -10,4 +10,5 @@ wsgiref==0.1.2
 simplejson
 PIL
 django-extensions
-
+ipython
+ipdb
