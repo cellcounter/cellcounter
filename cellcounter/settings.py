@@ -1,6 +1,5 @@
 import os
-import dj_database_url
-import uuid
+# Django settings for cellcounter project.
 
 DEBUG = DEBUG = bool(os.environ.get('DEBUG', False))
 TEMPLATE_DEBUG = DEBUG
@@ -11,10 +10,11 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-PROJECT_DIR = os.path.dirname(__file__)
-
-DEFAULT_DATABASE_URL = "sqlite:///%s" % os.path.join(PROJECT_DIR, 'db.sqlite3')
-DATABASES = {'default': dj_database_url.config(default=DEFAULT_DATABASE_URL)}
+DATABASES = {'default': {
+	'ENGINE': 'django.db.backends.sqlite3',
+	'NAME': '/home/craig/db.sql'
+	}
+}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
