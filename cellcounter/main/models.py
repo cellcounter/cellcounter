@@ -1,8 +1,7 @@
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
-from django.conf import settings
-import os.path
+
 
 class CellCountInstance(models.Model):
     TISSUE_TYPE = (
@@ -85,6 +84,9 @@ class CellType(models.Model):
     readable_name = models.CharField(max_length=50)
     machine_name = models.CharField(max_length=50, unique=True)
     comment = models.TextField(blank=True)
+
+    def __unicode__(self):
+        return self.readable_name
 
 class CellCount(models.Model):
     cell_count_instance = models.ForeignKey(CellCountInstance)
@@ -185,7 +187,7 @@ class IronStain(models.Model):
 class CellImage(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
-    file  = models.ImageField(upload_to= os.path.join(settings.MEDIA_ROOT, "cell_images"))
+    file  = models.ImageField(upload_to= "cell_images")
     celltype = models.ForeignKey(CellType)
 
 class SimilarLookingGroup(models.Model):

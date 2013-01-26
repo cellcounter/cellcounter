@@ -11,7 +11,7 @@ from django.core import exceptions
 
 from cellcounter.main.forms import CellCountInstanceForm, BoneMarrowBackgroundForm, CellCountForm, GranulopoiesisFindingsForm, ErythropoiesisFindingsForm, MegakaryocyteFeaturesForm, CellCountEditForm, IronStainForm
 
-from cellcounter.main.models import BoneMarrowBackground, ErythropoiesisFindings, GranulopoiesisFindings, MegakaryocyteFeatures, CellCount, CellType, CellCountInstance, IronStain
+from cellcounter.main.models import BoneMarrowBackground, ErythropoiesisFindings, GranulopoiesisFindings, MegakaryocyteFeatures, CellCount, CellType, CellCountInstance, IronStain, CellImage
 
 from cellcounter.main.decorators import user_is_owner
 
@@ -261,3 +261,10 @@ def edit_count(request, count_id):
                 'ironstain_form': ironstain_form,
                 'cellcount_form_list': cellcount_form_list},
                 context_instance=RequestContext(request))
+
+def images_by_cell_type(request, cell_type):
+    ct = CellType.objects.get(machine_name = cell_type)
+    return render_to_response('main/images_by_cell_type.html',
+                {'cell_type': ct,},
+                context_instance=RequestContext(request))
+
