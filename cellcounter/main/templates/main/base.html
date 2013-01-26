@@ -1,45 +1,63 @@
 <!DOCTYPE html>
-
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>CellCounter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CellCountr</title>
     <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ STATIC_URL }}css/960_16_col.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}css/cellcounter.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}css/keyboard.css" rel="stylesheet">
 
     <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}scripts/counter.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}scripts/jquery.json-2.3.min.js"></script>
-    {% block head %}{% endblock %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/counter.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.tablesorter.min.js"></script>
 </head>
-
-<body class="container_16">
-
-<div class="navbar class="grid_16">
-  <div class="navbar-inner">
-    <a class="brand grid_2 alpha" href="#"><img src="static/images/title_slide.jpg"></img>
-	</a>
-	<a class="brand grid_3 alpha" href="#"><img src="static/images/title_logo.png"></img>
-	</a>
-
-    <ul class="nav">
-      <li class="grid_2"><a href="/submit/" class="navbar"><font_titlelink>Work</a></li>
-      <li class="grid_2"><a href="http://wai2k.smugmug.com/bloodcount">Discover</a></li>
-      <li class="grid_2"><a href="/share/">Share</a></li>
-      <li class="grid_1"><a href="/share/"></a></li>
-      <li class="active grid_1 omega"><a class="btn btn-info grid_2 omega" href="/login/">Login</a>
-</li>
-    </ul>
-  </div>
+<body>
+    
+<div class="container">
+    <div class="row header">
+    <div class="span2">
+        <a class="brand" href="/"><img src="{{ STATIC_URL }}images/logo.png"></img></a>
+    </div>
+    <div class="span6">
+        <a class="logo" href="/"><span class="logocell">Cell</span><span class="logocount">Countr</span></a>
+    </div>
+    <div class="span4 userbar">
+        {% if user.is_authenticated %}
+        <span class="username">Welcome <a href="/user/{{user.id}}">{{user.username}}</a></span>
+        <a class="btn btn-danger pull-right" href="/logout/">Logout</a></li>
+        {% else %}
+        <a class="btn btn-success pull-right" href="/login/">Login</a></li>
+        {% endif %}
+    </div>
+    <div class="span10 navbar">
+        <ul class="nav">
+            <li><a href="/count/new/">Work</a></li>
+            <li><a href="http://wai2k.smugmug.com/bloodcount">Discover</a></li>
+            <li><a href="/share/">Share</a></li>
+        </ul>
+    </div>
 </div>
 
+<div id="fuzz"></div>
 
- <div id="fuzz"></div>
+<div id="content" class="row">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags == "error" %}alert-error{% endif%}">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        {% if message.tags %}<h4>{{message.tags|upper}}</h4>{% endif %}
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
 
-    <div id="content" class="grid_16">
+    <div class="span12">
         {% block content %}{% endblock %}
     </div>
-</body>
+</div>
+</div>
 
+</body>
 </html>

@@ -1,173 +1,140 @@
 {% extends 'main/base.html' %}
 
-{% block head %}
-
-<link href="{{ STATIC_URL }}css/jquery.jqplot.min.css" rel="stylesheet">
-
-
-<script type="text/javascript" src="{{ STATIC_URL }}scripts/jquery.jqplot.min.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}scripts/jqplot.canvasTextRenderer.min.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}scripts/jqplot.canvasAxisLabelRenderer.min.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}scripts/jqplot.donutRenderer.min.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}scripts/jqplot.pieRenderer.min.js"></script>
-
-
-<script type="text/javascript">
-$(document).ready(function(){
-  //var plot1 = $.jqplot ('chart1', [[3,7,9,1,4,6,8,2,5]]);
-
-var data = [
-    ['Myelo', 12],['Retail', 9], ['Light Industry', 14],
-    ['Out of home', 16],['Commuting', 7], ['Orientation', 9]
-  ];
-
-{% autoescape off %}
-  var data = {{ cellcount_list.chartdata }};
-{% endautoescape %}
-  var plot3 = $.jqplot('chart1', [data], {
-    seriesDefaults: {
-      // make this a donut chart.
-      renderer:$.jqplot.DonutRenderer,
-      //renderer:$.jqplot.PieRenderer,
-      rendererOptions:{
-        // Donut's can be cut into slices like pies.
-        sliceMargin: 3,
-        // Pies and donuts can start at any arbitrary angle.
-        startAngle: -90,
-        showDataLabels: true,
-        // By default, data labels show the percentage of the donut/pie.
-        // You can show the data 'value' or data 'label' instead.
-        dataLabels: 'value'
-      }
-      },
-
-      legend: {
-              show: true,
-              location: 'e',     // compass direction, nw, n, ne, e, se, s, sw, w.
-      }
-  });
-
-
-});
-
-</script
-
-{% endblock %}
-
 {% block content %}
 
-<!-- Data display below keyboard -->
+<h1>Report</h1>
 
-
-<h3 align=left class="push_2">Report</h1>
-<table class="reporttable grid_11 push_2">
-	<th>Sample</th>
+<h4>Count Stats</h4>
+<table class="table table-bordered">
+    <tr>
+        <th>Date Created</th>
+        <td>{{ cellcountinstance.datetime_submitted|date:"r" }}</td>
+    </tr>
+    <tr>
+        <th>Last Updated</th>
+        <td>{{ cellcountinstance.datetime_updated|date:"r" }}</td>
+    </tr>
 	<tr>
-		<td width=150px>Site</td>
-        <td width=100px>{{cellcount_list.site}}</td>
-		<td width=150px>Ease of Aspiration</td>
-        <td width=100px>{{cellcount_list.ease_of_aspiration}}</td>
+		<th>Site</th>
+        <td>{{bonemarrowbackground.site}}</td>
+    </tr>
+	<tr>
+		<th>Ease of Aspiration</th>
+        <td>{{bonemarrowbackground.ease_of_aspiration}}</td>	
 	</tr>
 	<tr>
-		<td>Particle Number</td>
-        <td>xxx<td>
-		<td>Cellularity</td>
-        <td>xxx</td>
+		<th>Particle Number</th>
+        <td>{{bonemarrowbackground.particulate}}</td>
 	</tr>
 	<tr>
-		<td>Trail Cellularity</td>
-        <td>xxx</td>
+		<th>Cellularity</th>
+        <td>{{bonemarrowbackground.particle_cellularity}}</td>
 	</tr>
 	<tr>
-		<td>Haemodilution</td>
-        <td>xxx</td>
+		<th>Trail Cellularity</th>
+        <td>{{bonemarrowbackground.trail_cellularity}}</td>
+	</tr>
+	<tr>
+		<th>Haemodilution</th>
+        <td>{{bonemarrowbackground.haemodilution}}</td>
 	</tr>
 </table>
 
-<div class="push_2">
-
-<table style="float: left">
-  <tr>
-    <th>Total cells</th>
-    <td>{{cellcount_list.total}}</td>
-    <td></td>
-  </tr>
-  <tr>
-    <th>M/E ratio</th>
-    <td>{{cellcount_list.meratio}}</td>
-    <td></td>
-  </tr>
-  <tr>
-  	<th></th><th>Count</th><th>Percentages</th>
-  </tr>
-  <tr>
-    <td>Neutrophils</td>
-    <td>{{cellcount_list.counts.neut.normal}}</td>
-    <td>{{cellcount_list.counts.neut.percent}}</td>
-  </tr>
-  <tr>
-    <td>Myelocytes</td>
-    <td>{{cellcount_list.counts.myelo.normal}}</td>
-    <td>{{cellcount_list.counts.myelo.percent}}</td>
-  </tr>
-  <tr>
-    <td>Promyelocytes</td>
-    <td>{{cellcount_list.counts.promyelo.normal}}</td>
-    <td>{{cellcount_list.counts.promyelo.percent}}</td>
-  </tr>
-  <tr>
-    <td style="width: 150px">Blasts</td>
-    <td style="width: 50px">{{cellcount_list.counts.blast.normal}}</td>
-    <td style="width: 50px">{{cellcount_list.counts.blast.percent}}</td>
-  </tr>
-  <tr>
-    <td>Eosinophils</td>
-    <td>{{cellcount_list.counts.eo.normal}}</td>
-    <td>{{cellcount_list.counts.eo.percent}}</td>
-  </tr>
-  <tr>
-    <td>Basophils</td>
-    <td>{{cellcount_list.counts.baso.normal}}</td>
-    <td>{{cellcount_list.counts.baso.percent}}</td>
-  </tr>
-  <tr>
-    <td>Erythrocytes</td>
-    <td>{{cellcount_list.counts.erythro.normal}}</td>
-    <td>{{cellcount_list.counts.erythro.percent}}</td>
-  </tr>
-	<tr>
-		<td>Metamyelocytes</td>
-    <td>{{cellcount_list.counts.meta.normal}}</td>
-    <td>{{cellcount_list.counts.meta.percent}}</td>
-	</tr>
-	<tr>
-		<td>Plasma Cells</td>
-    <td>{{cellcount_list.counts.plasma.normal}}</td>
-    <td>{{cellcount_list.counts.plasma.percent}}</td>
-  </tr>
-  <tr>
-    <td>Monocytes</td>
-    <td>{{cellcount_list.counts.mono.normal}}</td>
-    <td>{{cellcount_list.counts.mono.percent}}</td>
-  </tr>
+<h4>Differential</h4>
+<table class="table table-bordered table-striped">
+    <tr><th>Cell Type</th><th>Percentage</th><th>Normal Count</th><th>Abnormal Count</th></tr>
+    {% for count in cellcount_list %}
+    <tr>
+        <td>{{count.cell.readable_name}}</td>
+        <td>{{count.percentage}}</td>
+        <td>{{count.normal_count}}</td>
+        <td>{{count.abnormal_count}}</td>
+    </tr>
+    {% if count.comment %}<tr><td colspan=4>{{count.comment}}</td></tr>{% endif %}
+    {% endfor %}
+    <tr><td>Myeloid:Erythroid ratio</td><td colspan=3>{{cellcountinstance.myeloid_erythroid_ratio}}</td></tr>
 </table>
 
-<div id="chart1" style="margin-left: 20px; height:320px; width:420px; float: left;"></div>
+<h4>Megakaryocytes</h4>
+<table class="table table-bordered">
+	<tr>
+		<th>Number</th>
+        <td>{{megakaryocytes.relative_count}}</td>
+	</tr>
+    <tr>
+        <th>Features</th>
+        {% if megakaryocytes.get_dysplasia == None %}<td>None</td>{%else%}
+        <td>{%for dysplasia in megakaryocytes.get_dysplasia %}{% if not forloop.last %}{{dysplasia}}, {%else%}{{dysplasia}}{%endif%}{%endfor%}{%endif%}</td>
+	</tr>
+	<tr>
+        <td colspan=2><b>Comment:</b> {% if not megakaryocytes.comment%}None{% else %}{{megakaryocytes.comment}}{%endif%}</td>
+	</tr>
+</table>
 
-</div>
+<h4>Erythropoiesis</h4>
+<table class="table table-bordered">
+	<tr>
+		<th>Features</th>
+        {% if erythropoiesis.get_dysplasia == None %}<td>None</td>{%else%}
+        <td>{%for dysplasia in erythropoiesis.get_dysplasia %}{% if not forloop.last %}{{dysplasia}}, {%else%}{{dysplasia}}{%endif%}{%endfor%}{%endif%}</td>
+	</tr>
+	<tr>
+        <td colspan=2><b>Comment:</b> {% if not erythropoiesis.comment%}None{% else %}{{erythropoiesis.comment}}{%endif%}</td>
+	</tr>
+</table>
 
-<br /><br />
-<br /><br />
+<h4>Granulopoiesis</h4>
+<table class="table table-bordered">
+	<tr>
+		<th>Features</th>
+        {% if granulopoiesis.get_dysplasia == None %}<td>None</td>{%else%}
+        <td>{%for dysplasia in granulopoiesis.get_dysplasia %}{% if not forloop.last %}{{dysplasia}}, {%else%}{{dysplasia}}{%endif%}{%endfor%}{%endif%}</td>
+	</tr>
+	<tr>
+        <td colspan=2><b>Comment:</b> {% if not granulopoiesis.comment%}None{% else %}{{granulopoiesis.comment}}{%endif%}</td>
+	</tr>
+</table>
 
-<table width=700px class="content push_2" align=center style="clear: both">
+<h4>Iron Stain Findings</h4>
+<table class="table table-bordered">
+{% if not ironstain.stain_performed %}
+    <tr>
+        <td>Not performed</td>
+    </tr>
+{% else %}
+    <tr>
+        <th>Iron</th><td>{{ironstain.get_iron_content_display}}</td>
+    </tr>
+    <tr>
+        <th>Ringed Sideroblasts</th><td>{%if ironstain.ringed_sideroblasts %}Present{% else %}Absent{%endif%}</td>
+    </tr>
+    <tr>
+        <td colspan=2><b>Comment:</b>{% if not ironstain.comment%}None{% else %}{{ironstain.comment}}{%endif%}</td>
+    </tr>
+{% endif %}
+</table>
+
+<h4>Overall Comment</h4>
+<table class="table table-bordered">
+    <tr>
+        {% if cellcountinstance.overall_comment %}
+        <td>{{ cellcountinstance.overall_comment }}</td>
+        {% else %}
+        <td>None</td>
+        {% endif %}
+    </tr>
+</table>
+
+<h2>Reference Links</h2>
+<table class="table table-bordered">
 <tbody><tr>
-<th class="content">Lymphoid</th>
-<th class="content">Myeloid</th>
-<th class="content">Myeloma</th>
-<th class="content">MPD</th>
-<th class="content">Transplant</th>
-<th class="content">Haemostasis</th>
-<th class="content">Miscellany</th>
+<th>Lymphoid</th>
+<th>Myeloid</th>
+<th>Myeloma</th>
+<th>MPD</th>
+<th>Transplant</th>
+<th>Haemostasis</th>
+<th>Miscellany</th>
 </tr>
 <tr>
 <td><a href="http://www.bloodref.com/lymphoid/ann-arbor">Ann Arbor</a><br><a href="http://www.bloodref.com/lymphoid/cll-immunophenotyping">CLL score</a><br><a href="http://www.bloodref.com/lymphoid/binet-rai">CLL staging</a><br><a href="http://www.bloodref.com/lymphoid/cll-response">CLL response</a><br><a href="http://www.bloodref.com/lymphoid/ipi">IPI</a><br><a href="http://www.bloodref.com/lymphoid/r-ipi">R-IPI</a><br><a href="http://www.bloodref.com/lymphoid/isswm">ISSWM</a><br><a href="http://www.bloodref.com/lymphoid/flipi">FLIPI</a><br><a href="http://www.bloodref.com/lymphoid/flipi2">FLIPI-2</a><br><a href="http://www.bloodref.com/lymphoid/lugano">Lugano staging</a><br><a href="http://www.bloodref.com/lymphoid/hasenclever">Hasenclever</a><br><a href="http://www.bloodref.com/lymphoid/mipi">MIPI</a><br><a href="http://www.bloodref.com/lymphoid/ptcl-pit">PIT</a></td>
@@ -179,50 +146,6 @@ var data = [
 </td><td><a href="http://www.bloodref.com/miscellaneous/calculators">Calculators</a><br><a href="http://www.bloodref.com/myeloid/hlh-diagnosis">HLH diagnosis</a><br><a href="http://www.bloodref.com/miscellaneous/performance-status">Performance status</a></td>
 </tr>
 </tbody></table>
-<p class="push_4"><i>With thanks to www.bloodref.com</i></p>
-
-<!--
-<table class="grid_11 push_2">
-	<th>Megakaryocytes</th>
-	<tr>
-		<td width=150px>Number</td>
-		<td width=100px>xxx</td>
-	</tr>
-	<tr>
-		<td>Features</td>
-		<td>{{cellcount_list.counts.megafeatures.normal}}</td>
-	</tr>
-	<tr>
-		<td>Comment</td>
-		<td>{{cellcount_list.counts.megacomment.normal}}</td>
-	</tr>
-</table>
-
-
-<table class="grid_11 push_2">
-	<th>Erythropoiesis</th>
-	<tr>
-		<td width=150px>Features</td>
-		<td width=100px>{{cellcount_list.counts.erythofeatures.normal}}</td>
-	</tr>
-	<tr>
-		<td width=150px>Comment</td>
-		<td width=100px>xxx</td>
-	</tr>
-</table>
-
-
-<table class="grid_11 push_2">
-	<th>Granulopoiesis</th>
-	<tr>
-		<td width=150px>Features</td>
-		<td width=100px>xxx</td>
-	</tr>
-	<tr>
-		<td>Comment</td>
-		<td>xxx</td>
-	</tr>
-</table>
--->
+<p><i>With thanks to www.bloodref.com</i></p>
 
 {% endblock %}
