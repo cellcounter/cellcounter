@@ -1,0 +1,1 @@
+{% for cellimage in cell_type.cellimage_set.all %}<div class="header">{{ cellimage.title }}</div><div class="image"><img src = "{{ MEDIA_URL }}{{ cellimage.file }}"\></div><div class="description">{{ cellimage.description }}</div>{% endfor %}
