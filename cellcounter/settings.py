@@ -151,4 +151,7 @@ LOGGING = {
     }
 }
 
-from localsettings import *
+try:
+   from localsettings import *
+except ImportError:
+    pass
