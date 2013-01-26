@@ -126,6 +126,7 @@ INSTALLED_APPS = (
     'gunicorn',
     'storages',
     'cellcounter.main',
+    'cellcounter.accounts',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -156,6 +157,10 @@ LOGGING = {
         },
     }
 }
+
+# Associates a UserProfile with the User
+# TODO In Django 1.5 we should use a custom User model
+AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
 if 'AWS_STORAGE_BUCKET_NAME' in os.environ:
     AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
