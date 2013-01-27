@@ -1,9 +1,8 @@
 $(document).ready(function() {
 
-       $('.modaldialog').click(function() {
+       $('body').on("click", ".modaldialog", function() {
 			
                         var $link = $(this);
-                        alert("foo");
                         var $dialog = $('<div></div>')
 			.load($link.attr('href'))
 			.dialog({

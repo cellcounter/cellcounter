@@ -6,7 +6,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 from django.contrib.auth.views import login, logout
 
-from cellcounter.main.views import home, new_count, view_count, edit_count, ListMyCountsView, UserDetailView, images_by_cell_type, ListCellTypesView, similar_images, thumbnail
+from cellcounter.main.views import home, new_count, view_count, edit_count, ListMyCountsView, UserDetailView, images_by_cell_type, ListCellTypesView, similar_images, thumbnail, page
 
 admin.autodiscover()
 
@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     url(r'^images/celltype/(?P<cell_type>\w+)/$', images_by_cell_type, name="images_by_cell_type"),
     url(r'^images/similar/(?P<cell_image_pk>\d+)/$', similar_images, name="images_by_similar_cell"),
     url(r'^images/thumbnail/(?P<cell_image_pk>\d+)/$', thumbnail, name="thumbnail"),
+    url(r'^images/page/(?P<cell_image_pk>\d+)/$', page, name="page"),
 
     url(r'^user/home/$', home),
     url(r'^user/(?P<pk>\d+)/$', UserDetailView.as_view(), name="user_home"),

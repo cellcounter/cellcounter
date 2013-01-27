@@ -7,13 +7,16 @@
     <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}css/cellcounter.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}css/keyboard.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/ui-lightness/jquery-ui-1.10.0.custom.min.css" rel="stylesheet">
 
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-latest.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/d3.v3.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/counter.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/images.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/visualise.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui-1.10.0.custom.min.js"></script>
 </head>
 <body>
     
@@ -38,6 +41,7 @@
             <li><a href="/count/new/">Work</a></li>
             <li><a href="http://wai2k.smugmug.com/bloodcount">Discover</a></li>
             <li><a href="/share/">Share</a></li>
+            <li><a class = "modaldialog" href="http://127.0.0.1:8000/images/celltype/lymphocytes/">cells</a></li>
         </ul>
     </div>
 </div>

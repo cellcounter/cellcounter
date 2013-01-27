@@ -297,11 +297,16 @@ def similar_images(request, cell_image_pk):
 
 def thumbnail(request, cell_image_pk):
     ci = CellImage.objects.get(pk = cell_image_pk)
-    print dir(ci.file.file)
-    #path = os.path.join(settings.MEDIA_ROOT, ci.file.file)
+
     image = Image.open(ci.file.file)
     thumb_image = image.crop((ci.thumbnail_left, ci.thumbnail_top, ci.thumbnail_left + ci.thumbnail_width, ci.thumbnail_top + ci.thumbnail_width))
-    thumb_image = thumb_image.resize((250, 250), Image.ANTIALIAS)
+    thumb_image = thumb_image.resize((200, 200), Image.ANTIALIAS)
     response = HttpResponse(mimetype="image/png")
     thumb_image.save(response, "PNG")
     return response
+
+def page(request, cell_image_pk):
+    ci = CellImage.objects.get(pk = cell_image_pk)    
+    return render_to_response('main/image_page.html',
+                {'cellimage': ci},
+                context_instance=RequestContext(request))
