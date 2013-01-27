@@ -1,4 +1,4 @@
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponse
 from django.shortcuts import render_to_response, HttpResponseRedirect, get_object_or_404
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
@@ -8,6 +8,9 @@ from django.contrib import messages
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.models import User
 from django.core import exceptions
+from django.conf import settings
+from PIL import Image
+import os.path
 
 from cellcounter.main.forms import CellCountInstanceForm, BoneMarrowBackgroundForm, CellCountForm, GranulopoiesisFindingsForm, ErythropoiesisFindingsForm, MegakaryocyteFeaturesForm, CellCountEditForm, IronStainForm
 
@@ -292,3 +295,13 @@ def similar_images(request, cell_image_pk):
                 {'images': ci.similar_cells(),},
                 context_instance=RequestContext(request))
 
+def thumbnail(request, cell_image_pk):
+    ci = CellImage.objects.get(pk = cell_image_pk)
+    print dir(ci.file.file)
+    #path = os.path.join(settings.MEDIA_ROOT, ci.file.file)
+    image = Image.open(ci.file.file)
+    thumb_image = image.crop((ci.thumbnail_left, ci.thumbnail_top, ci.thumbnail_left + ci.thumbnail_width, ci.thumbnail_top + ci.thumbnail_width))
+    thumb_image = thumb_image.resize((250, 250), Image.ANTIALIAS)
+    response = HttpResponse(mimetype="image/png")
+    thumb_image.save(response, "PNG")
+    return response
