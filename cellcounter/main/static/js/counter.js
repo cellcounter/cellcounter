@@ -14,6 +14,7 @@ var cell_types = [];
 var size = 200;
 var editing_keyboard = false;
 var edit_cell_id = -1;
+var selected_element = {};
 
 $(document).ready(function() {
     "use strict";
@@ -30,14 +31,7 @@ $(document).ready(function() {
             cell_types[x].box = [];
         }
 
-        $.getJSON("/accounts/keyboard/", function(data) {
-
-            keyboard_map = data;
-            
-            update_keyboard();
-
-            init_visualisation();
-        });
+        load_keyboard();
     
     });
 
@@ -115,7 +109,7 @@ $(document).ready(function() {
 
     //$(document).keypress(function(e) {
     jQuery(document).bind('keydown', function (e) {
-        var key, code, shift_pressed, el, count_total, abnormal_total;
+        var key, code, shift_pressed, el, count_total, abnormal_total, enter=false;
         //Event.stop(e);
         if (keyboard_active) {
             key = String.fromCharCode(e.which).toUpperCase();
@@ -132,17 +126,37 @@ $(document).ready(function() {
                 //Event.stop(e);
                 return false;
                 //$("div#imagebox").css("background-image", "");
-            } else if (code === 8) {
+            }
+            else if (code === 8) {
                 undo = true;
                 return false;
             }
+            else if (code === 13) {
+                enter = true;
+            }
 
             if(editing_keyboard) {
+                if(enter) {
+                    deselect_element(selected_element);
+                    select_element(selected_element.next());
+                    //selected_element.addClass("selectedtype");
+                    //edit_cell_id = selected_element.find("div.cellid").text();
+                    return;
+                }
                 if(cell_types.hasOwnProperty(edit_cell_id)) {
                     console.log("mapping " + key + " to " + cell_types[edit_cell_id].name);
-                    keyboard_map[key.toLowerCase()].cellid = edit_cell_id; //wtf: fix upper/lower case!
-                    $("div#celllist").find("li").removeClass("selectedtype");
-                    edit_cell_id = -1;
+                    if(keyboard_map[key.toLowerCase()]!=undefined && 
+                       keyboard_map[key.toLowerCase()].cellid == edit_cell_id) {
+                            delete keyboard_map[key.toLowerCase()];
+                    }
+                    else {
+                        keyboard_map[key.toLowerCase()] = {}; //wtf: fix upper/lower case!
+                        keyboard_map[key.toLowerCase()].cellid = edit_cell_id;
+                        deselect_element(selected_element);
+                        select_element(selected_element.next());
+                    }
+                    //$("div#celllist").find("li").removeClass("selectedtype");
+                    //edit_cell_id = -1;
                     update_keyboard();
                 }
                 return;
@@ -243,6 +257,16 @@ if(e.keyCode==32){
 return false;
 }
 }; */
+function load_keyboard() {
+    $.getJSON("/accounts/keyboard/", function(data) {
+
+        keyboard_map = data;
+        
+        update_keyboard();
+
+        init_visualisation();
+    });
+}
 
 function update_keyboard() {
         var keyboard_keys = $("#terbox").find("div.box1");
@@ -255,6 +279,9 @@ function update_keyboard() {
 
             var item = $(keyboard_keys[i]);
             var key = item.attr("id");
+            
+            item.empty();
+            item.append("<p>"+key+"</p>");
 
             if(keyboard_map[key]!==undefined) {
 
@@ -266,8 +293,6 @@ function update_keyboard() {
                 cell_data.box.push(item);
                 var name = cell_data.slug;
 
-                item.empty();
-                item.append("<p>"+key+"</p>");
                 item.append("<div class=\"name\">"+name+"</div>");
                 item.append("<div class=\"count\"><span class=\"countval\">"+cell_types[id].count+"</span> (<span class=\"abnormal\">"+cell_types[id].abnormal+"</span>)</div>");
                 
@@ -281,13 +306,13 @@ function edit_keyboard() {
     "use strict";
     //var keyboard_keys = $("#terbox").find("div.box1");
 
-    var list = "<ul>";
+    var list = "<p id=\"clearkeyboard\">Clear list</p><ul>";
 
     for(var x in cell_types) {
         list += "<li>"+cell_types[x].name+"<div class=\"cellid\" style=\"display: none;\">"+x+"</div></li>";
     }
     
-    list += "</ul>";
+    list += "</ul><button class=\"btn btn-primary\" id=\"savekeyboard\">Save</button><button class=\"btn btn-primary\" id=\"canceledit\">Cancel</button>";
 
     $("div#celllist").empty();
     $("div#celllist").append(list);
@@ -295,30 +320,70 @@ function edit_keyboard() {
     $("div#celllist").find("li").click(function() {
         console.log($(this).find("div.cellid").text());
         edit_cell_id = $(this).find("div.cellid").text();
-        $("div#celllist").find("li").removeClass("selectedtype");
-        $(this).addClass("selectedtype");
+        $("div#celllist").find("li").css("background", "");
+        //$(this).addClass("selectedtype");
+        selected_element = $(this);
+        select_element(this);
+    });
+
+    var el = $("div#celllist").find("li").first();
+    select_element(el);
+
+    $("#clearkeyboard").click(function() {
+        clear_keyboard();
+    });
+    
+    $("#canceledit").click(function() {
+        load_keyboard();
+        end_keyboard_edit();
     });
 
     editing_keyboard = true;
-    $("#edit_button").text("Save");
-    $('#edit_button').on('click', save_keyboard);
+    $("#edit_button").hide();
+    $('#savekeyboard').on('click', save_keyboard);
+}
+
+function select_element(el) {
+    "use strict";
+
+    selected_element = $(el);
+    edit_cell_id = $(el).find("div.cellid").text();
+    $(el).css("background-color", cell_types[edit_cell_id].colour);
+}
+
+function deselect_element(el) {
+    "use strict";
+
+    $(el).css("background-color", "");
 }
 
 function save_keyboard() {
+    "use strict";
+
+    /*$.ajax({
+        type: "POST",
+        url: "/accounts/keyboard/",
+        data: $.toJSON(keyboard_map)
+    });*/
+
+    end_keyboard_edit();
+}
+
+function end_keyboard_edit() {
     "use strict";
 
     $("div#celllist").empty();
 
     editing_keyboard = false;
     edit_cell_id = -1;
-    $("#edit_button").text("Edit");
-    $('#edit_button').on('click', edit_keyboard);
-        
-    /*$.ajax({
-        type: "POST",
-        url: "/accounts/keyboard/",
-        data: $.toJSON(keyboard_map)
-    });*/
+    $("#edit_button").show();
+}
+
+function clear_keyboard() {
+    "use strict";
+
+    keyboard_map = {};
+    update_keyboard();
 }
 
 function ironstain() {
