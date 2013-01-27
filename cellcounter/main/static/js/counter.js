@@ -40,6 +40,7 @@ $(document).ready(function() {
     
     });
 
+    $('#edit_button').on('click', edit_keyboard);
 
     $('#openkeyboard').click(function () {
         $('#fuzz').fadeIn('slow', function () {
