@@ -218,8 +218,8 @@ $(document).ready(function() {
                 count_total += counters[prop].abnormal;
             }
             $("#total").text(count_total);
-        }
         update_visualisation();
+        }
     });
 
     jQuery(document).bind('keyup', function (e){
