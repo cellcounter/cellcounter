@@ -14,6 +14,24 @@ from cellcounter.main.forms import CellCountInstanceForm, BoneMarrowBackgroundFo
 from cellcounter.main.models import BoneMarrowBackground, ErythropoiesisFindings, GranulopoiesisFindings, MegakaryocyteFeatures, CellCount, CellType, CellCountInstance, IronStain, CellImage
 
 from cellcounter.main.decorators import user_is_owner
+from cellcounter.mixins import JSONResponseMixin
+
+class ListCellTypesView(JSONResponseMixin, ListView):
+    model = CellType
+
+    def get_context_data(self, *args, **kwargs):
+        objects = self.object_list
+        new_context = []
+        for cell in objects:
+            cell_dict = {
+                'id': cell.pk,
+                'name': cell.readable_name,
+                'slug': cell.machine_name,
+                'colour': cell.visualisation_colour
+            }
+            new_context.append(cell_dict)
+
+        return new_context
 
 class ListMyCountsView(ListView):
 
