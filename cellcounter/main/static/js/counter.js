@@ -39,15 +39,17 @@ $(document).ready(function() {
                 var key = item.attr("id");
 
                 if(keyboard_map[key]!==undefined) {
-                    item.removeClass("c1");
-                    item.addClass("c2");
 
                     var key_data = keyboard_map[item.attr("id")];
 
                     var id = key_data.cellid;
 
-                    cell_types[id].box = item;
-                    var name = cell_types[id].slug;
+                    var cell_data = cell_types[id];
+                    cell_data.box = item;
+                    var name = cell_data.slug;
+
+                    // Attach cell colour to key
+                    item.find("p").css("background-color", cell_data.colour);
 
                     item.append("<div class=\"name\">"+name+"</div>");
                     item.append("<div class=\"count\"><span class=\"countval\">"+cell_types[id].count+"</span> (<span class=\"abnormal\">"+cell_types[id].abnormal+"</span>)</div>");
