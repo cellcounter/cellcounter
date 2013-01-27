@@ -6,7 +6,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 from django.contrib.auth.views import login, logout
 
-from cellcounter.main.views import home, new_count, view_count, edit_count, ListMyCountsView, UserDetailView, images_by_cell_type, ListCellTypesView, similiar_images
+from cellcounter.main.views import home, new_count, view_count, edit_count, ListMyCountsView, UserDetailView, images_by_cell_type, ListCellTypesView, similar_images
 
 admin.autodiscover()
 
