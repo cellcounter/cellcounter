@@ -202,7 +202,11 @@ class CellImage(models.Model):
             for image in group.cell_image.all():
                 similarcells.append(image)
         return similarcells
+    def __unicode__(self):
+        return self.title
 
 class SimilarLookingGroup(models.Model):
     name = models.CharField(max_length=100)
-    cell_image = models.ManyToManyField("CellImage")
+    cell_image = models.ManyToManyField("CellImage")    
+    def __unicode__(self):
+        return self.name
