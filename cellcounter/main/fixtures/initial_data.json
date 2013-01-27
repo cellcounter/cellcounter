@@ -14,8 +14,8 @@
         "model": "main.celltype",
         "fields": {
             "comment": "",
-            "readable_name": "Band Forms",
-            "machine_name": "band_forms",
+            "readable_name": "Metamyelocytes",
+            "machine_name": "metamylo",
             "visualisation_colour": "#77933c"
         }
     },
@@ -35,7 +35,7 @@
         "fields": {
             "comment": "",
             "readable_name": "Promyelocytes",
-            "machine_name": "promyelocytes",
+            "machine_name": "promyelo",
             "visualisation_colour": "#d7e4bd"
         }
     },
