@@ -1,3 +1,50 @@
-Filename	Title	Description	CellType	Group 1	Group 2
-Blasts/ALL L1.jpeg	ALL L1	mydesc	Blasts		
-Blasts/ALL L2.jpg	ALL L2	otherdesc	Blasts		
+Filename	Title	Description	CellType	Group 1	Group 2	X	Y	Pixels
+Blasts/ALL L1.jpeg	ALL L1	Small, High nuclearcytoplasmic ratio, prominent nucleoli	Blasts			116	74	642
+Blasts/ALL L2.jpg	ALL L2	Intermediate to Large, prominent cytoplasm, prominent nucleoli	Blasts			145	8	228
+Blasts/ALL L3 Burkitts.jpeg	ALL L3 Burkitts	Vacoulated Basophilic cytoplasm	Blasts			397	350	484
+Blasts/AML M0.jpg	AML M0	No differentiation	Blasts			105	29	225
+Blasts/AML M1.jpeg	AML M1	Myeloid differentiation	Blasts			445	377	332
+Blasts/AML M2.jpeg	AML M2	Myeloid differentiation with Maturation	Blasts			295	81	367
+Blasts/AML M3.jpeg	AML M3	Granulated, Auer Roads, Clefted Bilobed Nuclei	Blasts			62	1	265
+Blasts/AML M4 Myelomonocytic Blasts.jpeg	AML M4	Myelomonocytic Differentiation	Blasts			472	296	370
+Blasts/AML M5 Monocytic Blasts.jpeg	AML M5	Monocytic Differentiation	Blasts			339	240	233
+Blasts/AML M6 Erythroid Blasts.jpeg	AML M6	Erythroid Differentiation	Blasts			269	174	457
+Blasts/AML M7 Megakaryoblasts.jpeg	AML M7	Megakaryocytic differentiation, Cytoplasmic blebbing	Blasts			64	43	500
+Blasts/M4Eo .jpeg	AML M4Eo	Myelomonocytic Differentiation with Eosinophilia	Blasts			217	91	383
+Erythroid/Erythroblasts.jpg	Erythroblasts	Erythroblasts	Erythroid			88	36	260
+Erythroid/Erythroblasts_2.jpg	Erythroblasts	Erythroblasts	Erythroid			142	28	224
+Erythroid/Erythroblasts_3.jpg	Erythroblasts	Erythroblasts	Erythroid			98	44	230
+Erythroid/Proerythroblasts.jpg	Proerythroblasts	Proerythroblasts	Erythroid			143	63	170
+Histiocytes/Debris.jpeg	Histiocytes	Macrophage/ Histiocyte with Debris	Other			146	113	585
+Histiocytes/Haemaphagocytosis.jpeg	Haemophagocytosis	Whole cells within the macrophage	Other			36	312	390
+Histiocytes/SeaBlue.jpeg	Seablue Histiocytes	Seablue Histiocytes	Other			272	214	413
+Lymphocytes/ATLL.jpeg	A-TLL	Flower Shaped Nuclei, Clover Leaf	Lymphocytes			403	155	325
+Lymphocytes/CLL Richters.jpeg	CLL Richters	Very large cells	Lymphocytes			59	1	445
+Lymphocytes/CLL.jpeg	CLL	Small, Mature Chromatin, High nucleocytoplasmic ratio	Lymphocytes			347	96	227
+Lymphocytes/DLBCL.jpeg	Diffuse Large B-cell Lymphoma	Large	Lymphocytes			386	332	355
+Lymphocytes/Follicular Lymphoma.jpeg	Follicular Lymphoma	Clefted Nuclei	Lymphocytes			428	210	340
+Lymphocytes/Hairy Cell Leukaemia.jpeg	Hairy Cell Leukaemia	Hairy Projections, Clear Nuclei	Lymphocytes			250	290	200
+Lymphocytes/Large Granular Lymphocytes.jpeg	LGL Leukaemia	Clear cytoplasm, basophilic granules	Lymphocytes			368	226	318
+Lymphocytes/Lymphoplasmacytic Lymphoma.jpeg	Lymphoplasmacytic Lymphoma	Plasmacytic differentiation, Mature	Lymphocytes			618	11	305
+Lymphocytes/Reactive Lymphocytes.jpeg	Reactive Lymphocytes	Mature, Basophilic Cytoplasm, Scalloping red cells	Lymphocytes			300	435	231
+Lymphocytes/SMZL.jpeg	Splenic Marginal Zone Lymphoma	Mature, Polar projections	Lymphocytes			45	258	390
+Lymphocytes/TPLL.jpeg	T Prolymphocytic Leukaemia	Prominent nucleoli, cerebral nucleus	Lymphocytes			67	270	344
+Megas/Fragmented_Nuclei.jpeg	Dysplastic Megakaryocytes	Fragmented Nuclei, Dysplastic	Other			271	118	446
+Megas/MicroMegakaryocyte.jpeg	Micromegakaryocyte	Small, Unilobed, Micromegakaryocyte	Other			162	74	582
+Megas/Normal.jpeg	Megakaryocytes	Normal	Other			163	78	680
+Megas/Unilobed 5q minus.jpeg	Dysplastic Megakaryocytes	Small Unilobed, Megakaryocyte	Other			86	60	679
+Misc/Gaucher Cells.jpg	Gaucher Cell	Fatty Inclusion, Pseudogaucher cell	Other			102	20	279
+Misc/Hodgkins Lymphoma.jpg	Hodgkins Lymphoma	Very Large Cell 	Other			95	8	288
+Misc/Melanoma.jpg	Melanoma	Multinucleated cells, Pigmented Inclusions	Other			79	1	300
+Misc/Osteoblasts.jpg	Osteoblasts	Multinucleated, Smooth cytoplasm	Other			37	0	290
+Misc/Osteoclasts.jpg	Osteoclasts	Multinucleated, Debris	Other			60	1	300
+Myelocyte/Myelocyte_1.jpg	Myelocyte	Normal	Myelocytes			129	75	170
+Myelocyte/Myelocyte_2.jpg	Myelocyte	Normal	Myelocytes			140	63	200
+Neutrophil/Hypersegmented_Neutrophils.jpeg	Hypersegmented Neutrophil	Hypersegmented Nuclei	Neutrophils			213	102	474
+Neutrophil/Hypogranular Myeloid.jpeg	Hypograular Neutrophil	Hypograular Neutrophil, Dysplastic	Neutrophils			274	148	477
+Neutrophil/Neutrophil.jpeg	Neutrophil	Neutrophil	Neutrophils			29	63	716
+Neutrophil/Pelger Huet.jpg	Pelger Huet Neutrophil	Pelger Huet Neutrophil	Neutrophils			148	68	200
+Plasma Cells/Flame_Cells.jpeg	Flame Cell	Eosinophilic projections	Plasma cells			225	188	427
+Plasma Cells/Plasma Blasts.jpeg	Plasma Blasts	Large, Immature	Plasma cells			295	151	450
+Plasma Cells/Plasma Cell Normal.jpeg	Plasma Cell	Plasma Cell	Plasma cells			286	172	434
+Plasma Cells/Trinucleate Form.jpeg	Trinucleate Plasma Cell	Trinucleate Plasma Cell	Plasma cells			513	9	446

@@ -13,7 +13,10 @@ class Command(BaseCommand):
          for filename in args:
              file_ = csv.DictReader(open(filename), dialect="excel-tab")
              for line in file_:
-                 celltype = CellType.objects.get(readable_name = line["CellType"])
+                 try:
+                     celltype = CellType.objects.get(readable_name = line["CellType"])
+                 except:
+                     print "Cell Type not found:" + line["CellType"]
                  ci = CellImage(title = line["Title"],
                                 description = line["Description"],
                                 file = line["Filename"],

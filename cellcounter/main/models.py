@@ -192,14 +192,17 @@ class CellImage(models.Model):
     description = models.TextField()
     file  = models.ImageField(upload_to= "cell_images")
     celltype = models.ForeignKey(CellType)
+    thumbnail_left = models.IntegerField()
+    thumbnail_top = models.IntegerField()
+    thumbnail_width = models.IntegerField()
     def similar_cells(self):
         groups = self.similarlookinggroup_set.all()
         similarcells = []
         for group in groups:
-            print dir(group.cell_image)
             for image in group.cell_image.all():
                 similarcells.append(image)
         return similarcells
 
 class SimilarLookingGroup(models.Model):
+    name = models.CharField(max_length=100)
     cell_image = models.ManyToManyField("CellImage")
