@@ -203,7 +203,7 @@ class CellImage(models.Model):
                 similarcells.append(image)
         return similarcells
     def __unicode__(self):
-        return self.file
+        return self.title
 
 class SimilarLookingGroup(models.Model):
     name = models.CharField(max_length=100)
