@@ -21,7 +21,7 @@ class ListCellTypesView(JSONResponseMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         objects = self.object_list
-        new_context = []
+        new_context = {}
         for cell in objects:
             cell_dict = {
                 'id': cell.pk,
@@ -29,7 +29,7 @@ class ListCellTypesView(JSONResponseMixin, ListView):
                 'slug': cell.machine_name,
                 'colour': cell.visualisation_colour
             }
-            new_context.append(cell_dict)
+            new_context[cell.pk] = cell_dict
 
         return new_context
 
