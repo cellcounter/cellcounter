@@ -13,7 +13,7 @@ var arc = {};
 var cell_types = [];
 var size = 200;
 var editing_keyboard = false;
-var edit_cell_id = 0;
+var edit_cell_id = -1;
 
 $(document).ready(function() {
     "use strict";
@@ -27,6 +27,7 @@ $(document).ready(function() {
         for(var x in cell_types) {
             cell_types[x].count = 0;
             cell_types[x].abnormal = 0;
+            cell_types[x].box = [];
         }
 
         $.getJSON("/accounts/keyboard/", function(data) {
@@ -137,9 +138,13 @@ $(document).ready(function() {
             }
 
             if(editing_keyboard) {
-                console.log("mapping " + key + " to " + cell_types[edit_cell_id].name);
-                keyboard_map[key.toLowerCase()].cellid = edit_cell_id; //wtf: fix upper/lower case!
-                update_keyboard();
+                if(cell_types.hasOwnProperty(edit_cell_id)) {
+                    console.log("mapping " + key + " to " + cell_types[edit_cell_id].name);
+                    keyboard_map[key.toLowerCase()].cellid = edit_cell_id; //wtf: fix upper/lower case!
+                    $("div#celllist").find("li").removeClass("selectedtype");
+                    edit_cell_id = -1;
+                    update_keyboard();
+                }
                 return;
             }
 
@@ -174,20 +179,28 @@ $(document).ready(function() {
                             if(undo) {
                                 if(cell_types[id].abnormal > 0) {
                                     cell_types[id].abnormal--;
-                                    $(cell_types[id].box).find("span.abnormal").text(cell_types[id].abnormal);
+                                    for(var i=0; i<cell_types[id].box.length; i++){
+                                        $(cell_types[id].box[i]).find("span.abnormal").text(cell_types[id].abnormal);
+                                    }
                                 }
                             } else {
                                 cell_types[id].abnormal++;
-                                $(cell_types[id].box).find("span.abnormal").text(cell_types[id].abnormal);
+                                for(var i=0; i<cell_types[id].box.length; i++){
+                                    $(cell_types[id].box[i]).find("span.abnormal").text(cell_types[id].abnormal);
+                                }
                             }
                         } else if(undo) {
                             if(cell_types[id].count > 0) {
                                 cell_types[id].count--;
-                                $(cell_types[id].box).find("span.countval").text(cell_types[id].count);
+                                for(var i=0; i<cell_types[id].box.length; i++){
+                                    $(cell_types[id].box[i]).find("span.countval").text(cell_types[id].count);
+                                }
                             }
                         } else {
                             cell_types[id].count++;
-                            $(cell_types[id].box).find("span.countval").text(cell_types[id].count);
+                            for(var i=0; i<cell_types[id].box.length; i++){
+                                $(cell_types[id].box[i]).find("span.countval").text(cell_types[id].count);
+                            }
                         }
                     }
                 }
@@ -226,6 +239,10 @@ return false;
 function update_keyboard() {
         var keyboard_keys = $("#terbox").find("div.box1");
 
+        for(var x in cell_types) {
+            cell_types[x].box = [];
+        }
+
         for (var i = 0; i < keyboard_keys.length; i++) {
 
             var item = $(keyboard_keys[i]);
@@ -238,7 +255,7 @@ function update_keyboard() {
                 var id = key_data.cellid;
 
                 var cell_data = cell_types[id];
-                cell_data.box = item;
+                cell_data.box.push(item);
                 var name = cell_data.slug;
 
                 item.empty();
@@ -270,9 +287,13 @@ function edit_keyboard() {
     $("div#celllist").find("li").click(function() {
         console.log($(this).find("div.cellid").text());
         edit_cell_id = $(this).find("div.cellid").text();
+        $("div#celllist").find("li").removeClass("selectedtype");
+        $(this).addClass("selectedtype");
     });
 
     editing_keyboard = true;
+    $("#edit_button").text("Save");
+    $('#edit_button').on('click', save_keyboard);
 }
 
 function save_keyboard() {
@@ -281,6 +302,15 @@ function save_keyboard() {
     $("div#celllist").empty();
 
     editing_keyboard = false;
+    edit_cell_id = -1;
+    $("#edit_button").text("Edit");
+    $('#edit_button').on('click', edit_keyboard);
+        
+    /*$.ajax({
+        type: "POST",
+        url: "/accounts/keyboard/",
+        data: $.toJSON(keyboard_map)
+    });*/
 }
 
 function ironstain() {
