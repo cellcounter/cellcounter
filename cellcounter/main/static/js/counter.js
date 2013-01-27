@@ -274,6 +274,14 @@ function edit_keyboard() {
     editing_keyboard = true;
 }
 
+function save_keyboard() {
+    "use strict";
+
+    $("div#celllist").empty();
+
+    editing_keyboard = false;
+}
+
 function ironstain() {
     "use strict";
     if ($("#id_ironstain-stain_performed").prop("checked")) {
