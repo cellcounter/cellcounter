@@ -57,7 +57,6 @@ $(document).ready(function() {
             }
         $("#total").text(count_total);
         }
-        edit_keyboard();
     });
 
     $('#fuzz').click(function () {
@@ -265,6 +264,7 @@ function edit_keyboard() {
     
     list += "</ul>";
 
+    $("div#celllist").empty();
     $("div#celllist").append(list);
 
     $("div#celllist").find("li").click(function() {
