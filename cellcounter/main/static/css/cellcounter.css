@@ -8,10 +8,39 @@
 #boxholder_spacebar { width: 475px; min-height: 80px; border: white 1px; margin: auto; }
 #boxholder_shiftkey { width: 140px; min-height: 80px; border: white 1px; margin: auto; }
 
-.box1 { width: 74px; height: 74px; border: solid black 3px; float: left; text-align: center; }
+.box1 {
+    width: 74px;
+}
+
+.box1, .box_spacebar, .box_shiftkey {
+    border: solid black 1px;
+    border-radius: 7px;
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+    margin-right: 4px;
+    height: 74px;
+    float: left;
+    text-align: center;
+    -webkit-box-shadow: 2px 2px 2px #888;
+    -moz-box-shadow: 2px 2px 2px #888;
+    box-shadow: 2px 2px 2px #888;
+}
+
+.box1 p, .box_spacebar, .box_shiftkey {
+    font-weight: bold;
+}
+
+.box1 p {
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+    border-bottom: 1px solid black;
+}
+
 .box2 { width: 74px; height: 74px; border: solid white 3px; float: left;  text-align: center; }
-.box_spacebar { width: 469px; height: 74px; border: solid black 3px; float: left; margin-bottom:40px; text-align: center; }
-.box_shiftkey { width: 142px; height: 74px; border: solid black 3px; float: left;  text-align: center; }
+.box_spacebar { width: 469px; margin-bottom:40px;}
+.box_shiftkey { width: 142px}
 
 .c1 { background: #FFF }
 .c2 { background: #E24 }
