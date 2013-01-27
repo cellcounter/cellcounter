@@ -13,3 +13,4 @@ django-extensions
 ipython
 ipdb
 django-colorful
+south
