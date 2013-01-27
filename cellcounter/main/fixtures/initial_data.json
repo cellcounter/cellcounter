@@ -15,7 +15,7 @@
         "fields": {
             "comment": "",
             "readable_name": "Metamyelocytes",
-            "machine_name": "metamylo",
+            "machine_name": "metamyelo",
             "visualisation_colour": "#77933c"
         }
     },
