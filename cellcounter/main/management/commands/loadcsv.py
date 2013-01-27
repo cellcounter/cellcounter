@@ -20,5 +20,8 @@ class Command(BaseCommand):
                  ci = CellImage(title = line["Title"],
                                 description = line["Description"],
                                 file = line["Filename"],
+                                thumbnail_left = line["X"],
+                                thumbnail_top = line["Y"],
+                                thumbnail_width = line["Pixels"],
                                 celltype = celltype)
                  ci.save() 
