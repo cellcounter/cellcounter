@@ -173,6 +173,10 @@ $(document).ready(function() {
                 if (keyboard_map.hasOwnProperty(mapped_key))  {
                     var id = keyboard_map[mapped_key].cellid;
                     if (mapped_key.toUpperCase() === key && !(shift_pressed)) {
+
+                        // Add highlighting to keyboard
+                        $(cell_types[id].box).effect("highlight", {}, 200);
+
                         if(abnormal === true) {
                             if(undo) {
                                 if(cell_types[id].abnormal > 0) {
