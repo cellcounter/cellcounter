@@ -75,3 +75,9 @@ div#statistics table.statistics td.celltypes {
     text-align: right;
 }
 
+#edit_button {
+    float: right;
+    position: relative;
+    margin-top: 5px;
+    left: 243px;
+}
