@@ -146,11 +146,19 @@ $(document).ready(function() {
             if (shift_pressed) {
                 for (var prop in keyboard_map) {
                     if (keyboard_map.hasOwnProperty(prop)) {
-                        if(keyboard_map[prop].key === key) {
-                            el = $("div#imagebox");
-                            el.css("display", "block");
-                            el.find("div#imgdisplay").css("background-image", "url(" + counters[prop].img + ")");
-                            img_displayed = true;
+                        if(prop.toUpperCase() === key) {
+                                var randomid = keyboard_map[prop].cellid;
+                                var slug = cell_types[randomid].slug;
+
+                                var $dialog = $('<div></div>')
+                                    .load('/images/celltype/'+slug+'/')
+                                    .dialog({
+                                        autoOpen: false,
+                                        title: slug,
+                                        width: 840,
+                                        height: 600
+                                    });
+                                $dialog.dialog('open');
                         }
                     }
                 }
