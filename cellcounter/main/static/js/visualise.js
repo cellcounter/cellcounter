@@ -1,4 +1,4 @@
-
+var display_data = {};
 //$(document).ready(function() {
 function init_visualisation() {
     "use strict";
@@ -25,15 +25,16 @@ function init_visualisation() {
         // This ensures the doughnut is centred in the SVG element.
         .attr('transform', 'translate(' + size / 2 + ',' + size / 2 + ')');
 
-    data = [];
+    display_data = [];
 
-    for(var x in counters) {
-        data.push(counters[x]);
+    for(var x in cell_types) {
+        display_data.push(cell_types[x]);
     }
+
     // Bind the data to the doughnut and create a grouping element ('g') for
     // each item of data.
     doughnut.selectAll('g')
-        .data(pie(data))
+        .data(pie(display_data))
       .enter().append('g');
 
     // Add the paths to grouping elements and set the colour.
@@ -49,15 +50,15 @@ function init_visualisation() {
 
 function update_visualisation() {
 
-    data = [];
+    display_data = [];
 
-    for(var x in counters) {
-        data.push(counters[x]);
+    for(var x in cell_types) {
+        display_data.push(cell_types[x]);
     }
 
     // Update the doughnut's data.
     doughnut.selectAll('g')
-        .data(pie(data));
+        .data(pie(display_data));
 
     // Redraw the paths.
     doughnut.selectAll('g').select('path')

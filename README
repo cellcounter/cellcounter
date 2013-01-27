@@ -2,7 +2,7 @@ Quick start instructions
 ========================
 
 Install required software (Ubuntu):
-    sudo apt-get install python-dev libpq-dev python-pip virtualenvwrapper
+    sudo apt-get install python-dev libpq-dev python-pip virtualenvwrapper sqlite3
 
 Clone the repository:
     git clone ...
