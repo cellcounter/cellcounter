@@ -12,6 +12,8 @@ var pie = {};
 var arc = {};
 var cell_types = [];
 var size = 200;
+var editing_keyboard = false;
+var edit_cell_id = 0;
 
 $(document).ready(function() {
     "use strict";
@@ -30,31 +32,8 @@ $(document).ready(function() {
         $.getJSON("/accounts/keyboard/", function(data) {
 
             keyboard_map = data;
-
-            var keyboard_keys = $("#terbox").find("div.box1");
-
-            for (var i = 0; i < keyboard_keys.length; i++) {
-
-                var item = $(keyboard_keys[i]);
-                var key = item.attr("id");
-
-                if(keyboard_map[key]!==undefined) {
-
-                    var key_data = keyboard_map[item.attr("id")];
-
-                    var id = key_data.cellid;
-
-                    var cell_data = cell_types[id];
-                    cell_data.box = item;
-                    var name = cell_data.slug;
-
-                    // Attach cell colour to key
-                    item.find("p").css("background-color", cell_data.colour);
-
-                    item.append("<div class=\"name\">"+name+"</div>");
-                    item.append("<div class=\"count\"><span class=\"countval\">"+cell_types[id].count+"</span> (<span class=\"abnormal\">"+cell_types[id].abnormal+"</span>)</div>");
-                }
-            }
+            
+            update_keyboard();
 
             init_visualisation();
         });
@@ -77,7 +56,7 @@ $(document).ready(function() {
             }
         $("#total").text(count_total);
         }
-        //edit_keyboard();
+        edit_keyboard();
     });
 
     $('#fuzz').click(function () {
@@ -88,28 +67,35 @@ $(document).ready(function() {
             total = 0;
 
             // Put counts into the ModelForms, increment total
-            /*for (var cell in cell_types) {
-                if (counters.hasOwnProperty(cell)) {
-                    $("#id_"+cell+"-normal_count").prop("value", counters[cell].count);
-                    $("#id_"+cell+"-abnormal_count").prop("value", counters[cell].abnormal);
-                    total += counters[cell].count;
-                    total += counters[cell].abnormal;
+            for (var cell in cell_types) {
+                if (cell_types.hasOwnProperty(cell)) {
+                    $("#id_"+cell+"-normal_count").prop("value", cell_types[cell].count);
+                    $("#id_"+cell+"-abnormal_count").prop("value", cell_types[cell].abnormal);
+                    total += cell_types[cell].count;
+                    total += cell_types[cell].abnormal;
                 }
-            }*/
+            }
        
-            percent = {};
-            per = "";
+            var percent = {};
+            var abnormal = {};
+            var per = "";
        
-            /*for (var prop in counters) {
-                if (counters.hasOwnProperty(prop)) { 
+            for (var cell in cell_types) {
+                if (cell_types.hasOwnProperty(cell)) { 
                     // or if (Object.prototype.hasOwnProperty.call(obj,prop)) for safety...
-                    percent[prop] = (counters[prop].count + counters[prop].abnormal) / total * 100;
-                    per += '<tr><td style="width: 20%">' + prop + '</td><td style="width: 20%">' + parseFloat(percent[prop]).toFixed(2) + "%</td></tr>";
+                    percent[cell] = (cell_types[cell].count + cell_types[cell].abnormal) / total * 100;
+                    if(cell_types[cell].count + cell_types[cell].abnormal != 0) {
+                        abnormal[cell] = cell_types[cell].abnormal / (cell_types[cell].count + cell_types[cell].abnormal) * 100;
+                        abnormal[cell] = parseFloat(abnormal[cell]).toFixed(0) + "%";
+                    }
+                    else
+                        abnormal[cell] = "N/A";
+                    per += '<tr><td style="width: 20%" class="celltypes">' + cell_types[cell].name + '</td><td>'+cell_types[cell].count+'</td><td>'+cell_types[cell].abnormal+'</td><td style="width: 50%">' + parseFloat(percent[cell]).toFixed(0) + "% ("+abnormal[cell]+")</td></tr>";
                 }
-            }*/
+            }
 
             if(total > 0) {
-                $('div#statistics').empty().append('<h3>Count statistics</h3><table id="statistics">' + per + '</table>');
+                $('div#statistics').empty().append('<h3>Count statistics</h3><table class="statistics"><tr><th></th><th>Normal</th><th>Abnormal</th><th>Percentage (abnormal)</th></tr>' + per + '</table>');
             }
 
             $('#counterbox').slideUp('slow', function () {
@@ -148,6 +134,13 @@ $(document).ready(function() {
             } else if (code === 8) {
                 undo = true;
                 return false;
+            }
+
+            if(editing_keyboard) {
+                console.log("mapping " + key + " to " + cell_types[edit_cell_id].name);
+                keyboard_map[key.toLowerCase()].cellid = edit_cell_id; //wtf: fix upper/lower case!
+                update_keyboard();
+                return;
             }
 
             if (shift_pressed) {
@@ -230,24 +223,55 @@ return false;
 }
 }; */
 
+function update_keyboard() {
+        var keyboard_keys = $("#terbox").find("div.box1");
+
+        for (var i = 0; i < keyboard_keys.length; i++) {
+
+            var item = $(keyboard_keys[i]);
+            var key = item.attr("id");
+
+            if(keyboard_map[key]!==undefined) {
+
+                var key_data = keyboard_map[item.attr("id")];
+
+                var id = key_data.cellid;
+
+                var cell_data = cell_types[id];
+                cell_data.box = item;
+                var name = cell_data.slug;
+
+                item.empty();
+                item.append("<p>"+key+"</p>");
+                item.append("<div class=\"name\">"+name+"</div>");
+                item.append("<div class=\"count\"><span class=\"countval\">"+cell_types[id].count+"</span> (<span class=\"abnormal\">"+cell_types[id].abnormal+"</span>)</div>");
+                
+                // Attach cell colour to key
+                item.find("p").css("background-color", cell_data.colour);
+            }
+        }
+    }
+
 function edit_keyboard() {
     "use strict";
-    var keyboard_keys = $("#terbox").find("div.box1");
+    //var keyboard_keys = $("#terbox").find("div.box1");
 
-    for (var i = 0; i < keyboard_keys.length; i++) {
+    var list = "<ul>";
 
-        var item = $(keyboard_keys[i]);
-        var key = item.attr("id");
-
-        var name = "";
-        if(keyboard_map[key]!==undefined) {
-            var name = keyboard_map[key].name;
-            //var key_data = keyboard_map[item.attr("id")];
-
-            //var name = key_data.name;
-        }
-        item.append("<input name=\""+key+"\" type=\"text\" value=\""+name+"\" />");
+    for(var x in cell_types) {
+        list += "<li>"+cell_types[x].name+"<div class=\"cellid\" style=\"display: none;\">"+x+"</div></li>";
     }
+    
+    list += "</ul>";
+
+    $("div#celllist").append(list);
+
+    $("div#celllist").find("li").click(function() {
+        console.log($(this).find("div.cellid").text());
+        edit_cell_id = $(this).find("div.cellid").text();
+    });
+
+    editing_keyboard = true;
 }
 
 function ironstain() {
