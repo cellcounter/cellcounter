@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
 
+from colorful.fields import RGBColorField
 
 class CellCountInstance(models.Model):
     TISSUE_TYPE = (
@@ -82,8 +83,10 @@ class BoneMarrowBackground(models.Model):
 
 class CellType(models.Model):
     readable_name = models.CharField(max_length=50)
+    # TODO Use a slugfield
     machine_name = models.CharField(max_length=50, unique=True)
     comment = models.TextField(blank=True)
+    visualisation_colour = RGBColorField(blank=True)
 
     def __unicode__(self):
         return self.readable_name
