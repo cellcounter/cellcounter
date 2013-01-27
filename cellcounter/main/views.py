@@ -265,6 +265,12 @@ def edit_count(request, count_id):
 def images_by_cell_type(request, cell_type):
     ct = CellType.objects.get(machine_name = cell_type)
     return render_to_response('main/images_by_cell_type.html',
-                {'cell_type': ct,},
+                {'images': ct.cellimage_set.all(),},
+                context_instance=RequestContext(request))
+
+def similar_images(request, cell_image_pk):
+    ci = CellImage.objects.get(pk = cell_image_pk)
+    return render_to_response('main/images_by_cell_type.html',
+                {'images': ci.similar_cells(),},
                 context_instance=RequestContext(request))
 
