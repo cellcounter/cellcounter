@@ -23,18 +23,16 @@
     </div>
     <div class="span4 userbar">
         {% if user.is_authenticated %}
-        <span class="username">Welcome <a href="/user/{{user.id}}">{{user.username}}</a></span>
-        <a class="btn btn-danger pull-right" href="/logout/">Logout</a></li>
+        <span class="username">Welcome <a href="{% url user_home user.id %}">{{user.username}}</a></span>
+        <a class="btn btn-danger pull-right" href="{% url logout %}">Logout</a></li>
         {% else %}
-        <a class="btn btn-success pull-right" href="/login/">Login</a></li>
+        <a class="btn btn-success pull-right" href="{% url login %}">Login</a></li>
         {% endif %}
     </div>
     <div class="span10 navbar">
         <ul class="nav">
-            <li><a href="/count/new/">Work</a></li>
+            <li><a href="{% url new_count %}">Work</a></li>
             <li><a href="http://wai2k.smugmug.com/bloodcount">Discover</a></li>
-            <li><a href="/share/">Share</a></li>
-            <li><a class = "modaldialog" href="http://127.0.0.1:8000/images/celltype/lymphocytes/">cells</a></li>
         </ul>
     </div>
 </div>
