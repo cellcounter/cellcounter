@@ -82,19 +82,15 @@ div#statistics table.statistics td.celltypes {
 }
 
 div#celllist {
-    position: absolute;
+    /*position: absolute;
     top: 15px;
     left: 900px;
     width: 200px;
     background: white;
-    z-index: 1000;
+    z-index: 1000;*/
 }
 
 div#celllist ul {
     list-style: none;
-}
-
-div#celllist li.selectedtype {
-    background: blue;
 }
 

@@ -315,7 +315,7 @@ function edit_keyboard() {
         list += "<li>"+cell_types[x].name+"<div class=\"cellid\" style=\"display: none;\">"+x+"</div></li>";
     }
     
-    list += "</ul><button class=\"btn btn-primary\" id=\"savekeyboard\">Save</button><button class=\"btn btn-primary\" id=\"canceledit\">Cancel</button>";
+    list += "</ul>";
 
     $("div#celllist").empty();
     $("div#celllist").append(list);
@@ -336,14 +336,33 @@ function edit_keyboard() {
         clear_keyboard();
     });
     
-    $("#canceledit").click(function() {
+    /*$("#canceledit").click(function() {
         load_keyboard();
         end_keyboard_edit();
     });
+    $('#savekeyboard').on('click', save_keyboard);*/
 
     editing_keyboard = true;
     $("#edit_button").hide();
-    $('#savekeyboard').on('click', save_keyboard);
+
+    $("div#celllist").dialog({
+        close: function() {
+            load_keyboard();
+            end_keyboard_edit();
+        },
+        buttons: [ {text: "Save",
+                    click: function() {
+                        save_keyboard();
+                    }
+                    },
+                    {text: "Cancel",
+                    click: function() {
+                        load_keyboard();
+                        end_keyboard_edit();
+                    }
+                    }
+                ]
+    });
 }
 
 function select_element(el) {
@@ -368,8 +387,17 @@ function save_keyboard() {
         url: "/accounts/keyboard/",
         data: $.toJSON(keyboard_map)
     });*/
+    console.log(JSON.stringify(keyboard_map));
+    $.ajax({
+        url: '/accounts/keyboard/',
+        type: 'POST',
+        data: JSON.stringify(keyboard_map),
+        async: false,
+        success: function(msg) {
+            end_keyboard_edit();
+        }
+    });
 
-    end_keyboard_edit();
 }
 
 function end_keyboard_edit() {
@@ -380,6 +408,7 @@ function end_keyboard_edit() {
     editing_keyboard = false;
     edit_cell_id = -1;
     $("#edit_button").show();
+    $("div#celllist").dialog("close");
 }
 
 function clear_keyboard() {
