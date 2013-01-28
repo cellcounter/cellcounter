@@ -1,6 +1,7 @@
 import os
 # Django settings for cellcounter project.
 import uuid
+import dj_database_url
 
 DEBUG = DEBUG = bool(os.environ.get('DEBUG', False))
 TEMPLATE_DEBUG = DEBUG
@@ -11,11 +12,7 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASES = {'default': {
-	'ENGINE': 'django.db.backends.sqlite3',
-	'NAME': '/home/craig/db.sql'
-	}
-}
+DATABASES = {'default': dj_database_url.config(default='postgres://localhost')}
 
 PROJECT_DIR = os.path.dirname(__file__)
 
