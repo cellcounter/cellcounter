@@ -233,7 +233,7 @@ $(document).ready(function() {
                     if (mapped_key.toUpperCase() === key && !(shift_pressed)) {
 
                         // Add highlighting to keyboard
-                        $(cell_types[id].box).stop(true, true); //effect("highlight", {}, 200);
+                        //$(cell_types[id].box).stop(true, true); //effect("highlight", {}, 200);
                         $(cell_types[id].box).effect("highlight", {}, 200);
 
                         if(abnormal === true) {
