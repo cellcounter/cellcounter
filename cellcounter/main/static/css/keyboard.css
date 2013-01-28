@@ -39,7 +39,7 @@ div#counterbox {
 }
 
 div#terbox {
-  margin-top: 20px;
+  margin-top: 40px;
   margin-left: 30px;
 }
 
@@ -89,3 +89,25 @@ div#keyboard {
   margin-top: 40px;
   margin-left: 20px;
 }
+
+
+div#celllist ul {
+    list-style: none;
+}
+
+div#celllist li {
+    padding: 2px 0 0 25px;
+}
+
+#edit_button {
+    position: absolute;
+    margin-top: 8px;
+    right: 8px;
+}
+
+#reset_button {
+    position: absolute;
+    top: 300px;
+    left: 20px;
+}
+

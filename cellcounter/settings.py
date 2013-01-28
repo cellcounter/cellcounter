@@ -1,6 +1,7 @@
 import os
-import dj_database_url
+# Django settings for cellcounter project.
 import uuid
+import dj_database_url
 
 DEBUG = DEBUG = bool(os.environ.get('DEBUG', False))
 TEMPLATE_DEBUG = DEBUG
@@ -11,10 +12,9 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-PROJECT_DIR = os.path.dirname(__file__)
+DATABASES = {'default': dj_database_url.config(default='postgres://localhost')}
 
-DEFAULT_DATABASE_URL = "sqlite:///%s" % os.path.join(PROJECT_DIR, 'db.sqlite3')
-DATABASES = {'default': dj_database_url.config(default=DEFAULT_DATABASE_URL)}
+PROJECT_DIR = os.path.dirname(__file__)
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -124,7 +124,10 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'gunicorn',
     'storages',
+    'colorful',
+    'south',
     'cellcounter.main',
+    'cellcounter.accounts',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -156,8 +159,18 @@ LOGGING = {
     }
 }
 
+# Associates a UserProfile with the User
+# TODO In Django 1.5 we should use a custom User model
+AUTH_PROFILE_MODULE = 'accounts.UserProfile'
+
 if 'AWS_STORAGE_BUCKET_NAME' in os.environ:
     AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
     STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
     S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
     STATIC_URL = S3_URL
+
+try:
+   from localsettings import *
+except ImportError:
+    pass
+
