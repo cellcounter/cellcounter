@@ -277,6 +277,7 @@ function reset_counters() {
     update_keyboard();
     init_visualisation();
     update_visualisation();
+    console.log(cell_types);
 }
 
 /*window.onkeydown=function(e){
