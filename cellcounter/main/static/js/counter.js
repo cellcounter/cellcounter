@@ -36,6 +36,21 @@ $(document).ready(function() {
     });
 
     $('#edit_button').on('click', edit_keyboard);
+    $('#reset_button').on('click', function() {
+        $( "#dialog-confirm" ).dialog({
+            resizable: false,
+            modal: true,
+            buttons: {
+            "Reset all counters": function() {
+                reset_counters();
+                $( this ).dialog( "close" );
+            },
+            Cancel: function() {
+                $( this ).dialog( "close" );
+            }
+            }
+        });
+    });
 
     $('#openkeyboard').click(function () {
         $('#fuzz').fadeIn('slow', function () {
@@ -112,7 +127,7 @@ $(document).ready(function() {
 
     //$(document).keypress(function(e) {
     jQuery(document).bind('keydown', function (e) {
-        var key, code, shift_pressed, el, count_total, abnormal_total, enter=false;
+        var key, code, shift_pressed, el, count_total, enter=false;
         //Event.stop(e);
         if (keyboard_active) {
             key = String.fromCharCode(e.which).toUpperCase();
@@ -190,8 +205,7 @@ $(document).ready(function() {
                 return;
             }
 
-            count_total = 0;
-            abnormal_total = 0;
+            //count_total = 0;
             for (var mapped_key in keyboard_map) {
                 if (keyboard_map.hasOwnProperty(mapped_key))  {
                     var id = keyboard_map[mapped_key].cellid;
@@ -230,10 +244,9 @@ $(document).ready(function() {
                         }
                     }
                 }
-                count_total += cell_types[id].count;
-                count_total += cell_types[id].abnormal;
+                //count_total += cell_types[id].count;
+                //count_total += cell_types[id].abnormal;
             }
-            $("#total").text(count_total);
             update_visualisation();
         }
     });
@@ -255,6 +268,16 @@ $(document).ready(function() {
         }
     });
 });
+
+function reset_counters() {
+    for(var x in cell_types) {
+        cell_types[x].count = 0;
+        cell_types[x].abnormal = 0;
+    }
+    update_keyboard();
+    init_visualisation();
+    update_visualisation();
+}
 
 /*window.onkeydown=function(e){
 if(e.keyCode==32){

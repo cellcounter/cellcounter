@@ -75,9 +75,3 @@ div#statistics table.statistics td.celltypes {
     text-align: right;
 }
 
-#edit_button {
-    position: absolute;
-    margin-top: 5px;
-    left: 1040px;
-}
-

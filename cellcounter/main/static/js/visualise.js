@@ -10,7 +10,7 @@ function init_visualisation() {
     pie = d3.layout.pie()
         // This ensures the segments remain ordered.
         .sort(null) 
-        .value(function(d) { return d.count; });
+        .value(function(d) { return d.count+d.abnormal; });
 
     // Set up a function used to calculate the width of the doughnut.
     arc = d3.svg.arc()
@@ -50,11 +50,19 @@ function init_visualisation() {
 }
 
 function update_visualisation() {
+    "use strict";
 
     display_data = [];
 
+    var count_total = 0;
     for(var x in cell_types) {
         display_data.push(cell_types[x]);
+        count_total += cell_types[x].count + cell_types[x].abnormal;
+    }
+
+    $("#total").text(count_total);
+    if(count_total == 0) {
+        return;
     }
 
     // Update the doughnut's data.
