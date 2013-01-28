@@ -5,7 +5,7 @@
         "fields": {
             "comment": "",
             "readable_name": "Neutrophils",
-            "machine_name": "neut",
+            "machine_name": "neutrophils",
             "visualisation_colour": "#4f6228"
         }
     },
@@ -25,7 +25,7 @@
         "fields": {
             "comment": "",
             "readable_name": "Myelocytes",
-            "machine_name": "myelo",
+            "machine_name": "myelocytes",
             "visualisation_colour": "#c3d69b"
         }
     },
@@ -45,7 +45,7 @@
         "fields": {
             "comment": "",
             "readable_name": "Blasts",
-            "machine_name": "blast",
+            "machine_name": "blasts",
             "visualisation_colour": "#ebf1de"
         }
     },
@@ -55,7 +55,7 @@
         "fields": {
             "comment": "",
             "readable_name": "Basophils",
-            "machine_name": "baso",
+            "machine_name": "basophils",
             "visualisation_colour": "#8064a2"
         }
     },
@@ -65,7 +65,7 @@
         "fields": {
             "comment": "",
             "readable_name": "Eosinophils",
-            "machine_name": "eo",
+            "machine_name": "eosinophils",
             "visualisation_colour": "#f79546"
         }
     },
@@ -75,7 +75,7 @@
         "fields": {
             "comment": "",
             "readable_name": "Erythroid",
-            "machine_name": "erythro",
+            "machine_name": "erythroid",
             "visualisation_colour": "#ff0000"
         }
     },
@@ -85,7 +85,7 @@
         "fields": {
             "comment": "",
             "readable_name": "Lymphocytes",
-            "machine_name": "lympho",
+            "machine_name": "lymphocytes",
             "visualisation_colour": "#ffffff"
         }
     },
@@ -95,7 +95,7 @@
         "fields": {
             "comment": "",
             "readable_name": "Monocytes",
-            "machine_name": "mono",
+            "machine_name": "monocytes",
             "visualisation_colour": "#bfbfbf"
         }
     },
@@ -105,7 +105,17 @@
         "fields": {
             "comment": "",
             "readable_name": "Plasma cells",
-            "machine_name": "plasma",
+            "machine_name": "plasma_cells",
+            "visualisation_colour": "#0000ff"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "main.celltype",
+        "fields": {
+            "comment": "",
+            "readable_name": "Other",
+            "machine_name": "other",
             "visualisation_colour": "#0000ff"
         }
     }

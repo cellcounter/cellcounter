@@ -162,7 +162,6 @@ $(document).ready(function() {
                     return;
                 }
                 if(cell_types.hasOwnProperty(edit_cell_id)) {
-                    console.log("mapping " + key + " to " + cell_types[edit_cell_id].name);
                     if(keyboard_map[key.toLowerCase()]!=undefined && 
                        keyboard_map[key.toLowerCase()].cellid == edit_cell_id) {
                             delete keyboard_map[key.toLowerCase()];

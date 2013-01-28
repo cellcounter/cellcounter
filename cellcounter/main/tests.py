@@ -12,7 +12,7 @@ from django_webtest import WebTest
 
 from cellcounter.main.models import *
 
-CELLTYPE_LIST = [('Neutrophils', 'neut'),
+CELLTYPE_LIST = [('Neutrophils', 'neutrophils'),
                  ('Band Forms', 'band_forms'),
                  ('Myelocytes', 'myelocytes'),
                  ('Promyelocytes', 'promyelocytes'),
