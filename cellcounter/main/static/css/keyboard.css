@@ -39,7 +39,7 @@ div#counterbox {
 }
 
 div#terbox {
-  margin-top: 20px;
+  margin-top: 40px;
   margin-left: 30px;
 }
 
@@ -101,8 +101,8 @@ div#celllist li {
 
 #edit_button {
     position: absolute;
-    margin-top: 5px;
-    left: 1040px;
+    margin-top: 8px;
+    right: 8px;
 }
 
 #reset_button {

@@ -128,11 +128,15 @@ $(document).ready(function() {
     //$(document).keypress(function(e) {
     jQuery(document).bind('keydown', function (e) {
         var key, code, shift_pressed, el, count_total, enter=false;
+        var alpha = false, up = false, down = false;
         //Event.stop(e);
         if (keyboard_active) {
             key = String.fromCharCode(e.which).toUpperCase();
             code = e.which;
             shift_pressed = e.shiftKey;
+            if (/[a-z]/i.test(key) && !shift_pressed) {
+                alpha = true;
+            }
             if (code === 188) {
                 key = ","; // XXX: WTF
             }
@@ -152,6 +156,12 @@ $(document).ready(function() {
             else if (code === 13) {
                 enter = true;
             }
+            else if(code === 38) {
+                up = true;
+            }
+            else if(code === 40) {
+                down = true;
+            }
 
             if(editing_keyboard) {
                 if(enter) {
@@ -161,20 +171,32 @@ $(document).ready(function() {
                     //edit_cell_id = selected_element.find("div.cellid").text();
                     return;
                 }
-                if(cell_types.hasOwnProperty(edit_cell_id)) {
-                    if(keyboard_map[key.toLowerCase()]!=undefined && 
-                       keyboard_map[key.toLowerCase()].cellid == edit_cell_id) {
-                            delete keyboard_map[key.toLowerCase()];
+                else if(down) {
+                    deselect_element(selected_element);
+                    select_element(selected_element.next());
+                    return false;
+                }
+                else if(up) {
+                    deselect_element(selected_element);
+                    select_element(selected_element.prev());
+                    return false;
+                }
+                else if(alpha) {
+                    if(cell_types.hasOwnProperty(edit_cell_id)) {
+                        if(keyboard_map[key.toLowerCase()]!=undefined && 
+                           keyboard_map[key.toLowerCase()].cellid == edit_cell_id) {
+                                delete keyboard_map[key.toLowerCase()];
+                        }
+                        else {
+                            keyboard_map[key.toLowerCase()] = {}; //wtf: fix upper/lower case!
+                            keyboard_map[key.toLowerCase()].cellid = edit_cell_id;
+                            deselect_element(selected_element);
+                            select_element(selected_element.next());
+                        }
+                        //$("div#celllist").find("li").removeClass("selectedtype");
+                        //edit_cell_id = -1;
+                        update_keyboard();
                     }
-                    else {
-                        keyboard_map[key.toLowerCase()] = {}; //wtf: fix upper/lower case!
-                        keyboard_map[key.toLowerCase()].cellid = edit_cell_id;
-                        deselect_element(selected_element);
-                        select_element(selected_element.next());
-                    }
-                    //$("div#celllist").find("li").removeClass("selectedtype");
-                    //edit_cell_id = -1;
-                    update_keyboard();
                 }
                 return;
             }
@@ -211,7 +233,7 @@ $(document).ready(function() {
                     if (mapped_key.toUpperCase() === key && !(shift_pressed)) {
 
                         // Add highlighting to keyboard
-                        //$(cell_types[id].box).stop(true, true); //effect("highlight", {}, 200);
+                        $(cell_types[id].box).stop(true, true); //effect("highlight", {}, 200);
                         $(cell_types[id].box).effect("highlight", {}, 200);
 
                         if(abnormal === true) {
@@ -276,7 +298,6 @@ function reset_counters() {
     update_keyboard();
     init_visualisation();
     update_visualisation();
-    console.log(cell_types);
 }
 
 /*window.onkeydown=function(e){
@@ -335,6 +356,8 @@ function edit_keyboard() {
     "use strict";
     //var keyboard_keys = $("#terbox").find("div.box1");
 
+    if(editing_keyboard) return;
+
     var list = "<p id=\"clearkeyboard\">Clear key map</p><ul>";
 
     for(var x in cell_types) {
@@ -369,13 +392,18 @@ function edit_keyboard() {
     $('#savekeyboard').on('click', save_keyboard);*/
 
     editing_keyboard = true;
-    $("#edit_button").hide();
+    //$("#edit_button").hide();
 
     $("div#celllist").dialog({
         close: function() {
             load_keyboard();
             end_keyboard_edit();
         },
+        open: function() {
+            //remove focus from the default button
+            $('.ui-dialog :button').blur();
+        },
+        resizable: false,
         buttons: [ {text: "Save",
                     click: function() {
                         save_keyboard();
