@@ -21,18 +21,18 @@
     <div class="span6">
         <a class="logo" href="/"><span class="logocell">Cell</span><span class="logocount">Countr</span></a>
     </div>
-    <div class="span4 userbar">
-        {% if user.is_authenticated %}
-        <span class="username">Welcome <a href="{% url user_home user.id %}">{{user.username}}</a></span>
-        <a class="btn btn-danger pull-right" href="{% url logout %}">Logout</a></li>
-        {% else %}
-        <a class="btn btn-success pull-right" href="{% url login %}">Login</a></li>
-        {% endif %}
-    </div>
+
     <div class="span10 navbar">
         <ul class="nav">
             <li><a href="{% url new_count %}">Work</a></li>
             <li><a href="http://wai2k.smugmug.com/bloodcount">Discover</a></li>
+
+            {% if user.is_authenticated %}
+            <li><a href="{% url user_home user.id %}">Your account</a></li>
+            <li><a href="{% url logout %}">Logout</a></li>
+            {% else %}
+            <li><a href="{% url login %}">Login</a></li>
+            {% endif %}
         </ul>
     </div>
 </div>
