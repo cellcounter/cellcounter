@@ -18,6 +18,7 @@ function init_visualisation() {
         .innerRadius(size / 4);
 
     // Set up the SVG element for the doughnut on the page.
+    $('#doughnut').empty();
     doughnut = d3.select('#doughnut').append('svg')
         .attr('width', size)
         .attr('height', size)

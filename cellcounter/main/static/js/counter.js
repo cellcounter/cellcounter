@@ -195,6 +195,7 @@ $(document).ready(function() {
                     if (mapped_key.toUpperCase() === key && !(shift_pressed)) {
 
                         // Add highlighting to keyboard
+                        //$(cell_types[id].box).stop(true, true); //effect("highlight", {}, 200);
                         $(cell_types[id].box).effect("highlight", {}, 200);
 
                         if(abnormal === true) {
@@ -265,6 +266,8 @@ function load_keyboard() {
         update_keyboard();
 
         init_visualisation();
+
+        update_visualisation();
     });
 }
 
@@ -306,7 +309,7 @@ function edit_keyboard() {
     "use strict";
     //var keyboard_keys = $("#terbox").find("div.box1");
 
-    var list = "<p id=\"clearkeyboard\">Clear list</p><ul>";
+    var list = "<p id=\"clearkeyboard\">Clear key map</p><ul>";
 
     for(var x in cell_types) {
         list += "<li>"+cell_types[x].name+"<div class=\"cellid\" style=\"display: none;\">"+x+"</div></li>";
