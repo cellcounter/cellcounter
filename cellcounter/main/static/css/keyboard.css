@@ -89,3 +89,13 @@ div#keyboard {
   margin-top: 40px;
   margin-left: 20px;
 }
+
+
+div#celllist ul {
+    list-style: none;
+}
+
+div#celllist li {
+    padding: 2px 0 0 25px;
+}
+

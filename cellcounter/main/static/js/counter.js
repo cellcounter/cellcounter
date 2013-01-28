@@ -56,6 +56,9 @@ $(document).ready(function() {
 
     $('#fuzz').click(function () {
         var total, percent, per;
+
+        if(editing_keyboard)
+            return;
         
         if (keyboard_active) {
             keyboard_active = false;
@@ -369,25 +372,27 @@ function select_element(el) {
     "use strict";
 
     selected_element = $(el);
-    edit_cell_id = $(el).find("div.cellid").text();
-    $(el).css("background-color", cell_types[edit_cell_id].colour);
+
+    if(selected_element.html()) {
+        edit_cell_id = $(el).find("div.cellid").text();
+        $(el).css("background", "url(\"/static/icons/right_arrow.jpeg\") no-repeat top left");
+        $(el).css("background-color", cell_types[edit_cell_id].colour);
+    }
+    else {
+        edit_cell_id = -1;
+    }
 }
 
 function deselect_element(el) {
     "use strict";
 
     $(el).css("background-color", "");
+    $(el).css("background", "");
 }
 
 function save_keyboard() {
     "use strict";
 
-    /*$.ajax({
-        type: "POST",
-        url: "/accounts/keyboard/",
-        data: $.toJSON(keyboard_map)
-    });*/
-    console.log(JSON.stringify(keyboard_map));
     $.ajax({
         url: '/accounts/keyboard/',
         type: 'POST',
