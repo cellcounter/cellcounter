@@ -394,7 +394,7 @@ function edit_keyboard() {
     editing_keyboard = true;
     //$("#edit_button").hide();
 
-    $("div#celllist").dialog({
+    var d = $("div#celllist").dialog({
         close: function() {
             load_keyboard();
             end_keyboard_edit();
@@ -417,6 +417,8 @@ function edit_keyboard() {
                     }
                 ]
     });
+    $(d).dialog('widget')
+        .position({ my: 'right top', at: 'right top', of: $("div#counterbox") });
 }
 
 function select_element(el) {
