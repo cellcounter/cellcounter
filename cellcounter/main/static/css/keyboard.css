@@ -1,3 +1,4 @@
+
 /* Base cellcounter css */
 
 nav {
@@ -93,10 +94,20 @@ div#keyboard {
 
 div#celllist ul {
     list-style: none;
+    margin: 0px;
+    margin-top: 5px;
 }
 
 div#celllist li {
-    padding: 2px 0 0 25px;
+    /*padding: 2px 0 0 25px;*/
+    float: left;
+    width: 150px;
+    margin: 2px;
+}
+
+div#celllist li div.element {
+    display: inline;
+    cursor: pointer;
 }
 
 #edit_button {
@@ -110,4 +121,35 @@ div#celllist li {
     top: 300px;
     left: 20px;
 }
+
+div.edit_colour_swatch {
+    width: 30px;
+    background-color: #e5e5e5;
+    height: 1.1em;
+    float: left;
+    margin-right: 5px;
+    margin-left: 1px;
+    margin-bottom: 1px;
+    margin-top: 1px;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+div.edit_colour_swatch_selected {
+    width: 30px;
+    background-color: #e5e5e5;
+    height: 1.1em;
+    float: left;
+    margin-right: 4px;
+    margin-left: 0px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    border: 2px solid black;
+    border-radius: 5px;
+}
+
+div#editkeymapbox {
+    display: none;
+}
+
 

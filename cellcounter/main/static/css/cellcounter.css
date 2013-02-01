@@ -36,6 +36,8 @@
     -moz-border-radius-topleft: 5px;
     -moz-border-radius-topright: 5px;
     border-bottom: 1px solid black;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
 }
 
 .box2 { width: 74px; height: 74px; border: solid white 3px; float: left;  text-align: center; }

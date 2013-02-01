@@ -178,7 +178,9 @@ $(document).ready(function() {
                 }
                 else if(up) {
                     deselect_element(selected_element);
-                    select_element(selected_element.prev());
+                    var el = selected_element.prev();
+                    if(!$(el).html()) el = $("div#celllist").find("li").last();
+                    select_element(el);
                     return false;
                 }
                 else if(alpha) {
@@ -358,10 +360,11 @@ function edit_keyboard() {
 
     if(editing_keyboard) return;
 
-    var list = "<p id=\"clearkeyboard\">Clear key map</p><ul>";
+    var list = "<ul>";
 
     for(var x in cell_types) {
-        list += "<li>"+cell_types[x].name+"<div class=\"cellid\" style=\"display: none;\">"+x+"</div></li>";
+        //list += "<li><div class=\"edit_colour_swatch\" id=\"swatch_"+x+"\"></div>"+cell_types[x].name+"<div class=\"cellid\" style=\"display: none;\">"+x+"</div></li>";
+        list += "<li><div class=\"element\"><div class=\"edit_colour_swatch\" id=\"swatch_"+x+"\"></div>"+cell_types[x].name+"</div><div class=\"cellid\" style=\"display: none;\">"+x+"</div></li>";
     }
     
     list += "</ul>";
@@ -369,13 +372,17 @@ function edit_keyboard() {
     $("div#celllist").empty();
     $("div#celllist").append(list);
 
-    $("div#celllist").find("li").click(function() {
-        console.log($(this).find("div.cellid").text());
+    for(var x in cell_types) {
+        $("div#swatch_"+x).css("background-color", cell_types[x].colour);
+    }
+
+    $("div#celllist").find("div.element").click(function() {
         edit_cell_id = $(this).find("div.cellid").text();
         $("div#celllist").find("li").css("background", "");
         //$(this).addClass("selectedtype");
-        selected_element = $(this);
-        select_element(this);
+        deselect_element(selected_element);
+        selected_element = $(this).parent();
+        select_element($(this).parent());
     });
 
     var el = $("div#celllist").find("li").first();
@@ -385,16 +392,9 @@ function edit_keyboard() {
         clear_keyboard();
     });
     
-    /*$("#canceledit").click(function() {
-        load_keyboard();
-        end_keyboard_edit();
-    });
-    $('#savekeyboard').on('click', save_keyboard);*/
-
     editing_keyboard = true;
-    //$("#edit_button").hide();
 
-    var d = $("div#celllist").dialog({
+    var d = $("div#editkeymapbox").dialog({
         close: function() {
             load_keyboard();
             end_keyboard_edit();
@@ -411,11 +411,11 @@ function edit_keyboard() {
                     },
                     {text: "Cancel",
                     click: function() {
-                        load_keyboard();
-                        end_keyboard_edit();
+                        $("div#editkeymapbox").dialog("close");
                     }
                     }
-                ]
+                ],
+        width: "340px"
     });
     $(d).dialog('widget')
         .position({ my: 'right top', at: 'right top', of: $("div#counterbox") });
@@ -426,10 +426,19 @@ function select_element(el) {
 
     selected_element = $(el);
 
+    if(!selected_element.html()) {
+        selected_element = $("div#celllist").find("li").first();
+        el = selected_element;
+        selected_element = $(selected_element);
+    }
+
     if(selected_element.html()) {
         edit_cell_id = $(el).find("div.cellid").text();
-        $(el).css("background", "url(\"/static/icons/right_arrow.jpeg\") no-repeat top left");
-        $(el).css("background-color", cell_types[edit_cell_id].colour);
+        //$(el).css("background", "url(\"/static/icons/right_arrow.jpeg\") no-repeat top left");
+        //$(el).css("background-color", cell_types[edit_cell_id].colour);
+        $(el).find("div.element").css("font-weight", "bold");
+        //$(el).find("div.edit_colour_swatch").css("border", "2px solid black");
+        $(el).find("div.edit_colour_swatch").addClass("edit_colour_swatch_selected");
     }
     else {
         edit_cell_id = -1;
@@ -441,6 +450,10 @@ function deselect_element(el) {
 
     $(el).css("background-color", "");
     $(el).css("background", "");
+    $(el).find("div.element").css("font-weight", "normal");
+    $(el).css("border", "");
+    //$(el).find("div.edit_colour_swatch").css("border", "1px solid black");
+    $(el).find("div.edit_colour_swatch").removeClass("edit_colour_swatch_selected");
 }
 
 function save_keyboard() {
@@ -466,7 +479,7 @@ function end_keyboard_edit() {
     editing_keyboard = false;
     edit_cell_id = -1;
     $("#edit_button").show();
-    $("div#celllist").dialog("close");
+    $("div#editkeymapbox").dialog("close");
 }
 
 function clear_keyboard() {
