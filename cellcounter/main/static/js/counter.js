@@ -185,15 +185,28 @@ $(document).ready(function() {
                 }
                 else if(alpha) {
                     if(cell_types.hasOwnProperty(edit_cell_id)) {
-                        if(keyboard_map[key.toLowerCase()]!=undefined && 
-                           keyboard_map[key.toLowerCase()].cellid == edit_cell_id) {
-                                delete keyboard_map[key.toLowerCase()];
-                        }
-                        else {
+                        if($("#multi_key").is(':checked')) {
+                            // clear all other keys mapped to this cellid
+                            for(var k in keyboard_map) {
+                                if(keyboard_map[k].cellid == edit_cell_id)
+                                    delete keyboard_map[k];
+                            }
                             keyboard_map[key.toLowerCase()] = {}; //wtf: fix upper/lower case!
                             keyboard_map[key.toLowerCase()].cellid = edit_cell_id;
                             deselect_element(selected_element);
                             select_element(selected_element.next());
+                        }
+                        else {
+                            if(keyboard_map[key.toLowerCase()]!=undefined && 
+                               keyboard_map[key.toLowerCase()].cellid == edit_cell_id) {
+                                    delete keyboard_map[key.toLowerCase()];
+                            }
+                            else {
+                                keyboard_map[key.toLowerCase()] = {}; //wtf: fix upper/lower case!
+                                keyboard_map[key.toLowerCase()].cellid = edit_cell_id;
+                                deselect_element(selected_element);
+                                select_element(selected_element.next());
+                            }
                         }
                         //$("div#celllist").find("li").removeClass("selectedtype");
                         //edit_cell_id = -1;
