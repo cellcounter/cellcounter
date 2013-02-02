@@ -112,7 +112,22 @@ $(document).ready(function() {
             }
 
             if(total > 0) {
-                $('div#statistics').empty().append('<h3>Count statistics</h3><table class="statistics"><tr><th></th><th>Normal</th><th>Abnormal</th><th>Percentage (abnormal)</th></tr>' + per + '</table>');
+                //XXX: hack! The cell ids might change
+                var erythroid = cell_types[8].count + cell_types[8].abnormal;
+                var myeloid = 0;
+                var myeloid_cells = [1, 2, 3, 4, 6, 7];
+                for(var i in myeloid_cells) {
+                    myeloid += cell_types[myeloid_cells[i]].count;
+                    myeloid += cell_types[myeloid_cells[i]].abnormal;
+                }
+                var meratio = parseFloat(myeloid / erythroid).toFixed(2);
+                var stats_text = '<h3>Count statistics</h3><table class="statistics">';
+                stats_text += '<tr><td>Total cells</td><td>' + total + '</td><td colspan="2"></td></tr>';
+                stats_text += '<tr><td>ME ratio</td><td>' + meratio + '</td><td colspan="2"></td></tr>';
+                stats_text += '<tr><th></th><th>Normal</th><th>Abnormal</th><th>Percentage (abnormal)</th></tr>';
+                stats_text += per;
+                stats_text += '</table>';
+                $('div#statistics').empty().append(stats_text);
                 $("#visualise2").css("display", "block");
                 init_visualisation("#doughnut2");
                 update_visualisation();
