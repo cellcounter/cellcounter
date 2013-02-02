@@ -167,8 +167,6 @@ $(document).ready(function() {
                 if(enter) {
                     deselect_element(selected_element);
                     select_element(selected_element.next());
-                    //selected_element.addClass("selectedtype");
-                    //edit_cell_id = selected_element.find("div.cellid").text();
                     return;
                 }
                 else if(down) {
@@ -193,8 +191,10 @@ $(document).ready(function() {
                             }
                             keyboard_map[key.toLowerCase()] = {}; //wtf: fix upper/lower case!
                             keyboard_map[key.toLowerCase()].cellid = edit_cell_id;
-                            deselect_element(selected_element);
-                            select_element(selected_element.next());
+                            if($("#auto_advance").is(':checked')) {
+                                deselect_element(selected_element);
+                                select_element(selected_element.next());
+                            }
                         }
                         else {
                             if(keyboard_map[key.toLowerCase()]!=undefined && 
@@ -204,12 +204,12 @@ $(document).ready(function() {
                             else {
                                 keyboard_map[key.toLowerCase()] = {}; //wtf: fix upper/lower case!
                                 keyboard_map[key.toLowerCase()].cellid = edit_cell_id;
-                                deselect_element(selected_element);
-                                select_element(selected_element.next());
+                                if($("#auto_advance").is(':checked')) {
+                                    deselect_element(selected_element);
+                                    select_element(selected_element.next());
+                                }
                             }
                         }
-                        //$("div#celllist").find("li").removeClass("selectedtype");
-                        //edit_cell_id = -1;
                         update_keyboard();
                     }
                 }
@@ -428,7 +428,7 @@ function edit_keyboard() {
                     }
                     }
                 ],
-        width: "340px"
+        width: "348px"
     });
     $(d).dialog('widget')
         .position({ my: 'right top', at: 'right top', of: $("div#counterbox") });
@@ -447,11 +447,7 @@ function select_element(el) {
 
     if(selected_element.html()) {
         edit_cell_id = $(el).find("div.cellid").text();
-        //$(el).css("background", "url(\"/static/icons/right_arrow.jpeg\") no-repeat top left");
-        //$(el).css("background-color", cell_types[edit_cell_id].colour);
-        $(el).find("div.element").css("font-weight", "bold");
-        //$(el).find("div.edit_colour_swatch").css("border", "2px solid black");
-        $(el).find("div.edit_colour_swatch").addClass("edit_colour_swatch_selected");
+        $(el).addClass("selected");
     }
     else {
         edit_cell_id = -1;
@@ -461,12 +457,7 @@ function select_element(el) {
 function deselect_element(el) {
     "use strict";
 
-    $(el).css("background-color", "");
-    $(el).css("background", "");
-    $(el).find("div.element").css("font-weight", "normal");
-    $(el).css("border", "");
-    //$(el).find("div.edit_colour_swatch").css("border", "1px solid black");
-    $(el).find("div.edit_colour_swatch").removeClass("edit_colour_swatch_selected");
+    $(el).removeClass("selected");
 }
 
 function save_keyboard() {

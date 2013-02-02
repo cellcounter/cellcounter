@@ -103,11 +103,22 @@ div#celllist li {
     float: left;
     width: 150px;
     margin: 2px;
+    padding: 2px;
+}
+
+div#celllist li.selected {
+    background-color: white;
+    border-radius: 5px;
 }
 
 div#celllist li div.element {
     display: inline;
     cursor: pointer;
+}
+
+div#celllist li.selected div.element {
+    font-weight: bold;
+    color: red;
 }
 
 #edit_button {
@@ -135,7 +146,7 @@ div.edit_colour_swatch {
     border-radius: 5px;
 }
 
-div.edit_colour_swatch_selected {
+li.selected div.edit_colour_swatch {
     width: 30px;
     background-color: #e5e5e5;
     height: 1.1em;
