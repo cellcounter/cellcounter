@@ -71,9 +71,19 @@ font5 { text-decoration: none; font-weight: bold; color: #03A; font-size: 18px; 
 div#statistics table.statistics {
     text-align: center;
     width: 100%;
+    border-collapse: collapse;
 }
 
-div#statistics table.statistics td.celltypes {
+div#statistics th,td {
+    border: 1px solid black;
+    padding: 1px 10px;
+}
+
+div#statistics td.noborder {
+    border: none;
+}
+
+div#statistics table.statistics td {
     text-align: right;
 }
 

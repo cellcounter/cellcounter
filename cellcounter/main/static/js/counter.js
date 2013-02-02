@@ -108,7 +108,7 @@ $(document).ready(function() {
                     }
                     else
                         abnormal[cell] = "N/A";
-                    per += '<tr><td style="width: 20%" class="celltypes">' + cell_types[cell].name + '</td><td>'+cell_types[cell].count+'</td><td>'+cell_types[cell].abnormal+'</td><td style="width: 50%">' + parseFloat(percent[cell]).toFixed(0) + "% ("+abnormal[cell]+")</td></tr>";
+                    per += '<tr><td style="width: 20%" class="celltypes">' + cell_types[cell].name + '</td><td>'+cell_types[cell].count+'</td><td>'+cell_types[cell].abnormal+'</td><td style="width: 50%">' + parseFloat(percent[cell]).toFixed(0) + "%</td><td>"+abnormal[cell]+"</td></tr>";
                 }
             }
 
@@ -123,9 +123,9 @@ $(document).ready(function() {
                 }
                 var meratio = parseFloat(myeloid / erythroid).toFixed(2);
                 var stats_text = '<h3>Count statistics</h3><table class="statistics">';
-                stats_text += '<tr><td>Total cells</td><td>' + total + '</td><td colspan="2"></td></tr>';
-                stats_text += '<tr><td>ME ratio</td><td>' + meratio + '</td><td colspan="2"></td></tr>';
-                stats_text += '<tr><th></th><th>Normal</th><th>Abnormal</th><th>Percentage (abnormal)</th></tr>';
+                stats_text += '<tr><td>Total cells</td><td>' + total + '</td><td class="noborder" colspan="2"></td></tr>';
+                stats_text += '<tr><td>ME ratio</td><td>' + meratio + '</td><td class="noborder" colspan="2"></td></tr>';
+                stats_text += '<tr><th></th><th>Normal</th><th>Abnormal</th><th>Percentage</th><th>Abnormal</th></tr>';
                 stats_text += per;
                 stats_text += '</table>';
                 $('div#statistics').empty().append(stats_text);
