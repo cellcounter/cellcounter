@@ -69,6 +69,7 @@ $(document).ready(function() {
         $("#total").text(count_total);
         $('div#statistics').empty();
         $("#visualise2").css("display", "none");
+        $("#savefilebutton").css("display", "none");
         init_visualisation("#doughnut");
         update_visualisation();
     });
@@ -132,6 +133,8 @@ $(document).ready(function() {
                 init_visualisation("#doughnut2");
                 update_visualisation();
                 $("#total2").text(total);
+                $("#savefilebutton").css("display", "block");
+                add_save_file_button();
             }
 
             $('#counterbox').slideUp('slow', function () {

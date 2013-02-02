@@ -8,13 +8,19 @@
 {% include "main/keyboard_snippet.html" %}
 
 <div style="width: 100%">
-    <div id="statistics" style="float: left"></div>
+    <div id="statistics" style="float: left; margin-bottom: 20px;"></div>
     <div id="visualise2" style="display: none; position: relative;">
         <div id="doughnut2"></div>
         <div id="total2" style="width: 100%; height: 100%; text-align: center; position: absolute; left: 0px; top: 0px; line-height: 200px">0</div>
     </div>
 </div>
-<div style="clear: both"></div>
+<div style="clear: both; position: relative; display: none;" id="savefilebutton">
+    <div id="downloadify" style="position: absolute; top:0px; left:0px;">
+    You must have Flash 10 installed to download this file.
+    </div>
+    <button class="btn btn-primary" id="downloadify_button" style="width:130px">Save as CSV</button>
+</div>
+<div style="clear: both; border: 1px solid #aaaaaa; margin-top: 50px; margin-bottom: 30px;"></div>
 
 <!--
 <form action="" method="POST" class="form-horizontal">
