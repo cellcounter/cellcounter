@@ -6,6 +6,7 @@
             "comment": "",
             "readable_name": "Neutrophils",
             "machine_name": "neutrophils",
+            "abbr_name": "neut",
             "visualisation_colour": "#4f6228"
         }
     },
@@ -16,6 +17,7 @@
             "comment": "",
             "readable_name": "Band Forms",
             "machine_name": "band_forms",
+            "abbr_name": "band_form",
             "visualisation_colour": "#77933c"
         }
     },
@@ -26,6 +28,7 @@
             "comment": "",
             "readable_name": "Myelocytes",
             "machine_name": "myelocytes",
+            "abbr_name": "myelo",
             "visualisation_colour": "#c3d69b"
         }
     },
@@ -36,6 +39,7 @@
             "comment": "",
             "readable_name": "Promyelocytes",
             "machine_name": "promyelocytes",
+            "abbr_name": "promyelo",
             "visualisation_colour": "#d7e4bd"
         }
     },
@@ -46,6 +50,7 @@
             "comment": "",
             "readable_name": "Blasts",
             "machine_name": "blasts",
+            "abbr_name": "blast",
             "visualisation_colour": "#ebf1de"
         }
     },
@@ -56,6 +61,7 @@
             "comment": "",
             "readable_name": "Basophils",
             "machine_name": "basophils",
+            "abbr_name": "baso",
             "visualisation_colour": "#8064a2"
         }
     },
@@ -66,6 +72,7 @@
             "comment": "",
             "readable_name": "Eosinophils",
             "machine_name": "eosinophils",
+            "abbr_name": "eo",
             "visualisation_colour": "#f79546"
         }
     },
@@ -76,6 +83,7 @@
             "comment": "",
             "readable_name": "Erythroid",
             "machine_name": "erythroid",
+            "abbr_name": "erythro",
             "visualisation_colour": "#ff0000"
         }
     },
@@ -86,6 +94,7 @@
             "comment": "",
             "readable_name": "Lymphocytes",
             "machine_name": "lymphocytes",
+            "abbr_name": "lympho",
             "visualisation_colour": "#ffffff"
         }
     },
@@ -96,6 +105,7 @@
             "comment": "",
             "readable_name": "Monocytes",
             "machine_name": "monocytes",
+            "abbr_name": "mono",
             "visualisation_colour": "#bfbfbf"
         }
     },
@@ -106,6 +116,7 @@
             "comment": "",
             "readable_name": "Plasma cells",
             "machine_name": "plasma_cells",
+            "abbr_name": "plasma",
             "visualisation_colour": "#0000ff"
         }
     },
@@ -116,6 +127,7 @@
             "comment": "",
             "readable_name": "Other",
             "machine_name": "other",
+            "abbr_name": "other",
             "visualisation_colour": "#0000ff"
         }
     }

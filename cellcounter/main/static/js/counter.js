@@ -245,12 +245,13 @@ $(document).ready(function() {
                         if(prop.toUpperCase() === key) {
                                 var randomid = keyboard_map[prop].cellid;
                                 var slug = cell_types[randomid].slug;
+                                var fullname = cell_types[randomid].name;
 
                                 var $dialog = $('<div></div>')
                                     .load('/images/celltype/'+slug+'/')
                                     .dialog({
                                         autoOpen: false,
-                                        title: slug,
+                                        title: fullname,
                                         width: 840,
                                         height: 600
                                     });
@@ -379,7 +380,7 @@ function update_keyboard() {
 
                 var cell_data = cell_types[id];
                 cell_data.box.push(item);
-                var name = cell_data.slug;
+                var name = cell_data.abbr;
 
                 item.append("<div class=\"name\">"+name+"</div>");
                 item.append("<div class=\"count\"><span class=\"countval\">"+cell_types[id].count+"</span> (<span class=\"abnormal\">"+cell_types[id].abnormal+"</span>)</div>");

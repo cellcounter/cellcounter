@@ -30,6 +30,7 @@ class ListCellTypesView(JSONResponseMixin, ListView):
                 'id': cell.pk,
                 'name': cell.readable_name,
                 'slug': cell.machine_name,
+                'abbr': cell.abbr_name,
                 'colour': cell.visualisation_colour
             }
             new_context[cell.pk] = cell_dict

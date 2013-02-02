@@ -85,6 +85,7 @@ class CellType(models.Model):
     readable_name = models.CharField(max_length=50)
     # TODO Use a slugfield
     machine_name = models.CharField(max_length=50, unique=True)
+    abbr_name = models.CharField(max_length=10, unique=True)
     comment = models.TextField(blank=True)
     visualisation_colour = RGBColorField(blank=True)
 
