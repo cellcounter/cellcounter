@@ -108,7 +108,7 @@ $(document).ready(function() {
                     }
                     else
                         abnormal[cell] = "N/A";
-                    per += '<tr><td style="width: 20%" class="celltypes">' + cell_types[cell].name + '</td><td>'+cell_types[cell].count+'</td><td>'+cell_types[cell].abnormal+'</td><td style="width: 50%">' + parseFloat(percent[cell]).toFixed(0) + "%</td><td>"+abnormal[cell]+"</td></tr>";
+                    per += '<tr><td class="celltypes">' + cell_types[cell].name + '</td><td style="width: 20px; background-color:'+ cell_types[cell].colour +'"></td><td>'+cell_types[cell].count+'</td><td>'+cell_types[cell].abnormal+'</td><td>' + parseFloat(percent[cell]).toFixed(0) + "%</td><td>"+abnormal[cell]+"</td></tr>";
                 }
             }
 
@@ -123,9 +123,13 @@ $(document).ready(function() {
                 }
                 var meratio = parseFloat(myeloid / erythroid).toFixed(2);
                 var stats_text = '<h3>Count statistics</h3><table class="statistics">';
-                stats_text += '<tr><td>Total cells</td><td>' + total + '</td><td class="noborder" colspan="2"></td></tr>';
-                stats_text += '<tr><td>ME ratio</td><td>' + meratio + '</td><td class="noborder" colspan="2"></td></tr>';
-                stats_text += '<tr><th></th><th>Normal</th><th>Abnormal</th><th>Percentage</th><th>Abnormal</th></tr>';
+                stats_text += '<tr><td colspan="2" class="celltypes">Total cells</td><td>' + total + '</td><td class="noborder" colspan="2"></td></tr>';
+                stats_text += '<tr><td colspan="2" class="celltypes">ME ratio</td><td>' + meratio + '</td><td class="noborder" colspan="2"></td></tr>';
+                stats_text += '<tr><th colspan="2" style="width: 30%"></th>';
+                stats_text += '<th style="width: 16%">Normal</th>';
+                stats_text += '<th style="width: 16%">Abnormal</th>';
+                stats_text += '<th style="width: 16%">% Total</th>';
+                stats_text += '<th style="width: 22%">% of CellType Abnormal</th></tr>';
                 stats_text += per;
                 stats_text += '</table>';
                 $('div#statistics').empty().append(stats_text);

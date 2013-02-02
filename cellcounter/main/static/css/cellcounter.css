@@ -87,6 +87,10 @@ div#statistics table.statistics td {
     text-align: right;
 }
 
+div#statistics table.statistics td.celltypes {
+    text-align: left;
+}
+
 div#visualise2 {
 
     float: left;
