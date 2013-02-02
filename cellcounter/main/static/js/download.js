@@ -13,7 +13,7 @@ function add_save_file_button() {
         },
         transparent: true,
         swf: '/static/swf/downloadify.swf',
-        downloadImage: '/static/images/download.png?rev=1',
+        downloadImage: '/static/images/download.png',
         width: 130,
         height: 30,
         //append: false
