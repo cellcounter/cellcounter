@@ -77,3 +77,15 @@ div#statistics table.statistics td.celltypes {
     text-align: right;
 }
 
+div#visualise2 {
+
+    float: left;
+    /*height: 100%;*/
+    margin: 7% 0;
+    margin-left: 100px;
+}
+
+
+div#doughnut2 {
+}
+

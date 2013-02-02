@@ -65,8 +65,12 @@ $(document).ready(function() {
                 count_total += counters[prop].abnormal;
                 count_total += counters[prop].count;
             }
-        $("#total").text(count_total);
         }
+        $("#total").text(count_total);
+        $('div#statistics').empty();
+        $("#visualise2").css("display", "none");
+        init_visualisation("#doughnut");
+        update_visualisation();
     });
 
     $('#fuzz').click(function () {
@@ -109,6 +113,10 @@ $(document).ready(function() {
 
             if(total > 0) {
                 $('div#statistics').empty().append('<h3>Count statistics</h3><table class="statistics"><tr><th></th><th>Normal</th><th>Abnormal</th><th>Percentage (abnormal)</th></tr>' + per + '</table>');
+                $("#visualise2").css("display", "block");
+                init_visualisation("#doughnut2");
+                update_visualisation();
+                $("#total2").text(total);
             }
 
             $('#counterbox').slideUp('slow', function () {
@@ -311,7 +319,7 @@ function reset_counters() {
         cell_types[x].abnormal = 0;
     }
     update_keyboard();
-    init_visualisation();
+    init_visualisation("#doughnut");
     update_visualisation();
 }
 
@@ -327,7 +335,7 @@ function load_keyboard() {
         
         update_keyboard();
 
-        init_visualisation();
+        init_visualisation("#doughnut");
 
         update_visualisation();
     });

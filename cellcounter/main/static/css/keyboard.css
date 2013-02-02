@@ -9,7 +9,7 @@ nav {
     height: 2em;
 }
 
-div#total {
+div#total,div#total2 {
    clear: both;
    font-size: 300%;
    display: block;

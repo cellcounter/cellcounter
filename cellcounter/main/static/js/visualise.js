@@ -1,6 +1,6 @@
 var display_data = {};
 //$(document).ready(function() {
-function init_visualisation() {
+function init_visualisation(div_id) {
     "use strict";
 
     // Size of doughnut.
@@ -18,8 +18,8 @@ function init_visualisation() {
         .innerRadius(size / 4);
 
     // Set up the SVG element for the doughnut on the page.
-    $('#doughnut').empty();
-    doughnut = d3.select('#doughnut').append('svg')
+    $(div_id).empty();
+    doughnut = d3.select(div_id).append('svg')
         .attr('width', size)
         .attr('height', size)
       .append('g')
