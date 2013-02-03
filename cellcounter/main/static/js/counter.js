@@ -279,7 +279,11 @@ $(document).ready(function() {
                     if (mapped_key.toUpperCase() === key && !(shift_pressed)) {
 
                         // Add highlighting to keyboard
-                        //$(cell_types[id].box).stop(true, true); //effect("highlight", {}, 200);
+                        // Remove all currently active highlights (stops a queue developing)
+                        for(var i=0; i<cell_types[id].box.length; i++){
+                            $(cell_types[id].box[i]).stop(true, true).css("background-color", '#ffffff');
+                        }
+                        // Add highlight to typed key
                         $(cell_types[id].box).effect("highlight", {}, 200);
 
                         if(abnormal === true) {
