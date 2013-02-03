@@ -6,7 +6,7 @@
 
 {% if not logged_in %}
 <div id="notloggedin">
-<img src="{% static "images/alert.png" %}" style="float:left; margin-right: 20px" />
+<img src="{% static "images/alert.png" %}" style="float:left; margin-right: 20px" alt="Alert" />
 <h3>Not logged in</h3>
 <p>You may use the cell counter without logging in, but you will be unable to save any changes to your keyboard map.</p>
 <p><a href="/login/?next=/count/new/">Click here to log in.</a></p>
@@ -35,7 +35,7 @@ var notloggedin=true;
 </div>
 <div style="clear: both; border: 1px solid #aaaaaa; margin-top: 50px; margin-bottom: 30px;"></div>
 
-<!--
+{% comment %}
 <form action="" method="POST" class="form-horizontal">
     {% csrf_token %}
     
@@ -56,6 +56,6 @@ var notloggedin=true;
     <br>
     <input class="btn btn-success" type="submit" value="Submit" />
 </form>
--->
+{% endcomment %}
 
 {% endblock %}
