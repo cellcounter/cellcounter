@@ -4,5 +4,5 @@ from django.contrib.auth.decorators import login_required
 from cellcounter.accounts.views import KeyboardLayoutView
 
 urlpatterns = patterns('',
-    (r'^keyboard/$', login_required(KeyboardLayoutView.as_view())),
+    (r'^keyboard/$', KeyboardLayoutView.as_view()),
 )

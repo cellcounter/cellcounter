@@ -71,9 +71,8 @@ def home(request):
     return HttpResponseRedirect(
             reverse('user_home', kwargs={'pk': request.user.id}))
 
-@login_required
 def new_count(request):
-    if request.method == 'POST':
+    if request.user.is_authenticated() and request.method == 'POST':
         celltypes = CellType.objects.all()
 
         count_instance = CellCountInstanceForm(request.POST, prefix="cellcount")
@@ -157,7 +156,8 @@ def new_count(request):
              'granulopoiesis_form': granulopoiesis_form,
              'megakaryocyte_form': megakaryocyte_form,
              'ironstain_form': ironstain_form,
-             'cellcountformslist': cellcount_form_list,},
+             'cellcountformslist': cellcount_form_list,
+             'logged_in': request.user.is_authenticated(),},
             context_instance=RequestContext(request))
 
 @login_required

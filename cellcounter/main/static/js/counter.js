@@ -438,9 +438,19 @@ function edit_keyboard() {
     
     editing_keyboard = true;
 
+    var save_text = "Save";
+    var cancel_text = "Cancel";
+    var save_keys = true;
+    if(typeof notloggedin != 'undefined') {
+        save_text = "Close";
+        cancel_text = "Revert";
+        save_keys = false;
+    }
+
     var d = $("div#editkeymapbox").dialog({
         close: function() {
-            load_keyboard();
+            if(save_keys)
+                load_keyboard();
             end_keyboard_edit();
         },
         open: function() {
@@ -448,13 +458,18 @@ function edit_keyboard() {
             $('.ui-dialog :button').blur();
         },
         resizable: false,
-        buttons: [ {text: "Save",
+        buttons: [ {text: save_text,
                     click: function() {
-                        save_keyboard();
+                        if(save_keys)
+                            save_keyboard();
+                        else
+                            end_keyboard_edit();
                     }
                     },
-                    {text: "Cancel",
+                    {text: cancel_text,
                     click: function() {
+                        if(!save_keys)
+                            load_keyboard();
                         $("div#editkeymapbox").dialog("close");
                     }
                     }

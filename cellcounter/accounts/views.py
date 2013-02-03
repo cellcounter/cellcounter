@@ -8,6 +8,9 @@ from django.utils.decorators import method_decorator
 from cellcounter.accounts.models import UserProfile
 from cellcounter.mixins import JSONResponseMixin
 
+import os, sys
+from django.conf import settings
+
 class KeyboardLayoutView(JSONResponseMixin, DetailView):
     """
     Return a JSON description of the users keyboard mapping
@@ -16,10 +19,19 @@ class KeyboardLayoutView(JSONResponseMixin, DetailView):
 
     def get_object(self):
         # Find the UserProfile from the request session
-        return self.model.objects.get(user=self.request.user)
+        if self.request.user.is_authenticated():
+            return self.model.objects.get(user=self.request.user)
+        else:
+            return json.load(open(os.path.join(settings.PROJECT_DIR,
+                'accounts/keyboard.json'), 'r'))
 
     def get_context_data(self, *args, **kwargs):
-        return self.object.keyboard or {}
+        if self.request.user.is_authenticated():
+            return self.object.keyboard or {}
+        else:
+            #print >> sys.stderr, "test"
+            return json.load(open(os.path.join(settings.PROJECT_DIR,
+                'accounts/keyboard.json'), 'r'))
 
     # TODO Enable csrf checking
     @method_decorator(csrf_exempt)
@@ -31,11 +43,15 @@ class KeyboardLayoutView(JSONResponseMixin, DetailView):
         """
         Takes a JSON body and sets that as the users keyboard mapping
         """
-        # Get the user profile object
-        self.object = self.get_object()
-        # Get keyboard definition
-        self.object.keyboard = json.loads(request.raw_post_data)
-        # Save the change
-        self.object.save()
-        # Return with accepted but no content
-        return HttpResponse("", status=204)
+        if self.request.user.is_authenticated():
+            # Get the user profile object
+            self.object = self.get_object()
+            # Get keyboard definition
+            self.object.keyboard = json.loads(request.raw_post_data)
+            # Save the change
+            self.object.save()
+            # Return with accepted but no content
+            return HttpResponse("", status=204)
+        else:
+            # Return forbidden
+            return HttpResponse("", status=403)
