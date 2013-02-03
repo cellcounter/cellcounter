@@ -13,11 +13,13 @@ jQuery.fn.toCSV = function() {
           csvData.push(tmpArr);
       } else {
           $(this).find("td").each(function() {
-            if($(this).text().match(/^-{0,1}\d*\.{0,1}\d+$/)) {
-                tmpArr.push(parseFloat($(this).text()));
-            } else {
-                tmpStr = $(this).text().replace(/"/g, '""');
-                tmpArr.push('"' + tmpStr + '"');
+            if(!$(this).hasClass('ignore')) {
+                if($(this).text().match(/^-{0,1}\d*\.{0,1}\d+$/)) {
+                    tmpArr.push(parseFloat($(this).text()));
+                } else {
+                    tmpStr = $(this).text().replace(/"/g, '""');
+                    tmpArr.push('"' + tmpStr + '"');
+                }
             }
           });
           csvData.push(tmpArr.join(','));
