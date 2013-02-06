@@ -9,7 +9,7 @@ class SecureRequiredMiddleware(object):
             self.enabled = False
 
     def process_request(self, request):
-        if self.enabled and not request.is_secure():
+        if self.enabled and not any([request.is_secure(), request.META.get("HTTP_X_FORWARDED_PROTO", "") == 'https']):
             for path in self.paths:
                 if request.get_full_path().startswith(path):
                     request_url = request.build_absolute_uri(request.get_full_path())
