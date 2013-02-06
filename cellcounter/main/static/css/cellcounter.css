@@ -114,12 +114,16 @@ div#downloadify {
     /*padding: 5px;*/
 }
 
-div#terms {
-    margin: 30px 0;
+div#terms,div#privacy {
+    margin-bottom: 30px;
 }
 
 div#terms h4 {
     margin: 30px 0 15px 0;
+}
+
+div#privacy h4 {
+    margin: 20px 0 15px 0;
 }
 
 div.rule {
@@ -137,7 +141,7 @@ div#footer {
 #footer ul {
   list-style: none;
   padding: 0;
-  margin-top: 15px;
+  margin-top: 30px;
   /*margin: 0px auto;*/
   /*margin-left: auto ;
   margin-right: auto ;*/

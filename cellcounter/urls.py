@@ -37,7 +37,9 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('cellcounter.accounts.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^terms$', direct_to_template, {'template': 'main/terms.html'},
-            name="index"),
+            name="terms"),
+    url(r'^privacy$', direct_to_template, {'template': 'main/privacy.html'},
+            name="privacy"),
 )
 
 urlpatterns += staticfiles_urlpatterns()
