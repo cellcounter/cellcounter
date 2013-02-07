@@ -26,7 +26,7 @@
     <div class="span10 navbar">
         <ul class="nav">
             <li><a href="{% url new_count %}">Work</a></li>
-            <li><a href="http://wai2k.smugmug.com/bloodcount">Discover</a></li>
+            <li><a href="{% url discover %}">Discover</a></li>
 
             {% if user.is_authenticated %}
             <li><a href="{% url logout %}">Logout</a></li>
