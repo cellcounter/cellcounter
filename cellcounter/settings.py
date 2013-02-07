@@ -74,7 +74,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', str(uuid.uuid4()))
 
 # Logins URLs
 LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/user/home'
+LOGIN_REDIRECT_URL = '/'
 LOGOUT_URL = '/logout/'
 
 # List of callables that know how to import templates from various sources.
@@ -87,7 +87,7 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    #'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:

@@ -29,7 +29,6 @@
             <li><a href="http://wai2k.smugmug.com/bloodcount">Discover</a></li>
 
             {% if user.is_authenticated %}
-            <li><a href="{% url user_home user.id %}">Your account</a></li>
             <li><a href="{% url logout %}">Logout</a></li>
             {% else %}
             <li><a href="{% url login %}">Login</a></li>
