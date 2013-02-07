@@ -133,6 +133,13 @@ div#celllist li.selected div.element {
     left: 20px;
 }
 
+#close_button {
+    position: absolute;
+    top: 340px;
+    left: 20px;
+}
+
+
 div.edit_colour_swatch {
     width: 30px;
     background-color: #e5e5e5;

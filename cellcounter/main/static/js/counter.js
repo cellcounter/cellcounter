@@ -74,7 +74,7 @@ $(document).ready(function() {
         update_visualisation();
     });
 
-    $('#fuzz').click(function () {
+    $('#fuzz, #close_button').click(function () {
         var total, percent, per;
 
         if(editing_keyboard)
