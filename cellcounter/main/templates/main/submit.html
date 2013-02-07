@@ -5,18 +5,18 @@
 {% block content %}
 
 {% comment %} 
-{% if not logged_in %}
 <div id="notloggedin">
 <img src="{% static "images/alert.png" %}" style="float:left; margin-right: 20px" alt="Alert" />
 <h3>Not logged in</h3>
 <p>You may use the cell counter without logging in, but you will be unable to save any changes to your keyboard map.</p>
 <p><a href="/login/?next=/count/new/">Click here to log in.</a></p>
+</div>
+ {% endcomment %}
+{% if not logged_in %}
 <script type="text/javascript">
 var notloggedin=true;
 </script>
-</div>
 {% endif %}
- {% endcomment %}
 
 <p>Click 'Open Keyboard' to start performing a count. Press the key corresponding to a cell type to add a count.  To enter an abnormal variant of a cell, press 'Space+Key', and to remove a count, press 'Backspace+Key'.<!--  Should you wish to see example images of the cells in question, press 'Shift+Key'.  To close the keyboard, click on the grey area outside the keyboard.  Once you have completed a count, fill in the remaining information in the form below, and click 'Submit'.--></p>
 
