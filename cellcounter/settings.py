@@ -96,13 +96,14 @@ MIDDLEWARE_CLASSES = (
 )
 
 # HTTPS_SUPPORT = True
+HTTPS_SUPPORT = False
 
-#SECURE_REQUIRED_PATHS = (
+SECURE_REQUIRED_PATHS = (
 #    '/admin/',
 #    '/count/',
 #    '/login/',
 #    '/accounts/',
-#)
+)
 
 ROOT_URLCONF = 'cellcounter.urls'
 
