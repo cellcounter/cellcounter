@@ -113,6 +113,10 @@ div#downloadify {
     /*padding: 5px;*/
 }
 
+div#discover h3 {
+    margin-top: 20px;
+}
+
 div#terms,div#privacy {
     margin-bottom: 30px;
 }
