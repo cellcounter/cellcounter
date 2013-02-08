@@ -98,10 +98,10 @@ div#statistics table.statistics td.celltypes {
 }
 
 div#visualise2 {
-
     float: left;
     /*height: 100%;*/
-    margin-top: 12%;
+    margin-top: 20px;
+    margin-bottom; 20px;
     margin-left: 100px;
 }
 
