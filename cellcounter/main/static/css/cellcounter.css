@@ -64,7 +64,8 @@ font5 { text-decoration: none; font-weight: bold; color: #03A; font-size: 18px; 
 .header{margin-top: 1em;}
 
 .logo{text-decoration: none;
-      line-height: 40px; }
+      line-height: 40px;
+      padding-left: 10px; }
 
 .logocell, .logocellsmall { color: red; font-weight: bold; }
 .logocount, .logocountsmall  { color: black; }
