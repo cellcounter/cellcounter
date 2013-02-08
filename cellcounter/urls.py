@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     url(r'^count/$', new_count, name="count_home"),
     url(r'^count/new/$', new_count, name="new_count"),
     url(r'^discover/$', direct_to_template, {'template': 'main/discover.html'}, name="discover"),
+    url(r'^about/$', direct_to_template, {'template': 'main/about.html'}, names="about"),
 
     url(r'^images/celltype/(?P<cell_type>\w+)/$', images_by_cell_type, name="images_by_cell_type"),
     url(r'^images/similar/(?P<cell_image_pk>\d+)/$', similar_images, name="images_by_similar_cell"),
