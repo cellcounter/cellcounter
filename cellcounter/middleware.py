@@ -5,7 +5,7 @@ class SecureRequiredMiddleware(object):
     def __init__(self):
         self.paths = getattr(settings, 'SECURE_REQUIRED_PATHS')
         self.enabled = self.paths and getattr(settings, 'HTTPS_SUPPORT')
-        if getattr(settings, "DEBUG"):
+       # if getattr(settings, "DEBUG"):
             self.enabled = False
 
     def process_request(self, request):
