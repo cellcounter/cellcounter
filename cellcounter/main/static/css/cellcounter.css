@@ -66,12 +66,10 @@ font5 { text-decoration: none; font-weight: bold; color: #03A; font-size: 18px; 
 .logo{text-decoration: none;
       line-height: 40px; }
 
-.logocell{font-weight: bold;
-          color: red;
-          font-size: 40px}
-
-.logocount {color: black;
-            font-size: 40px }
+.logocell, .logocellsmall { color: red; font-weight: bold; }
+.logocount, .logocountsmall  { color: black; }
+.logocell, .logocount { font-size: 40px; }
+.logocellsmall, .logocountsmall { }
 
 .username {padding:10px 15px 10px;}
 
