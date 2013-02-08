@@ -95,14 +95,14 @@ MIDDLEWARE_CLASSES = (
     'cellcounter.middleware.SecureRequiredMiddleware',
 )
 
-HTTPS_SUPPORT = True
+# HTTPS_SUPPORT = True
 
-SECURE_REQUIRED_PATHS = (
-    '/admin/',
-    '/count/',
-    '/login/',
-    '/accounts/',
-)
+#SECURE_REQUIRED_PATHS = (
+#    '/admin/',
+#    '/count/',
+#    '/login/',
+#    '/accounts/',
+#)
 
 ROOT_URLCONF = 'cellcounter.urls'
 
