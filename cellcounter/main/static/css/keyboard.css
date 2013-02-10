@@ -1,5 +1,5 @@
 
-/* Base cellcounter css */
+/* Keyboard specific css */
 
 nav {
     text-align: right;
@@ -9,7 +9,13 @@ nav {
     height: 2em;
 }
 
-div#total,div#total2 {
+div#visualisation {
+    float: right;
+    z-index: 100;
+    position: absolute;
+}
+
+div#total {
    clear: both;
    font-size: 300%;
    display: block;
@@ -33,12 +39,12 @@ div#counterbox {
   display: none;
   background-color: #ffffff;
   z-index: 11;
-  height: 400px;
+  height: 350px;
   border: 2px solid black;
   border-radius: 15px;
 }
 
-div#terbox {
+div#keysbox {
   margin-top: 40px;
   margin-left: 30px;
 }
@@ -66,6 +72,146 @@ div#keyboard {
   margin-top: 40px;
   margin-left: 20px;
 }
+
+/* CSS for the large keyboard */
+
+@media screen and (min-width: 1200px) {
+
+.largekeyboard #boxholder1 { min-height: 80px; border: solid white 1px; padding-left: 44px }
+.largekeyboard #boxholder2 { min-height: 80px; border: solid white 1px; padding-left: 84px }
+.largekeyboard #boxholder3 { min-height: 80px; border: solid black 1px; }
+.largekeyboard #boxholder3holder { min-height: 80px; border: solid white 1px; }
+
+.largekeyboard #boxholder_spacebar { min-height: 80px; border: white 1px; padding-left: 205px; }
+.largekeyboard #boxholder_shiftkey { min-height: 80px; border: white 1px; padding-left: 200px; }
+
+.largekeyboard .box1 {
+    width: 74px;
+}
+
+.largekeyboard .box1,
+.largekeyboard .box_spacebar,
+.largekeyboard .box_shiftkey {
+    border: solid black 1px;
+    border-radius: 7px;
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+    margin-right: 4px;
+    height: 74px;
+    float: left;
+    text-align: center;
+    -webkit-box-shadow: 2px 2px 2px #888;
+    -moz-box-shadow: 2px 2px 2px #888;
+    box-shadow: 2px 2px 2px #888;
+}
+
+.largekeyboard .box1 p,
+.largekeyboard .box_spacebar,
+.largekeyboard .box_shiftkey {
+    font-weight: bold;
+}
+
+.largekeyboard .box1 p {
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+    border-bottom: 1px solid black;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.largekeyboard div.name {
+    margin: 0;
+    padding: 0;
+}
+
+.largekeyboard .box_spacebar { width: 469px; margin-bottom:40px;}
+.largekeyboard .box_shiftkey { width: 142px}
+
+div#visualisation.largekeyboard {
+    top: 50px;
+    right: 60px;
+}
+
+.largekeyboard #reset_button {
+    position: absolute;
+    top: 300px;
+    left: 20px;
+}
+
+.largekeyboard #close_button {
+    position: absolute;
+    top: 340px;
+    left: 20px;
+}
+
+div#counterbox.largekeyboard {
+    height: 400px;
+}
+
+}
+
+/* CSS for the small keyboard */
+
+#boxholder1 { min-height: 65px; border: solid white 1px; padding-left: 25px }
+#boxholder2 { min-height: 65px; border: solid white 1px; padding-left: 55px }
+#boxholder3 { min-height: 65px; border: solid black 1px; }
+#boxholder3holder { min-height: 65px; border: solid white 1px; }
+
+#boxholder_spacebar { min-height: 65px; border: white 1px; padding-left: 155px; }
+#boxholder_shiftkey { min-height: 65px; border: white 1px; padding-left: 200px; }
+
+.box1 {
+    width: 60px;
+    line-height: 1.1em;
+}
+
+.box1,
+.box_spacebar,
+.box_shiftkey {
+    border: solid black 1px;
+    border-radius: 7px;
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+    margin-right: 4px;
+    height: 60px;
+    float: left;
+    text-align: center;
+    -webkit-box-shadow: 2px 2px 2px #888;
+    -moz-box-shadow: 2px 2px 2px #888;
+    box-shadow: 2px 2px 2px #888;
+}
+
+.box1 p,
+.box_spacebar,
+.box_shiftkey {
+    font-weight: bold;
+}
+
+.box1 p {
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+    border-bottom: 1px solid black;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+div.name {
+    margin: 0;
+    padding: 0;
+}
+
+.box_spacebar { width: 386px; margin-bottom:40px;}
+.box_shiftkey { width: 103px}
+
+div#visualisation {
+    top: 60px;
+    right: 20px;
+}
+
 
 
 div#celllist ul {
@@ -105,16 +251,15 @@ div#celllist li.selected div.element {
 
 #reset_button {
     position: absolute;
-    top: 300px;
+    top: 250px;
     left: 20px;
 }
 
 #close_button {
     position: absolute;
-    top: 340px;
+    top: 290px;
     left: 20px;
 }
-
 
 div.edit_colour_swatch {
     width: 30px;

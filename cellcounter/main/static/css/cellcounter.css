@@ -7,55 +7,6 @@
     margin-bottom: 15px;
 }
 
-#boxholder1 { min-height: 80px; border: solid white 1px; padding-left: 25px }
-#boxholder2 { min-height: 80px; border: solid white 1px; padding-left: 50px }
-#boxholder3 { min-height: 80px; border: solid black 1px; }
-#boxholder3holder { min-height: 80px; border: solid white 1px; }
-
-#boxholder_spacebar { min-height: 80px; border: white 1px; padding-left: 135px; }
-#boxholder_shiftkey { min-height: 80px; border: white 1px; padding-left: 200px; }
-
-.box1 {
-    width: 74px;
-}
-
-.box1, .box_spacebar, .box_shiftkey {
-    border: solid black 1px;
-    border-radius: 7px;
-    -webkit-border-radius: 7px;
-    -moz-border-radius: 7px;
-    margin-right: 4px;
-    height: 74px;
-    float: left;
-    text-align: center;
-    -webkit-box-shadow: 2px 2px 2px #888;
-    -moz-box-shadow: 2px 2px 2px #888;
-    box-shadow: 2px 2px 2px #888;
-}
-
-.box1 p, .box_spacebar, .box_shiftkey {
-    font-weight: bold;
-}
-
-.box1 p {
-    -webkit-border-top-left-radius: 5px;
-    -webkit-border-top-right-radius: 5px;
-    -moz-border-radius-topleft: 5px;
-    -moz-border-radius-topright: 5px;
-    border-bottom: 1px solid black;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-}
-
-div.name {
-    margin: 0;
-    padding: 0;
-}
-
-.box2 { width: 74px; height: 74px; border: solid white 3px; float: left;  text-align: center; }
-.box_spacebar { width: 469px; margin-bottom:40px;}
-.box_shiftkey { width: 142px}
-
 .c1 { background: #FFF }
 .c2 { background: #E24 }
 .c3 { background: #85F }
@@ -108,6 +59,14 @@ div#visualise2 {
     margin-left: 100px;
 }
 
+div#total2 {
+   clear: both;
+   font-size: 300%;
+   display: block;
+   position: absolute;
+   top: 300px;
+   left: 30px;
+}
 
 div#doughnut2 {
 }
