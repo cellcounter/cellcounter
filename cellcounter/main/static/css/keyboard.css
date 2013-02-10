@@ -30,7 +30,6 @@ div.count #key {
 
 div#counterbox {
   /*clear: both;*/
-  position: relative;
   display: none;
   background-color: #ffffff;
   z-index: 11;
@@ -61,29 +60,6 @@ div#terbox {
   opacity:0.6;
   filter:alpha(opacity=60); /* For IE8 and earlier */
   overflow: hidden;
-}
-
-a#img {
-  display: none;
-}
-
-div#imagebox {
-  position: relative;
-  /*text-align:center;*/
-  z-index: 120;
-  padding: 20px;
-  border: 2px solid black;
-  border-radius: 15px;
-  width: 400px;
-  display: none;
-  background-color: #e5e5e5;
-  margin: auto;
-}
-
-div#imgdisplay {
-  height: 300px;
-  width: 400px;
-
 }
 
 div#keyboard {
