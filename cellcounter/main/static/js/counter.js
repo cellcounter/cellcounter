@@ -259,8 +259,8 @@ $(document).ready(function() {
                                     .dialog({
                                         autoOpen: false,
                                         title: fullname,
-                                        width: 840,
-                                        height: 600
+                                        width: 900,
+                                        height: 700
                                     });
                                 $dialog.dialog('open');
                         }

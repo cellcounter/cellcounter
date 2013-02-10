@@ -1,2 +1,30 @@
 
-<table>{% for cellimage in images %}{% cycle '<tr>' '' '' '' '' %}<td><div class="header">{{ cellimage.title }} <!-- <a href="{% url images_by_similar_cell cellimage.pk %}">Similar Cells</a> --></div><div class="image"><a class = "modaldialog" href="{% url page cellimage.pk %}" ><img alt="{{ cellimage.description }}" src = "{% url thumbnail cellimage.pk %}"\></a></div></td>{% cycle '' '' '' '' '</tr>' as endrow %}{% empty %}<tr>No images found for this celltype.</tr>{% endfor %}{% if not endrow %}</tr>{% endif %}</table>
+<table>
+  {% for copyright, cellimage in images %}
+    {% cycle '<tr>' '' '' '' '' %}
+      <td>
+        <div class="header">
+          {{ cellimage.title }}
+          <span class="thumbcopy">&copy; [<a href="#copyright{{ copyright }}">{{ copyright }}</a>]</span>
+          <!-- <a href="{% url images_by_similar_cell cellimage.pk %}">Similar Cells</a> -->
+        </div>
+        <div class="image">
+          <a class = "modaldialog" href="{% url page cellimage.pk %}" >
+            <img alt="{{ cellimage.description }}" src = "{% url thumbnail cellimage.pk %}"\>
+          </a>
+        </div>
+      </td>
+    {% cycle '' '' '' '' '</tr>' as endrow %}
+  {% empty %}
+    <tr>No images found for this celltype.</tr>
+  {% endfor %}
+  {% if not endrow %}
+    </tr>
+  {% endif %}
+</table>
+{% for copyrightholder in copyrightholders %}
+  <a name="copyright{{ forloop.counter }}">
+    [{{ forloop.counter }}]
+  </a>
+  Copyright {% include "main/copyright.html" %}
+{% endfor %}

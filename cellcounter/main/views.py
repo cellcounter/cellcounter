@@ -49,12 +49,19 @@ def new_count(request):
 def images_by_cell_type(request, cell_type):
     if request.user.is_active and request.user.is_staff:
         ct = CellType.objects.get(machine_name = cell_type)
+        images = []
+        copyrightholders = []
+        for ci in ct.cellimage_set.all():
+            if ci.copyright not in copyrightholders:
+                copyrightholders.append(ci.copyright)
+            images.append((copyrightholders.index(ci.copyright) + 1, ci))  
         return render_to_response('main/images_by_cell_type.html',
-                {'images': ct.cellimage_set.all(),},
+                {'images': images,
+                 'copyrightholders': copyrightholders},
                 context_instance=RequestContext(request))
     else:
         return render_to_response('main/images_by_cell_type.html',
-                {'images': {}},
+                {'images': []},
                 context_instance=RequestContext(request))
 
 def similar_images(request, cell_image_pk):

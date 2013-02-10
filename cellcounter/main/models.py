@@ -24,6 +24,9 @@ class CellImage(models.Model):
     thumbnail_left = models.IntegerField()
     thumbnail_top = models.IntegerField()
     thumbnail_width = models.IntegerField()
+    uploader = models.ForeignKey(User)
+    copyright = models.ForeignKey('CopyrightHolder')
+    license = models.ForeignKey('License')
     def similar_cells(self):
         groups = self.similarlookinggroup_set.all()
         similarcells = []
@@ -37,5 +40,19 @@ class CellImage(models.Model):
 class SimilarLookingGroup(models.Model):
     name = models.CharField(max_length=100)
     cell_image = models.ManyToManyField("CellImage")    
+    def __unicode__(self):
+        return self.name
+
+class License(models.Model):
+    title = models.CharField(max_length=100)
+    details = models.TextField()
+    def __unicode__(self):
+        return self.title
+
+class CopyrightHolder(models.Model):
+    name = models.CharField(max_length=300)
+    link_title = models.CharField(max_length=300, null = True, blank = True)
+    link_url = models.CharField(max_length=300, null = True, blank = True)
+    user = models.ManyToManyField(User) #These users may apply this copyright to an image. 
     def __unicode__(self):
         return self.name
