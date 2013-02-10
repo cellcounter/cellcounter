@@ -7,13 +7,13 @@
     margin-bottom: 15px;
 }
 
-#boxholder1 { width: 800px; min-height: 80px; border: solid white 1px; margin: auto; }
-#boxholder2 { width: 720px; min-height: 80px; border: solid white 1px; margin: auto; }
-#boxholder3 { width: 888px; min-height: 80px; border: solid black 1px; margin: auto; }
-#boxholder3holder { width: 888px; min-height: 80px; border: solid white 1px; margin: auto; }
+#boxholder1 { min-height: 80px; border: solid white 1px; padding-left: 25px }
+#boxholder2 { min-height: 80px; border: solid white 1px; padding-left: 50px }
+#boxholder3 { min-height: 80px; border: solid black 1px; }
+#boxholder3holder { min-height: 80px; border: solid white 1px; }
 
-#boxholder_spacebar { width: 475px; min-height: 80px; border: white 1px; margin: auto; }
-#boxholder_shiftkey { width: 140px; min-height: 80px; border: white 1px; margin: auto; }
+#boxholder_spacebar { min-height: 80px; border: white 1px; padding-left: 135px; }
+#boxholder_shiftkey { min-height: 80px; border: white 1px; padding-left: 200px; }
 
 .box1 {
     width: 74px;
@@ -47,6 +47,11 @@
     border-top-right-radius: 6px;
 }
 
+div.name {
+    margin: 0;
+    padding: 0;
+}
+
 .box2 { width: 74px; height: 74px; border: solid white 3px; float: left;  text-align: center; }
 .box_spacebar { width: 469px; margin-bottom:40px;}
 .box_shiftkey { width: 142px}
@@ -59,7 +64,6 @@ font1 { text-decoration: none; font-weight: bold; color: black; font-size: 32px 
 font2 { text-decoration: none; font-weight: bold; color: #AAA; font-size: 12px }
 font3 { text-decoration: none; font-weight: bold; color: black; font-size: 18px }
 font4 { text-decoration: none; font-weight: bold; color: #AAA; font-size: 11px }
-font5 { text-decoration: none; font-weight: bold; color: #03A; font-size: 18px; padding-right:20px; }
 
 .header{margin-top: 1em;}
 
@@ -159,3 +163,16 @@ div#footer {
   color: #666666;
   vertical-align: top;
 }
+
+div.indextitle {
+    width: 100px;
+    float: left;
+    font-size: 1.5em;
+    text-align: right;
+    padding-right: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    color: #03A;
+    font-size: 18px;
+}
+

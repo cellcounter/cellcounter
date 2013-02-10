@@ -57,6 +57,7 @@ $(document).ready(function() {
             $('#counterbox').slideDown('slow', function () {
                 $("#fuzz").css("height", $(document).height());
                 keyboard_active = true;
+                resize_keyboard($("#counterbox").width());
             });
         });
         count_total = 0;
@@ -151,6 +152,7 @@ $(document).ready(function() {
     //Adjust height of overlay to fill screen when browser gets resized
     $(window).bind("resize", function (){
         $("#fuzz").css("height", $(document).height());
+        $("#total").text($("#counterbox").width());
         //$("#fuzz").css("top", $(window).top());
     });
     //$("#fuzz").css("height", $(document).height());
@@ -339,6 +341,32 @@ $(document).ready(function() {
         }
     });
 });
+
+function resize_keyboard(width) {
+
+    if(width < 1024) {
+        $(".box1").width(60);
+        $(".box1, .box_spacebar, .box_shiftkey").height(60);
+
+        $("#boxholder1, #boxholder2, #boxholder3, #boxholder3holder, #boxholder_spacebar, #boxholder_shiftkey").css("min-height", 65);
+        $(".box_spacebar").width(300);
+        $(".box_shiftkey").width(80);
+
+        $(".box1").css("line-height", "1.1em");
+
+    }
+    else {
+        $(".box1").width(74);
+        $(".box1, .box_spacebar, .box_shiftkey").height(74);
+
+        $("#boxholder1, #boxholder2, #boxholder3, #boxholder3holder, #boxholder_spacebar, #boxholder_shiftkey").css("min-height", 80);
+        $(".box_spacebar").width(469);
+        $(".box_shiftkey").width(142);
+        
+        $(".box1").css("line-height", "");
+    }
+
+}
 
 function reset_counters() {
     for(var x in cell_types) {
