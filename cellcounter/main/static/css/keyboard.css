@@ -124,6 +124,11 @@ div#keyboard {
 .largekeyboard div.name {
     margin: 0;
     padding: 0;
+    font-size: 14px;
+}
+
+.largekeyboard div.name {
+   font-size: 14px;
 }
 
 .largekeyboard .box_spacebar { width: 469px; margin-bottom:40px;}
