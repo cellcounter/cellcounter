@@ -139,6 +139,7 @@ INSTALLED_APPS = (
     'south',
     'cellcounter.main',
     'cellcounter.accounts',
+    'django_extensions',
 )
 
 # A sample logging configuration. The only tangible logging
