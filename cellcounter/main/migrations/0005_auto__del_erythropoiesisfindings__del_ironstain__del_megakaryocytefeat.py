@@ -29,9 +29,6 @@ class Migration(SchemaMigration):
         # Deleting model 'GranulopoiesisFindings'
         db.delete_table('main_granulopoiesisfindings')
 
-        # Adding field 'CellType.abbr_name'
-        db.add_column('main_celltype', 'abbr_name', self.gf('django.db.models.fields.CharField')(default=datetime.date(2013, 2, 6), unique=True, max_length=10), keep_default=False)
-
 
     def backwards(self, orm):
         
@@ -119,9 +116,6 @@ class Migration(SchemaMigration):
             ('dohle_bodies', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
         db.send_create_signal('main', ['GranulopoiesisFindings'])
-
-        # Deleting field 'CellType.abbr_name'
-        db.delete_column('main_celltype', 'abbr_name')
 
 
     models = {
