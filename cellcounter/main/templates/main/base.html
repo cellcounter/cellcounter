@@ -17,9 +17,6 @@
 <div class="container">
     <div class="row header">
     <div class="span2">
-        <a class="brand" href="/"><img src="{% static "images/logo.png" %}" alt="Logo" /></a>
-    </div>
-    <div class="span6">
         <a class="logo" href="/"><span class="logocell">Cell</span><span class="logocount">Countr</span></a>
     </div>
     <div style="float: right;">
@@ -29,7 +26,7 @@
             <a href="{% url login %}">login</a>
             {% endif %}
     </div>
-    <div class="span10 navbar">
+    <div class="span6 navbar" style="clear: both">
         <ul class="nav">
             <li><a href="{% url new_count %}">Work</a></li>
             <li><a href="{% url discover %}">Discover</a></li>
