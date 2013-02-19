@@ -162,7 +162,7 @@ LOGGING = {
             'class': 'django.utils.log.AdminEmailHandler'
         }
         },
-       # Log to a text file that can be rotated by logrotate
+        # Log to a text file that can be rotated by logrotate
         'logfile': {
             'class': 'logging.handlers.WatchedFileHandler',
             'filename': '/var/log/django/cellcountr.log'
@@ -180,7 +180,7 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': False,
         },
-        # Your own app - this assumes all your logger names start with "cellcountr."
+        # Your own app - this assumes all logger names start with "cellcountr."
         'cellcountr': {
             'handlers': ['logfile'],
             'level': 'WARNING', # Or maybe INFO or DEBUG
