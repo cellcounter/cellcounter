@@ -160,7 +160,6 @@ LOGGING = {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
-        }
         },
         # Log to a text file that can be rotated by logrotate
         'logfile': {
