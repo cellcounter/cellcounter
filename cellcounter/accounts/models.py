@@ -13,7 +13,7 @@ class UserProfile(models.Model):
     keyboard = JSONField(blank=True, null=True)
 
     def __unicode__(self):
-        return u"Profile of user: {}".format(self.user.username)
+        return u"Profile of user %s" % (self.user.username)
 
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
