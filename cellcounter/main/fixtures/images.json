@@ -1,0 +1,639 @@
+[
+    {
+        "pk": 1,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Small, High nuclearcytoplasmic ratio, prominent nucleoli",
+            "title": "ALL L1",
+            "thumbnail_width": 642,
+            "thumbnail_left": 116,
+            "celltype": 5,
+            "thumbnail_top": 74,
+            "file": "Blasts/ALL L1.jpeg"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Intermediate to Large, prominent cytoplasm, prominent nucleoli",
+            "title": "ALL L2",
+            "thumbnail_width": 228,
+            "thumbnail_left": 145,
+            "celltype": 5,
+            "thumbnail_top": 8,
+            "file": "Blasts/ALL L2.jpg"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Vacoulated Basophilic cytoplasm",
+            "title": "ALL L3 Burkitts",
+            "thumbnail_width": 484,
+            "thumbnail_left": 397,
+            "celltype": 5,
+            "thumbnail_top": 350,
+            "file": "Blasts/ALL L3 Burkitts.jpeg"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "No differentiation",
+            "title": "AML M0",
+            "thumbnail_width": 225,
+            "thumbnail_left": 105,
+            "celltype": 5,
+            "thumbnail_top": 29,
+            "file": "Blasts/AML M0.jpg"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Myeloid differentiation",
+            "title": "AML M1",
+            "thumbnail_width": 332,
+            "thumbnail_left": 445,
+            "celltype": 5,
+            "thumbnail_top": 377,
+            "file": "Blasts/AML M1.jpeg"
+        }
+    },
+    {
+        "pk": 6,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Myeloid differentiation with Maturation",
+            "title": "AML M2",
+            "thumbnail_width": 367,
+            "thumbnail_left": 295,
+            "celltype": 5,
+            "thumbnail_top": 81,
+            "file": "Blasts/AML M2.jpeg"
+        }
+    },
+    {
+        "pk": 7,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Granulated, Auer Roads, Clefted Bilobed Nuclei",
+            "title": "AML M3",
+            "thumbnail_width": 265,
+            "thumbnail_left": 62,
+            "celltype": 5,
+            "thumbnail_top": 1,
+            "file": "Blasts/AML M3.jpeg"
+        }
+    },
+    {
+        "pk": 8,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Myelomonocytic Differentiation",
+            "title": "AML M4",
+            "thumbnail_width": 370,
+            "thumbnail_left": 472,
+            "celltype": 5,
+            "thumbnail_top": 296,
+            "file": "Blasts/AML M4 Myelomonocytic Blasts.jpeg"
+        }
+    },
+    {
+        "pk": 9,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Monocytic Differentiation",
+            "title": "AML M5",
+            "thumbnail_width": 233,
+            "thumbnail_left": 339,
+            "celltype": 5,
+            "thumbnail_top": 240,
+            "file": "Blasts/AML M5 Monocytic Blasts.jpeg"
+        }
+    },
+    {
+        "pk": 10,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Erythroid Differentiation",
+            "title": "AML M6",
+            "thumbnail_width": 457,
+            "thumbnail_left": 269,
+            "celltype": 5,
+            "thumbnail_top": 174,
+            "file": "Blasts/AML M6 Erythroid Blasts.jpeg"
+        }
+    },
+    {
+        "pk": 11,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Megakaryocytic differentiation, Cytoplasmic blebbing",
+            "title": "AML M7",
+            "thumbnail_width": 500,
+            "thumbnail_left": 64,
+            "celltype": 5,
+            "thumbnail_top": 43,
+            "file": "Blasts/AML M7 Megakaryoblasts.jpeg"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Myelomonocytic Differentiation with Eosinophilia",
+            "title": "AML M4Eo",
+            "thumbnail_width": 383,
+            "thumbnail_left": 217,
+            "celltype": 5,
+            "thumbnail_top": 91,
+            "file": "Blasts/M4Eo .jpeg"
+        }
+    },
+    {
+        "pk": 13,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Erythroblasts",
+            "title": "Erythroblasts",
+            "thumbnail_width": 260,
+            "thumbnail_left": 88,
+            "celltype": 8,
+            "thumbnail_top": 36,
+            "file": "Erythroid/Erythroblasts.jpg"
+        }
+    },
+    {
+        "pk": 14,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Erythroblasts",
+            "title": "Erythroblasts",
+            "thumbnail_width": 224,
+            "thumbnail_left": 142,
+            "celltype": 8,
+            "thumbnail_top": 28,
+            "file": "Erythroid/Erythroblasts_2.jpg"
+        }
+    },
+    {
+        "pk": 15,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Erythroblasts",
+            "title": "Erythroblasts",
+            "thumbnail_width": 230,
+            "thumbnail_left": 98,
+            "celltype": 8,
+            "thumbnail_top": 44,
+            "file": "Erythroid/Erythroblasts_3.jpg"
+        }
+    },
+    {
+        "pk": 16,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Proerythroblasts",
+            "title": "Proerythroblasts",
+            "thumbnail_width": 170,
+            "thumbnail_left": 143,
+            "celltype": 8,
+            "thumbnail_top": 63,
+            "file": "Erythroid/Proerythroblasts.jpg"
+        }
+    },
+    {
+        "pk": 17,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Macrophage/ Histiocyte with Debris",
+            "title": "Histiocytes",
+            "thumbnail_width": 585,
+            "thumbnail_left": 146,
+            "celltype": 12,
+            "thumbnail_top": 113,
+            "file": "Histiocytes/Debris.jpeg"
+        }
+    },
+    {
+        "pk": 18,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Whole cells within the macrophage",
+            "title": "Haemophagocytosis",
+            "thumbnail_width": 390,
+            "thumbnail_left": 36,
+            "celltype": 12,
+            "thumbnail_top": 312,
+            "file": "Histiocytes/Haemaphagocytosis.jpeg"
+        }
+    },
+    {
+        "pk": 19,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Seablue Histiocytes",
+            "title": "Seablue Histiocytes",
+            "thumbnail_width": 413,
+            "thumbnail_left": 272,
+            "celltype": 12,
+            "thumbnail_top": 214,
+            "file": "Histiocytes/SeaBlue.jpeg"
+        }
+    },
+    {
+        "pk": 20,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Flower Shaped Nuclei, Clover Leaf",
+            "title": "A-TLL",
+            "thumbnail_width": 325,
+            "thumbnail_left": 403,
+            "celltype": 9,
+            "thumbnail_top": 155,
+            "file": "Lymphocytes/ATLL.jpeg"
+        }
+    },
+    {
+        "pk": 21,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Very large cells",
+            "title": "CLL Richters",
+            "thumbnail_width": 445,
+            "thumbnail_left": 59,
+            "celltype": 9,
+            "thumbnail_top": 1,
+            "file": "Lymphocytes/CLL Richters.jpeg"
+        }
+    },
+    {
+        "pk": 22,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Small, Mature Chromatin, High nucleocytoplasmic ratio",
+            "title": "CLL",
+            "thumbnail_width": 227,
+            "thumbnail_left": 347,
+            "celltype": 9,
+            "thumbnail_top": 96,
+            "file": "Lymphocytes/CLL.jpeg"
+        }
+    },
+    {
+        "pk": 23,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Large",
+            "title": "Diffuse Large B-cell Lymphoma",
+            "thumbnail_width": 355,
+            "thumbnail_left": 386,
+            "celltype": 9,
+            "thumbnail_top": 332,
+            "file": "Lymphocytes/DLBCL.jpeg"
+        }
+    },
+    {
+        "pk": 24,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Clefted Nuclei",
+            "title": "Follicular Lymphoma",
+            "thumbnail_width": 340,
+            "thumbnail_left": 428,
+            "celltype": 9,
+            "thumbnail_top": 210,
+            "file": "Lymphocytes/Follicular Lymphoma.jpeg"
+        }
+    },
+    {
+        "pk": 25,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Hairy Projections, Clear Nuclei",
+            "title": "Hairy Cell Leukaemia",
+            "thumbnail_width": 200,
+            "thumbnail_left": 250,
+            "celltype": 9,
+            "thumbnail_top": 290,
+            "file": "Lymphocytes/Hairy Cell Leukaemia.jpeg"
+        }
+    },
+    {
+        "pk": 26,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Clear cytoplasm, basophilic granules",
+            "title": "LGL Leukaemia",
+            "thumbnail_width": 318,
+            "thumbnail_left": 368,
+            "celltype": 9,
+            "thumbnail_top": 226,
+            "file": "Lymphocytes/Large Granular Lymphocytes.jpeg"
+        }
+    },
+    {
+        "pk": 27,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Plasmacytic differentiation, Mature",
+            "title": "Lymphoplasmacytic Lymphoma",
+            "thumbnail_width": 305,
+            "thumbnail_left": 618,
+            "celltype": 9,
+            "thumbnail_top": 11,
+            "file": "Lymphocytes/Lymphoplasmacytic Lymphoma.jpeg"
+        }
+    },
+    {
+        "pk": 28,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Mature, Basophilic Cytoplasm, Scalloping red cells",
+            "title": "Reactive Lymphocytes",
+            "thumbnail_width": 231,
+            "thumbnail_left": 300,
+            "celltype": 9,
+            "thumbnail_top": 435,
+            "file": "Lymphocytes/Reactive Lymphocytes.jpeg"
+        }
+    },
+    {
+        "pk": 29,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Mature, Polar projections",
+            "title": "Splenic Marginal Zone Lymphoma",
+            "thumbnail_width": 390,
+            "thumbnail_left": 45,
+            "celltype": 9,
+            "thumbnail_top": 258,
+            "file": "Lymphocytes/SMZL.jpeg"
+        }
+    },
+    {
+        "pk": 30,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Prominent nucleoli, cerebral nucleus",
+            "title": "T Prolymphocytic Leukaemia",
+            "thumbnail_width": 344,
+            "thumbnail_left": 67,
+            "celltype": 9,
+            "thumbnail_top": 270,
+            "file": "Lymphocytes/TPLL.jpeg"
+        }
+    },
+    {
+        "pk": 31,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Fragmented Nuclei, Dysplastic",
+            "title": "Dysplastic Megakaryocytes",
+            "thumbnail_width": 446,
+            "thumbnail_left": 271,
+            "celltype": 12,
+            "thumbnail_top": 118,
+            "file": "Megas/Fragmented_Nuclei.jpeg"
+        }
+    },
+    {
+        "pk": 32,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Small, Unilobed, Micromegakaryocyte",
+            "title": "Micromegakaryocyte",
+            "thumbnail_width": 582,
+            "thumbnail_left": 162,
+            "celltype": 12,
+            "thumbnail_top": 74,
+            "file": "Megas/MicroMegakaryocyte.jpeg"
+        }
+    },
+    {
+        "pk": 33,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Normal",
+            "title": "Megakaryocytes",
+            "thumbnail_width": 680,
+            "thumbnail_left": 163,
+            "celltype": 12,
+            "thumbnail_top": 78,
+            "file": "Megas/Normal.jpeg"
+        }
+    },
+    {
+        "pk": 34,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Small Unilobed, Megakaryocyte",
+            "title": "Dysplastic Megakaryocytes",
+            "thumbnail_width": 679,
+            "thumbnail_left": 86,
+            "celltype": 12,
+            "thumbnail_top": 60,
+            "file": "Megas/Unilobed 5q minus.jpeg"
+        }
+    },
+    {
+        "pk": 35,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Fatty Inclusion, Pseudogaucher cell",
+            "title": "Gaucher Cell",
+            "thumbnail_width": 279,
+            "thumbnail_left": 102,
+            "celltype": 12,
+            "thumbnail_top": 20,
+            "file": "Misc/Gaucher Cells.jpg"
+        }
+    },
+    {
+        "pk": 36,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Very Large Cell ",
+            "title": "Hodgkins Lymphoma",
+            "thumbnail_width": 288,
+            "thumbnail_left": 95,
+            "celltype": 12,
+            "thumbnail_top": 8,
+            "file": "Misc/Hodgkins Lymphoma.jpg"
+        }
+    },
+    {
+        "pk": 37,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Multinucleated cells, Pigmented Inclusions",
+            "title": "Melanoma",
+            "thumbnail_width": 300,
+            "thumbnail_left": 79,
+            "celltype": 12,
+            "thumbnail_top": 1,
+            "file": "Misc/Melanoma.jpg"
+        }
+    },
+    {
+        "pk": 38,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Multinucleated, Smooth cytoplasm",
+            "title": "Osteoblasts",
+            "thumbnail_width": 290,
+            "thumbnail_left": 37,
+            "celltype": 12,
+            "thumbnail_top": 0,
+            "file": "Misc/Osteoblasts.jpg"
+        }
+    },
+    {
+        "pk": 39,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Multinucleated, Debris",
+            "title": "Osteoclasts",
+            "thumbnail_width": 300,
+            "thumbnail_left": 60,
+            "celltype": 12,
+            "thumbnail_top": 1,
+            "file": "Misc/Osteoclasts.jpg"
+        }
+    },
+    {
+        "pk": 40,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Normal",
+            "title": "Myelocyte",
+            "thumbnail_width": 170,
+            "thumbnail_left": 129,
+            "celltype": 3,
+            "thumbnail_top": 75,
+            "file": "Myelocyte/Myelocyte_1.jpg"
+        }
+    },
+    {
+        "pk": 41,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Normal",
+            "title": "Myelocyte",
+            "thumbnail_width": 200,
+            "thumbnail_left": 140,
+            "celltype": 3,
+            "thumbnail_top": 63,
+            "file": "Myelocyte/Myelocyte_2.jpg"
+        }
+    },
+    {
+        "pk": 42,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Hypersegmented Nuclei",
+            "title": "Hypersegmented Neutrophil",
+            "thumbnail_width": 474,
+            "thumbnail_left": 213,
+            "celltype": 1,
+            "thumbnail_top": 102,
+            "file": "Neutrophil/Hypersegmented_Neutrophils.jpeg"
+        }
+    },
+    {
+        "pk": 43,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Hypograular Neutrophil, Dysplastic",
+            "title": "Hypograular Neutrophil",
+            "thumbnail_width": 477,
+            "thumbnail_left": 274,
+            "celltype": 1,
+            "thumbnail_top": 148,
+            "file": "Neutrophil/Hypogranular Myeloid.jpeg"
+        }
+    },
+    {
+        "pk": 44,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Neutrophil",
+            "title": "Neutrophil",
+            "thumbnail_width": 716,
+            "thumbnail_left": 29,
+            "celltype": 1,
+            "thumbnail_top": 63,
+            "file": "Neutrophil/Neutrophil.jpeg"
+        }
+    },
+    {
+        "pk": 45,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Pelger Huet Neutrophil",
+            "title": "Pelger Huet Neutrophil",
+            "thumbnail_width": 200,
+            "thumbnail_left": 148,
+            "celltype": 1,
+            "thumbnail_top": 68,
+            "file": "Neutrophil/Pelger Huet.jpg"
+        }
+    },
+    {
+        "pk": 46,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Eosinophilic projections",
+            "title": "Flame Cell",
+            "thumbnail_width": 427,
+            "thumbnail_left": 225,
+            "celltype": 11,
+            "thumbnail_top": 188,
+            "file": "Plasma Cells/Flame_Cells.jpeg"
+        }
+    },
+    {
+        "pk": 47,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Large, Immature",
+            "title": "Plasma Blasts",
+            "thumbnail_width": 450,
+            "thumbnail_left": 295,
+            "celltype": 11,
+            "thumbnail_top": 151,
+            "file": "Plasma Cells/Plasma Blasts.jpeg"
+        }
+    },
+    {
+        "pk": 48,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Plasma Cell",
+            "title": "Plasma Cell",
+            "thumbnail_width": 434,
+            "thumbnail_left": 286,
+            "celltype": 11,
+            "thumbnail_top": 172,
+            "file": "Plasma Cells/Plasma Cell Normal.jpeg"
+        }
+    },
+    {
+        "pk": 49,
+        "model": "main.cellimage",
+        "fields": {
+            "description": "Trinucleate Plasma Cell",
+            "title": "Trinucleate Plasma Cell",
+            "thumbnail_width": 446,
+            "thumbnail_left": 513,
+            "celltype": 11,
+            "thumbnail_top": 9,
+            "file": "Plasma Cells/Trinucleate Form.jpeg"
+        }
+    }
+]
