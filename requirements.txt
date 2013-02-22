@@ -1,4 +1,4 @@
-Django==1.4.3
+Django==1.4.5
 argparse==1.2.1
 boto==2.7.0
 distribute==0.6.34
