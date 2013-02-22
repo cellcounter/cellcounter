@@ -1,20 +1,20 @@
 import os
-import dj_database_url
+# Django settings for cellcounter project.
 import uuid
+import dj_database_url
 
 DEBUG = DEBUG = bool(os.environ.get('DEBUG', False))
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    ('Webmaster', 'webmaster@cellcountr.com'),
 )
 
 MANAGERS = ADMINS
 
-PROJECT_DIR = os.path.dirname(__file__)
+DATABASES = {'default': dj_database_url.config(default='postgres://localhost')}
 
-DEFAULT_DATABASE_URL = "sqlite:///%s" % os.path.join(PROJECT_DIR, 'db.sqlite3')
-DATABASES = {'default': dj_database_url.config(default=DEFAULT_DATABASE_URL)}
+PROJECT_DIR = os.path.dirname(__file__)
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -41,18 +41,18 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = os.path.join(PROJECT_DIR, '../media/')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = ''
+MEDIA_URL = '/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = os.path.join(PROJECT_DIR, '../static/')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -74,7 +74,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', str(uuid.uuid4()))
 
 # Logins URLs
 LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/user/home'
+LOGIN_REDIRECT_URL = '/'
 LOGOUT_URL = '/logout/'
 
 # List of callables that know how to import templates from various sources.
@@ -92,6 +92,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'cellcounter.middleware.SecureRequiredMiddleware',
 )
 
 ROOT_URLCONF = 'cellcounter.urls'
@@ -125,6 +126,7 @@ INSTALLED_APPS = (
     'gunicorn',
     'storages',
     'cellcounter.main',
+    'cellcounter.accounts',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -132,32 +134,60 @@ INSTALLED_APPS = (
 # the site admins on every HTTP 500 error when DEBUG=False.
 # See http://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
+if 'ENABLE_DJANGO_LOGGING' in os.environ:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'filters': {
+            'require_debug_false': {
+                '()': 'django.utils.log.RequireDebugFalse'
+            }
         },
+        'handlers': {
+            'mail_admins': {
+                'level': 'ERROR',
+                'filters': ['require_debug_false'],
+                'class': 'django.utils.log.AdminEmailHandler'
+            },
+            # Log to a text file that can be rotated by logrotate
+            'logfile': {
+                'class': 'logging.handlers.WatchedFileHandler',
+                'filename': '/var/log/django/cellcountr.log'
+            },
+        },
+        'loggers': {
+            'django.request': {
+                'handlers': ['mail_admins'],
+                'level': 'ERROR',
+                'propagate': True,
+            },
+            # Might as well log any errors anywhere else in Django
+            'django': {
+                'handlers': ['logfile'],
+                'level': 'ERROR',
+                'propagate': False,
+            },
+            # Your own app - this assumes all logger names start with "cellcountr."
+            'cellcountr': {
+                'handlers': ['logfile'],
+                'level': 'WARNING', # Or maybe INFO or DEBUG
+                'propagate': False
+            },
+        }
     }
-}
+
+# Associates a UserProfile with the User
+# TODO In Django 1.5 we should use a custom User model
+AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
 if 'AWS_STORAGE_BUCKET_NAME' in os.environ:
     AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
     STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
     S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
     STATIC_URL = S3_URL
+
+try:
+   from localsettings import *
+except ImportError:
+    pass
+
