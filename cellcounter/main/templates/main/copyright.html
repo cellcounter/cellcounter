@@ -1,0 +1,12 @@
+{{ copyrightholder }} 
+{% if copyrightholder.link_title or copyrightholder.link_url %}
+  ({% if copyrightholder.link_url %}
+     <a href="{{ copyrightholder.link_url }}" target="_blank">
+   {% endif %}
+   {% if copyrightholder.link_title %}
+     {{ copyrightholder.link_title }}
+   {% endif %}
+   {% if copyrightholder.link_url %}
+     </a>
+   {% endif %})
+{% endif %}

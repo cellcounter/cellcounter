@@ -6,20 +6,13 @@
 
 {% include "main/keyboard_snippet.html" %}
 
-<form action="" method="POST" class="form-horizontal">
-    {% csrf_token %}
+<div class="form-horizontal">
 
     {% include "main/forms/cellcountinstance_form.html" %}
-    {% include "main/forms/bonemarrowbackground_form.html" %}
-    {% include "main/forms/granulopoiesis_form.html" %}
-    {% include "main/forms/erythropoiesis_form.html" %}
-    {% include "main/forms/megakaryocytefeatures_form.html" %}
-    {% include "main/forms/ironstain_form.html" %}
-    {% include "main/forms/overallcomment_form.html" %}
 
     <legend>Comments for cell types</legend>
     {% for form in cellcount_form_list %}
-    <h4>{{ form.instance.cell.readable_name}}</h4>
+    <h4>{{ form.instance}}</h4>
     {% for field in form %}
     {{ field.errors }}
     {{ field }}
@@ -27,6 +20,6 @@
     {% endfor %}
 
     <input class="btn btn-success" type="submit" value="Submit" />
-</form>
+</div>
 <script type="text/javascript">erythropoiesis(); granulopoiesis(); megakaryocytes();</script>
 {% endblock %}

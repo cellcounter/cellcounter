@@ -1,124 +1,125 @@
 <div id="openkeyboard" class="btn btn-primary">Open keyboard</div>
-<div id="counterbox" style="position: relative;">
-    <div style="text-align: center; width: 100%"><div id="imagebox"><div id="imgdisplay"></div></div></div>
-        <div id="terbox" style="position: absolute; top: 0px; z-index: -1;">
+<div id="counterbox" style="position: relative;" class="largekeyboard">
+        <div id="keysbox" style="position: absolute; top: 0px; z-index: -1;">
         <!-- Row 1 -->
         <div id="boxholder1">
-            <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c2 count" id="u">
-                <font1>u</font1><br>
-                <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-                <font2>blasts</font2>
-                <div id="key">u</div>
-                <a id="img">{{ STATIC_URL }}images/101177.jpg</a>
+            <div class="box1 c1" id="q">
+                <p>q</p>
             </div>
-            <div class="box1 c2 count" id="i">
-                <font1>i</font1><br>
-                <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-                <font2>lymphocytes</font2>
-                <div id="key">i</div>
-                <a id="img">{{ STATIC_URL }}images/101291.jpg</a>
-                </div>
-            <div class="box1 c1"></div>
-                <div class="box1 c2 count" id="p">
-                <font1>p</font1><br>
-                <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-                <font2>plasma_cells</font2>
-                <div id="key">p</div>
-                <a id="img">{{ STATIC_URL }}images/104107.jpg</a>
+            <div class="box1 c1" id="w">
+                <p>w</p>
+            </div>
+            <div class="box1 c1" id="e">
+                <p>e</p>
+            </div>
+            <div class="box1 c1" id="r">
+                <p>r</p>
+            </div>
+            <div class="box1 c1" id="t">
+                <p>t</p>
+            </div>
+            <div class="box1 c1" id="y">
+                <p>y</p>
+            </div>
+            <div class="box1 c1" id="u">
+                <p>u</p>
+            </div>
+            <div class="box1 c1" id="i">
+                <p>i</p>
+            </div>
+            <div class="box1 c1" id="o">
+                <p>o</p>
+            </div>
+            <div class="box1 c1" id="p">
+                <p>p</p>
             </div>
         </div>
 
+
         <!-- Row 2 -->
         <div id="boxholder2">
-            <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c2 count" id="g">
-                <font1>g</font1><br>
-                <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-                <font2>other</font2>
-                <div id="key">g</div>
-                <a id="img"></a>
+            <div class="box1 c1" id="a">
+                <p>a</p>
             </div>
-            <div class="box1 c2 count" id="h">
-                <font1>h</font1><br>
-                <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-                <font2>neutrophils</font2>
-                <div id="key">h</div>
-                <a id="img">{{ STATIC_URL }}images/103609.jpg</a>
+            <div class="box1 c1" id="s">
+                <p>s</p>
             </div>
-            <div class="box1 c2 count" id="j">
-                <font1>j</font1><br>
-                <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-                <font2>band_forms</font2>
-                <div id="key">j</div>
-                <a id="img">{{ STATIC_URL }}images/100007.jpg</a>
+            <div class="box1 c1" id="d">
+                <p>d</p>
             </div>
-                <div class="box1 c2 count" id="k">
-                <font1>k</font1><br>
-                <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-                <font2>myelocytes</font2>
-                <div id="key">k</div>
-                <a id="img">{{ STATIC_URL }}images/100004.jpg</a>
+            <div class="box1 c1" id="f">
+                <p>f</p>
             </div>
-            <div class="box1 c2 count" id="l">
-                <font1>l</font1><br>
-                <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-                <font2>promyelocytes</font2>
-                <div id="key">l</div>
-                <a id="img">{{ STATIC_URL }}images/101970.jpg</a>
+            <div class="box1 c1" id="g">
+                <p>g</p>
+            </div>
+            <div class="box1 c1" id="h">
+                <p>h</p>
+            </div>
+            <div class="box1 c1" id="j">
+                <p>j</p>
+            </div>
+            <div class="box1 c1" id="k">
+                <p>k</p>
+            </div>
+            <div class="box1 c1" id="l">
+                <p>l</p>
             </div>
         </div>
 
         <!-- Row 3 -->
         <div id="boxholder3holder">
-            <div class="box_shiftkey c3" id="shiftkey"><font3><br>view</font2></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c1"></div>
-            <div class="box1 c2 count" id="b">
-                <font1>b</font1><br>
-                <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-                <font2>basophils</font2>
-                <div id="key">b</div>
-                <a id="img">{{ STATIC_URL }}images/103721.jpg</a>
+            <div class="box_shiftkey c3" id="shiftkey">
+                <p>Shift</p>
             </div>
-            <div class="box1 c2 count" id="n">
-                <font1>n</font1><br>
-                <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-                <font2>eosinophils</font2>
-                <div id="key">n</div>
-                <a id="img">{{ STATIC_URL }}images/100015.jpg</a>
+            <div class="box1 c1" id="z">
+                <p>z</p>
             </div>
-            <div class="box1 c2 count" id="m">
-                <font1>m</font1><br>
-                <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-                <font2>monocytes</font2>
-                <div id="key">m</div>
-                <a id="img">{{ STATIC_URL }}images/103597.jpg</a>
+            <div class="box1 c1" id="x">
+                <p>x</p>
             </div>
-            <div class="box1 c2 count" id="comma">
-                <font1>,</font1><br>
-                <div><span id="countval">0</span> (<span id="abnormal">0</span>)</div>
-                <font2>erythroid</font2>
-                <div id="key">,</div>
-                <a id="img">{{ STATIC_URL }}images/101862.jpg</a>
+            <div class="box1 c1" id="c">
+                <p>c</p>
             </div>
-            <div class="box2 c1"></div>
-            <div class="box2 c1"></div>
+            <div class="box1 c1" id="v">
+                <p>v</p>
+            </div>
+            <div class="box1 c1" id="b">
+                <p>b</p>
+            </div>
+            <div class="box1 c1" id="n">
+                <p>n</p>
+            </div>
+            <div class="box1 c1" id="m">
+                <p>m</p>
+            </div>
         </div>
 
         <div id="boxholder_spacebar">
-            <div class="box_spacebar c3" id="spacebar"><font3><br>abnormal</font2></div>
+            <div class="box_spacebar c3" id="spacebar">
+                <p>Space</p>
+            </div>
         </div>
     </div>
-    <div id="total">0</div>
+    <div id='visualisation' class="largekeyboard">
+        <div id='doughnut'></div>
+        <div id="total" style="width: 100%; height: 100%; text-align: center; position: absolute; left: 0px; top: 0px; line-height: 200px">0</div>
+    </div>
+    
+    <div id="editkeymapbox" title="Edit key map">
+        {% if not logged_in %}<p>You may edit the keyboard map, however it will not be saved.{% endif %}<p>Select a cell type then press the key you want assigned to it. Press 'enter' to select next cell type.</p>
+        <button class="btn btn-primary" id="clearkeyboard">Clear key map</button>
+        <div id="celllist">
+        </div>
+        <div style="padding-top: 10px; clear: both;"><input type="checkbox" id="multi_key" checked="checked" /> Only allow one key per cell type</div>
+        <div style="padding-top: 10px; clear: both;"><input type="checkbox" id="auto_advance" /> Automatically advance cell type</div>
+    </div>
+
+    <button class="btn btn-primary" id="edit_button">Edit key map</button>
+    <button class="btn btn-primary" id="reset_button">Reset count</button>
+    <button class="btn btn-primary" id="close_button">Close Keyboard</button>
+
+    <div id="dialog-confirm" title="Reset the count?" style="display: none">
+        <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>Once reset, the count cannot be recovered. Are you sure?</p>
+    </div>
 </div>

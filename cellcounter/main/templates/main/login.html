@@ -6,6 +6,8 @@
     <p class="error">Sorry, that's not a valid username or password</p>
 {% endif %}
 
+<p>User accounts where you can save your own keyboard map will be available shortly.</p>
+
 <form action="" method="POST" class="form-horizontal">
     {% csrf_token %}
     <div class="control-group">
@@ -22,7 +24,7 @@
     </div>
     <div class="control-group">
         <div class="controls">
-            <input class="btn" type="submit" value="login" />
+            <input class="btn btn-primary" type="submit" value="Login" />
         </div>
     </div>
 </form>

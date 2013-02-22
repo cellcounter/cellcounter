@@ -1,17 +1,11 @@
 /* Base cellcounter css */
 
-#boxholder1 { width: 800px; min-height: 80px; border: solid white 1px; margin: auto; }
-#boxholder2 { width: 720px; min-height: 80px; border: solid white 1px; margin: auto; }
-#boxholder3 { width: 888px; min-height: 80px; border: solid black 1px; margin: auto; }
-#boxholder3holder { width: 888px; min-height: 80px; border: solid white 1px; margin: auto; }
-
-#boxholder_spacebar { width: 475px; min-height: 80px; border: white 1px; margin: auto; }
-#boxholder_shiftkey { width: 140px; min-height: 80px; border: white 1px; margin: auto; }
-
-.box1 { width: 74px; height: 74px; border: solid black 3px; float: left; text-align: center; }
-.box2 { width: 74px; height: 74px; border: solid white 3px; float: left;  text-align: center; }
-.box_spacebar { width: 469px; height: 74px; border: solid black 3px; float: left; margin-bottom:40px; text-align: center; }
-.box_shiftkey { width: 142px; height: 74px; border: solid black 3px; float: left;  text-align: center; }
+#notloggedin {
+    border: 2px solid red;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
 
 .c1 { background: #FFF }
 .c2 { background: #E24 }
@@ -21,18 +15,123 @@ font1 { text-decoration: none; font-weight: bold; color: black; font-size: 32px 
 font2 { text-decoration: none; font-weight: bold; color: #AAA; font-size: 12px }
 font3 { text-decoration: none; font-weight: bold; color: black; font-size: 18px }
 font4 { text-decoration: none; font-weight: bold; color: #AAA; font-size: 11px }
-font5 { text-decoration: none; font-weight: bold; color: #03A; font-size: 18px; padding-right:20px; }
 
 .header{margin-top: 1em;}
 
 .logo{text-decoration: none;
-      line-height: 40px; }
+      line-height: 40px;
+      padding-left: 10px; }
 
-.logocell{font-weight: bold;
-          color: red;
-          font-size: 40px}
-
-.logocount {color: black;
-            font-size: 40px }
+.logocell, .logocellsmall { color: red; font-weight: bold; }
+.logocount, .logocountsmall  { color: black; }
+.logocell, .logocount { font-size: 40px; }
+.logocellsmall, .logocountsmall { font-size: 16px; }
 
 .username {padding:10px 15px 10px;}
+
+div#statistics table.statistics {
+    text-align: center;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+div#statistics th,td {
+    border: 1px solid black;
+    padding: 1px 10px;
+}
+
+div#statistics td.noborder {
+    border: none;
+}
+
+div#statistics table.statistics td {
+    text-align: right;
+}
+
+div#statistics table.statistics td.celltypes {
+    text-align: left;
+}
+
+div#visualise2 {
+    float: left;
+    /*height: 100%;*/
+    margin-top: 12%;
+    margin-left: 100px;
+}
+
+div#total2 {
+   clear: both;
+   font-size: 300%;
+   display: block;
+   position: absolute;
+   top: 300px;
+   left: 30px;
+}
+
+div#doughnut2 {
+}
+
+div#downloadify {
+    /*padding: 5px;*/
+}
+
+div#discover h3 {
+    margin-top: 20px;
+    line-height: 20px;
+}
+
+div#terms,div#privacy {
+    margin-bottom: 30px;
+}
+
+div#terms h4 {
+    margin: 30px 0 15px 0;
+}
+
+div#privacy h4 {
+    margin: 20px 0 15px 0;
+}
+
+div.rule {
+    clear: both;
+    border: 1px solid #aaaaaa;
+}
+
+div#footer {
+    clear: both;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+#footer ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 30px;
+  margin-left: 0px;
+  /*margin: 0px auto;*/
+  /*margin-left: auto ;
+  margin-right: auto ;*/
+  /*vertical-align: bottom;*/
+}
+
+#footer li {
+  display: inline-block;
+  margin: 0 0.2em;
+  padding: 0 1.5em;
+  color: #666666;
+  vertical-align: top;
+}
+
+div.indextitle {
+    width: 100px;
+    float: left;
+    font-size: 1.5em;
+    text-align: right;
+    padding-right: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    color: #03A;
+    font-size: 18px;
+}
+
