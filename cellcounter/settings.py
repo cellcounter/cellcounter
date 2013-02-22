@@ -147,46 +147,47 @@ INSTALLED_APPS = (
 # the site admins on every HTTP 500 error when DEBUG=False.
 # See http://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
+if 'ENABLE_DJANGO_LOGGING' in os.environ:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'filters': {
+            'require_debug_false': {
+                '()': 'django.utils.log.RequireDebugFalse'
+            }
+        },
+        'handlers': {
+            'mail_admins': {
+                'level': 'ERROR',
+                'filters': ['require_debug_false'],
+                'class': 'django.utils.log.AdminEmailHandler'
+            },
+            # Log to a text file that can be rotated by logrotate
+            'logfile': {
+                'class': 'logging.handlers.WatchedFileHandler',
+                'filename': '/var/log/django/cellcountr.log'
+            },
+        },
+        'loggers': {
+            'django.request': {
+                'handlers': ['mail_admins'],
+                'level': 'ERROR',
+                'propagate': True,
+            },
+            # Might as well log any errors anywhere else in Django
+            'django': {
+                'handlers': ['logfile'],
+                'level': 'ERROR',
+                'propagate': False,
+            },
+            # Your own app - this assumes all logger names start with "cellcountr."
+            'cellcountr': {
+                'handlers': ['logfile'],
+                'level': 'WARNING', # Or maybe INFO or DEBUG
+                'propagate': False
+            },
         }
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        },
-        # Log to a text file that can be rotated by logrotate
-        'logfile': {
-            'class': 'logging.handlers.WatchedFileHandler',
-            'filename': '/var/log/django/cellcountr.log'
-        },
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-        # Might as well log any errors anywhere else in Django
-        'django': {
-            'handlers': ['logfile'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-        # Your own app - this assumes all logger names start with "cellcountr."
-        'cellcountr': {
-            'handlers': ['logfile'],
-            'level': 'WARNING', # Or maybe INFO or DEBUG
-            'propagate': False
-        },
     }
-}
 
 # Associates a UserProfile with the User
 # TODO In Django 1.5 we should use a custom User model
