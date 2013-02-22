@@ -1,13 +1,51 @@
 {% extends 'main/base.html' %}
 
+{% load staticfiles %}
+
 {% block content %}
 
-<p>To begin a new count, click 'Open Keyboard', perform the count using your keyboard and the keys displayed. Should you wish to see example images of the cells in question, press 'Shift+Letter', to enter an abnormal variant of a cell, press 'Space+Letter', and to remove a count, press 'Backspace+Letter'. To close the keyboard, click on the grey area outside the keyboard. Once you have completed a count, fill in the remaining information in the form below, and click 'Submit'.</p>
+{% comment %} 
+<div id="notloggedin">
+<img src="{% static "images/alert.png" %}" style="float:left; margin-right: 20px" alt="Alert" />
+<h3>Not logged in</h3>
+<p>You may use the cell counter without logging in, but you will be unable to save any changes to your keyboard map.</p>
+<p><a href="/login/?next=/count/new/">Click here to log in.</a></p>
+</div>
+ {% endcomment %}
+{% if not logged_in %}
+<script type="text/javascript">
+var notloggedin=true;
+</script>
+{% endif %}
+
+<p>Click 'Open Keyboard' to start performing a count.</p>
+<ul>
+    <li>Press the key corresponding to a cell type to add a count.</li>
+    <li>To remove a count press 'Backspace+Key'.</li>
+    <li>To flag a cell as abnormal press 'Space+Key'.</li>
+    <li>To see example images of the cells in question press 'Shift+Key'.</li>
+    <!-- Once you have completed a count, fill in the remaining information in the form below, and click 'Submit'.-->
+</ul>
+
+<p>To see a tabulated differential report close the keyboard. You may also save the report to your local disk.</p>
 
 {% include "main/keyboard_snippet.html" %}
 
-<div id="statistics"></div>
+<div style="width: 100%">
+    <div id="statistics" style="float: left; margin-bottom: 20px;"></div>
+    <div id="visualise2" style="display: none; position: relative;">
+        <div id="doughnut2"></div>
+        <div id="total2" style="width: 100%; height: 100%; text-align: center; position: absolute; left: 0px; top: 0px; line-height: 200px">0</div>
+    </div>
+</div>
+<div style="clear: both; position: relative; display: none;" id="savefilebutton">
+    <div id="downloadify" style="position: absolute; top:0px; left:0px;">
+    You must have Flash 10 installed to download this file.
+    </div>
+    <button class="btn btn-primary" id="downloadify_button" style="width:130px">Save as CSV</button> (this may be opened with Microsoft Excel)
+</div>
 
+{% comment %}
 <form action="" method="POST" class="form-horizontal">
     {% csrf_token %}
     
@@ -28,5 +66,8 @@
     <br>
     <input class="btn btn-success" type="submit" value="Submit" />
 </form>
+{% endcomment %}
+
+<br><p>At present this site is optimised for Firefox or Chromium-based web browsers, and display sizes of at least 1024x768. See the <a href="/about/">About</a> section for more information.</p>
 
 {% endblock %}

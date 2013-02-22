@@ -125,6 +125,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'gunicorn',
     'storages',
+    'south',
     'cellcounter.main',
     'cellcounter.accounts',
 )
