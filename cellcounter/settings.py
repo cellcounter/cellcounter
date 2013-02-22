@@ -7,7 +7,7 @@ DEBUG = DEBUG = bool(os.environ.get('DEBUG', False))
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    ('Webmaster', 'webmaster@cellcountr.com'),
+    # ('Your Name', 'your_email@example.com'),
 )
 
 MANAGERS = ADMINS
@@ -95,6 +95,16 @@ MIDDLEWARE_CLASSES = (
     # 'cellcounter.middleware.SecureRequiredMiddleware',
 )
 
+# HTTPS_SUPPORT = True
+HTTPS_SUPPORT = False
+
+SECURE_REQUIRED_PATHS = (
+#    '/admin/',
+#    '/count/',
+#    '/login/',
+#    '/accounts/',
+)
+
 ROOT_URLCONF = 'cellcounter.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
@@ -125,9 +135,11 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'gunicorn',
     'storages',
+    'colorful',
     'south',
     'cellcounter.main',
     'cellcounter.accounts',
+    'django_extensions',
 )
 
 # A sample logging configuration. The only tangible logging
