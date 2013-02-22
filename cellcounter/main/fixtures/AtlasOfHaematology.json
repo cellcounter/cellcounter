@@ -1,0 +1,22 @@
+[
+   {
+      "pk": 1,
+      "model": "main.copyrightholder",
+      "fields": {
+         "link_title": "Atlas of Hematology",
+         "link_url": "http://www.hematologyatlas.com/",
+         "name": "Nivaldo Medeiros, M.D.",
+         "user": [
+            1
+         ]
+      }
+   },
+   {
+      "pk": 1,
+      "model": "main.license",
+      "fields": {
+         "details": "On 6 February 2013 01:47, Nivaldo Medeiros <nivas@earthlink.net> wrote:\r\n\r\n    Dear Dr. Wong,\r\n\r\n    Sure, you have my permission. I hope the images that are in my website with 72 dpi (LR), you can use and/or reproduce essentially for free, but you should not sub license or lease the provided images to any entity, without my approval. Giving me the credit of the images would be perfect (like my name and source).The way I usually allow my images (with high-resolution) to be used are: individuals or Corp. pay me a single licensing fee and they may use it on multiple projects as often as they like (royalty-free type of usage rights).\r\n\r\n    My best regards,\r\n     \r\n    Nivaldo Medeiros, M.D.\r\n\r\n        -----Original Message-----\r\n        From: Wai Keong\r\n        Sent: Feb 3, 2013 1:14 PM\r\n        To: nivas@earthlink.net\r\n        Subject: Permission to use your images as part of an educational project called CellCountr\r\n\r\n        Dear Dr Medeiros,\r\n\r\n        My name is Dr Wai Keong Wong and I'm a clinical haematologist in training in the UK.\r\n\r\n        Thank you for the wonderful resource that you have created at http://www.hematologyatlas.com/\r\n\r\n        A few friends and colleagues of mine had built a tool called CellCountr that is basically a web-based customisable keyboard tool for helping with Bone Marrow Aspirate differentials.\r\n\r\n        As part of this tool, we have also attached some reference images that a user can call up easily using a simple keyboard shortcut.\r\n\r\n        In the creation of this tool, I have used some of the images on your website. We have not launched in anyway and the tool is not public. We fully intend to create our own library of images for this tool but as part of development we have used some of yours.\r\n\r\n        I was wondering if you give us permission to use some of your images in the meantime.\r\n\r\n        Please feel free to have a sneak peak of our tool here (You will require a modern browser): \r\n        http://ancient-castle-7601.herokuapp.com/count/new/\r\n\r\n        Just to be clear that this is an opensource, not for profit, educational project that was created during our spare time to make the process of deriving a bone marrow differential faster and more fun!\r\n\r\n        You will be credited prominently on our website for your generosity. I do hope that you will allow us to integrate this amazing resource you have created into CellCountr so that more can benefit from your efforts.\r\n\r\n        Regards,\r\n\r\n        Wai Keong\r\n        uk.linkedin.com/pub/wai-keong-wong/27/162/8a6",
+         "title": "For use on CellCountr website"
+      }
+   }
+]
