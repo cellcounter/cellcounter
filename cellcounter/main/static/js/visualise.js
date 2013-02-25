@@ -6,6 +6,13 @@ function init_visualisation(div_id) {
     // Size of doughnut.
     //var size = 200;
 
+    try {
+        d3;
+    }
+    catch(e) {
+        return;
+    }
+
     // Set up a function used to calculate the angles of the doughnut.
     pie = d3.layout.pie()
         // This ensures the segments remain ordered.
@@ -53,6 +60,13 @@ function update_visualisation() {
     "use strict";
 
     display_data = [];
+    
+    try {
+        d3;
+    }
+    catch(e) {
+        return;
+    }
 
     var count_total = 0;
     for(var x in cell_types) {
