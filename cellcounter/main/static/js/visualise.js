@@ -6,6 +6,7 @@ function init_visualisation(div_id) {
     // Size of doughnut.
     //var size = 200;
 
+    /* Don't try and display the visualisation if it isn't loaded (i.e. in IE7) */
     try {
         d3;
     }
@@ -61,13 +62,6 @@ function update_visualisation() {
 
     display_data = [];
     
-    try {
-        d3;
-    }
-    catch(e) {
-        return;
-    }
-
     var count_total = 0;
     for(var x in cell_types) {
         display_data.push(cell_types[x]);
@@ -76,6 +70,14 @@ function update_visualisation() {
 
     $("#total").text(count_total);
     if(count_total == 0) {
+        return;
+    }
+
+    /* Don't try and display the visualisation if it isn't loaded (i.e. in IE7) */
+    try {
+        d3;
+    }
+    catch(e) {
         return;
     }
 
