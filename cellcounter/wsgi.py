@@ -28,7 +28,7 @@ import django.core.handlers.wsgi
 _application = django.core.handlers.wsgi.WSGIHandler()
 
 def application(environ, start_response):
-  os.environ['DATABASE_URL'] = environ['DATABASE_URL']
+  os.environ['DATABASE_URL'] = environ.get('DATABASE_URL', '')
   return _application(environ, start_response)
 
 # Apply WSGI middleware here.
