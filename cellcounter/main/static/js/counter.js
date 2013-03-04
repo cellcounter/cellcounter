@@ -497,7 +497,7 @@ function edit_keyboard() {
                     }
                     }
                 ],
-        width: "348px"
+        width: "368px"
     });
     $(d).dialog('widget')
         .position({ my: 'right top', at: 'right top', of: $("div#counterbox") });
