@@ -47,7 +47,7 @@ class KeyboardLayoutView(JSONResponseMixin, DetailView):
             # Get the user profile object
             self.object = self.get_object()
             # Get keyboard definition
-            self.object.keyboard = json.loads(request.raw_post_data)
+            self.object.keyboard = json.loads(request.body)
             # Save the change
             self.object.save()
             # Return with accepted but no content
