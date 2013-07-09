@@ -8,8 +8,7 @@ from django.utils.decorators import method_decorator
 from cellcounter.accounts.models import UserProfile
 from cellcounter.mixins import JSONResponseMixin
 
-import os, sys
-from django.conf import settings
+from utils import DEFAULT_KEYBOARD_JSON
 
 class KeyboardLayoutView(JSONResponseMixin, DetailView):
     """
@@ -22,16 +21,14 @@ class KeyboardLayoutView(JSONResponseMixin, DetailView):
         if self.request.user.is_authenticated():
             return self.model.objects.get(user=self.request.user)
         else:
-            return json.load(open(os.path.join(settings.PROJECT_DIR,
-                'accounts/keyboard.json'), 'r'))
+            return json.loads(DEFAULT_KEYBOARD_JSON)
 
     def get_context_data(self, *args, **kwargs):
         if self.request.user.is_authenticated():
             return self.object.keyboard or {}
         else:
             #print >> sys.stderr, "test"
-            return json.load(open(os.path.join(settings.PROJECT_DIR,
-                'accounts/keyboard.json'), 'r'))
+            return json.loads(DEFAULT_KEYBOARD_JSON)
 
     # TODO Enable csrf checking
     @method_decorator(csrf_exempt)

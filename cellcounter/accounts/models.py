@@ -1,12 +1,11 @@
-import os
 import simplejson as json
 
 from django.db import models
 from django.contrib.auth.models import User
 from django_extensions.db.fields.json import JSONField
-from django.conf import settings
 
 from django.db.models.signals import post_save
+from utils import DEFAULT_KEYBOARD_JSON
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True)
@@ -21,8 +20,7 @@ def create_user_profile(sender, instance, created, **kwargs):
 
         try:
             # TODO Get this from database?
-            profile.keyboard = json.load(open(os.path.join(settings.PROJECT_DIR,
-                'accounts/keyboard.json'), 'r'))
+            profile.keyboard = json.loads(DEFAULT_KEYBOARD_JSON)
             profile.save()
         except IOError:
             # If a default keyboard configuration is not provided do nothing
