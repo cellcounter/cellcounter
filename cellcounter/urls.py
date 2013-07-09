@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.conf import settings
-from django.views.generic.simple import direct_to_template
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.views.generic import TemplateView
 
 from django.contrib import admin
 from django.contrib.auth.views import login, logout
@@ -12,13 +12,13 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 
-    url(r'^$', direct_to_template, {'template': 'main/index.html'},
+    url(r'^$', TemplateView.as_view(template_name="main/index.html"),
             name="index"),
 
     url(r'^count/$', new_count, name="count_home"),
     url(r'^count/new/$', new_count, name="new_count"),
-    url(r'^discover/$', direct_to_template, {'template': 'main/discover.html'}, name="discover"),
-    url(r'^about/$', direct_to_template, {'template': 'main/about.html'}, name="about"),
+    url(r'^discover/$', TemplateView.as_view(template_name="main/discover.html"), name="discover"),
+    url(r'^about/$', TemplateView.as_view(template_name="main/about.html"), name="about"),
 
     url(r'^images/celltype/(?P<cell_type>\w+)/$', images_by_cell_type, name="images_by_cell_type"),
     url(r'^images/similar/(?P<cell_image_pk>\d+)/$', similar_images, name="images_by_similar_cell"),
@@ -33,9 +33,9 @@ urlpatterns = patterns('',
 
     url(r'^accounts/', include('cellcounter.accounts.urls')),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^terms$', direct_to_template, {'template': 'main/terms.html'},
+    url(r'^terms$', TemplateView.as_view(template_name="main/terms.html"),
             name="terms"),
-    url(r'^privacy$', direct_to_template, {'template': 'main/privacy.html'},
+    url(r'^privacy$', TemplateView.as_view(template_name="main/privacy.html"),
             name="privacy"),
 )
 
