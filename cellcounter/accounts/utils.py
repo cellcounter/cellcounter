@@ -1,4 +1,7 @@
-{
+"""Utilities module for the Cellcounter/accounts app. Essentially houses the
+JSON required for the keyboard as a string"""
+
+DEFAULT_KEYBOARD_JSON = """{
     "q": {
         "cellid": 1
     },
@@ -35,4 +38,4 @@
     "x": {
         "cellid": 6
     }
-}
+}"""
