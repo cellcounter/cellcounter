@@ -3,7 +3,7 @@ Pillow==2.1.0
 South==0.8.1
 argparse==1.2.1
 boto==2.9.7
-distribute==0.6.34
+distribute==0.7.3
 dj-database-url==0.2.1
 django-storages==1.1.8
 psycopg2==2.5.1
