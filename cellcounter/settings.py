@@ -1,9 +1,8 @@
 import os
-# Django settings for cellcounter project.
 import uuid
 import dj_database_url
 
-DEBUG = DEBUG = bool(os.environ.get('DEBUG', False))
+DEBUG = bool(os.environ.get('DEBUG', False))
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
