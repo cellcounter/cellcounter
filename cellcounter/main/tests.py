@@ -2,10 +2,10 @@ import re
 import datetime
 
 import factory
-import webtest
+from django.contrib.auth.models import User
 from django.test import TestCase
 from django.utils.timezone import utc
-from django.contrib.auth.models import User
+
 from django.core.urlresolvers import reverse
 from django_webtest import WebTest
 
@@ -24,7 +24,7 @@ CELLTYPE_LIST = [('Neutrophils', 'neutrophils'),
                  ('Plasma cells', 'plasma_cells'),
                  ('Other', 'other'),]
 
-class UserFactory(factory.Factory):
+class UserFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = User
 
     username = factory.Sequence(lambda n: "test%s" % n)
@@ -38,7 +38,7 @@ class UserFactory(factory.Factory):
     last_login = datetime.datetime.utcnow().replace(tzinfo=utc)
     date_joined = datetime.datetime.utcnow().replace(tzinfo=utc)
 
-class CellTypeFactory(factory.Factory):
+class CellTypeFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = CellType
     
     readable_name = '' 
