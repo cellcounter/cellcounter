@@ -3,6 +3,7 @@ import uuid
 import dj_database_url
 
 DEBUG = bool(os.environ.get('DEBUG', False))
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -10,10 +11,13 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
-
-DATABASES = {'default': dj_database_url.config(default='postgres://localhost')}
-
 PROJECT_DIR = os.path.dirname(__file__)
+
+DATABASES = {'default': dj_database_url.config(default='sqlite://:memory:')}
+
+if DEBUG:
+    db_url = 'sqlite:///%s/sqlite.db' %(PROJECT_DIR)
+    DATABASES['default'] = dj_database_url.config(default=db_url)
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -132,13 +136,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-    'gunicorn',
-    'storages',
     'colorful',
+    'storages',
     'south',
     'cellcounter.main',
-    'cellcounter.accounts',
-    'django_extensions',
+    'cellcounter.keyboardapi',
 )
 
 # A sample logging configuration. The only tangible logging
