@@ -3,3 +3,5 @@ venv
 *.swp
 *.db
 localsettings.py
+.idea/
+*.un~
