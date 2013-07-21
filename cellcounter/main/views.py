@@ -1,20 +1,11 @@
-from django.http import HttpResponseForbidden, HttpResponse
-from django.shortcuts import render_to_response, HttpResponseRedirect, get_object_or_404
+from django.http import HttpResponse
+from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from django.core.urlresolvers import reverse
-from django.contrib import messages
-from django.views.generic import ListView, DetailView
-from django.contrib.auth.models import User
-from django.core import exceptions
-from django.conf import settings
+from django.views.generic import ListView
 from PIL import Image
-import os.path
 
 from cellcounter.main.models import CellType, CellImage
 
-from cellcounter.main.decorators import user_is_owner
 from cellcounter.mixins import JSONResponseMixin
 
 class ListCellTypesView(JSONResponseMixin, ListView):

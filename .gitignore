@@ -1,4 +1,7 @@
 venv
 *.pyc
 *.swp
+*.db
 localsettings.py
+.idea/
+*.un~

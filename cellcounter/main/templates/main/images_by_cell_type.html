@@ -1,4 +1,3 @@
-
 <table>
   {% for copyright, cellimage in images %}
     {% cycle '<tr>' '' '' '' '' %}
@@ -6,11 +5,11 @@
         <div class="header">
           {{ cellimage.title }}
           <span class="thumbcopy">&copy; [<a href="#copyright{{ copyright }}">{{ copyright }}</a>]</span>
-          <!-- <a href="{% url images_by_similar_cell cellimage.pk %}">Similar Cells</a> -->
+          <!-- <a href="{% url "images_by_similar_cell" cellimage.pk %}">Similar Cells</a> -->
         </div>
         <div class="image">
-          <a class = "modaldialog" href="{% url page cellimage.pk %}" >
-            <img alt="{{ cellimage.description }}" src = "{% url thumbnail cellimage.pk %}"\>
+          <a class = "modaldialog" href="{% url "page" cellimage.pk %}" >
+            <img alt="{{ cellimage.description }}" src = "{% url "thumbnail" cellimage.pk %}"\>
           </a>
         </div>
       </td>

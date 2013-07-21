@@ -1,4 +1,4 @@
-from django.forms import Form, HiddenInput, Textarea, CheckboxInput, Select, ValidationError
+from django.forms import Textarea
 
 
 COMMENT_WIDGET = {'comment': Textarea(attrs={'rows': 2, 'placeholder': 'Comments'})}
