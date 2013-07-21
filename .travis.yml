@@ -4,8 +4,8 @@ python:
 
 # command to install dependencies
 install:
- - pip install --use-mirrors -q -r requirements.txt
- - pip install --use-mirrors -q -r test-requirements.txt
+ - pip install --use-mirrors -r requirements.txt
+ - pip install --use-mirrors -r test-requirements.txt
 
 # command to run tests
 script: python manage.py test main keyboardapi
