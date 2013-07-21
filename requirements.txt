@@ -8,4 +8,5 @@ dj-database-url==0.2.2
 django-storages==1.1.8
 psycopg2==2.5.1
 wsgiref==0.1.2
+gunicorn==17.5
 -e git+https://github.com/jvc26/validictory.git@9e581cf25365e28188f016ad8d289171c370f213#egg=validictory-dev
