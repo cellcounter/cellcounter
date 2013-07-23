@@ -3,7 +3,6 @@ import uuid
 import dj_database_url
 
 DEBUG = bool(os.environ.get('DEBUG', False))
-DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
