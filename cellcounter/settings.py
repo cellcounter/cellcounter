@@ -3,6 +3,7 @@ import uuid
 import dj_database_url
 
 DEBUG = bool(os.environ.get('DEBUG', False))
+TEST = bool(os.environ.get('TEST', False))
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -12,11 +13,12 @@ ADMINS = (
 MANAGERS = ADMINS
 PROJECT_DIR = os.path.dirname(__file__)
 
-DATABASES = {'default': dj_database_url.config(default='sqlite://:memory:')}
+DEFAULT_DATABASE_URL = "sqlite:///%s" % os.path.join(PROJECT_DIR, 'db.sqlite3')
 
-if DEBUG:
-    db_url = 'sqlite:///%s/sqlite.db' %(PROJECT_DIR)
-    DATABASES['default'] = dj_database_url.config(default=db_url)
+if TEST:
+    DEFAULT_DATABASE_URL = 'sqlite://:memory:'
+
+DATABASES = {'default': dj_database_url.config(default=DEFAULT_DATABASE_URL)}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
