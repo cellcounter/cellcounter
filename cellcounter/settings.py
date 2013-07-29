@@ -3,6 +3,7 @@ import uuid
 import dj_database_url
 
 DEBUG = bool(os.environ.get('DEBUG', False))
+TEST = bool(os.environ.get('TEST', False))
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -12,11 +13,12 @@ ADMINS = (
 MANAGERS = ADMINS
 PROJECT_DIR = os.path.dirname(__file__)
 
-DATABASES = {'default': dj_database_url.config(default='sqlite://:memory:')}
+DEFAULT_DATABASE_URL = "sqlite:///%s" % os.path.join(PROJECT_DIR, 'db.sqlite3')
 
-if DEBUG:
-    db_url = 'sqlite:///%s/sqlite.db' %(PROJECT_DIR)
-    DATABASES['default'] = dj_database_url.config(default=db_url)
+if TEST:
+    DEFAULT_DATABASE_URL = 'sqlite://:memory:'
+
+DATABASES = {'default': dj_database_url.config(default=DEFAULT_DATABASE_URL)}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -189,18 +191,8 @@ if 'ENABLE_DJANGO_LOGGING' in os.environ:
         }
     }
 
-# Associates a UserProfile with the User
-# TODO In Django 1.5 we should use a custom User model
-AUTH_PROFILE_MODULE = 'accounts.UserProfile'
-
 if 'AWS_STORAGE_BUCKET_NAME' in os.environ:
     AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
     STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
     S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
     STATIC_URL = S3_URL
-
-try:
-   from localsettings import *
-except ImportError:
-    pass
-
