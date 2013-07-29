@@ -109,6 +109,8 @@ SECURE_REQUIRED_PATHS = (
 #    '/accounts/',
 )
 
+ALLOWED_HOSTS = ['.cellcountr.com']
+
 ROOT_URLCONF = 'cellcounter.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
@@ -167,7 +169,7 @@ if 'ENABLE_DJANGO_LOGGING' in os.environ:
             # Log to a text file that can be rotated by logrotate
             'logfile': {
                 'class': 'logging.handlers.WatchedFileHandler',
-                'filename': '/var/log/django/cellcountr.log'
+                'filename': os.environ.get('DJANGO_LOG_PATH')
             },
         },
         'loggers': {
