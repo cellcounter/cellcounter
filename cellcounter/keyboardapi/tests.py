@@ -85,6 +85,7 @@ class CustomKeyboardTestCase(TestCase):
         self.assertTrue(CustomKeyboard.objects.get(id=keyboard2.id).is_primary)
 
 class KeyboardAPITestCase(WebTest):
+    fixtures = ['cellcounter/main/fixtures/initial_data.json']
 
     def setUp(self):
         keyboard = KeyboardFactory(user__username='example', is_primary=True,
