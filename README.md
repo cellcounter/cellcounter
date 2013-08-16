@@ -4,12 +4,8 @@
 
 Code developed at NHSHackDay2 to count cells for haematological blood film analysis.
 
-Quick start instructions
-========================
 
-Install required software (Ubuntu):
-
-    sudo apt-get install python-dev libpq-dev python-pip virtualenvwrapper sqlite3
+## Running Locally
 
 Clone the repository:
 
@@ -17,18 +13,12 @@ Clone the repository:
 
 Create a virtual environment:
 
-    mkvirtualenv -r requirements.txt env1
+    virtualenv .env
+    source .env/bin/activate
+    pip install -r requirements.txt
 
-Edit cellcounter/localsettings.py to contain the following:
-
-    DATABASES = {'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/full/path/to/cellcounter/db.sql'
-        }
-    }
-
-    STATICFILES_DIRS = ('/full/path/to/cellcounter/static/',)
-    DEBUG = True
+(if you don't have `virtualenv`, then `sudo pip install virtualenv`)
+(if you don't have `pip`, then `sudo easy_install pip`)
 
 Build the database:
 
