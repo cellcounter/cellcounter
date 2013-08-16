@@ -3,3 +3,37 @@
 [![Build Status](https://secure.travis-ci.org/cellcounter/cellcounter.png)](http://travis-ci.org/cellcounter/cellcounter)
 
 Code developed at NHSHackDay2 to count cells for haematological blood film analysis.
+
+Quick start instructions
+========================
+
+Install required software (Ubuntu):
+
+    sudo apt-get install python-dev libpq-dev python-pip virtualenvwrapper sqlite3
+
+Clone the repository:
+
+    git clone ...
+
+Create a virtual environment:
+
+    mkvirtualenv -r requirements.txt env1
+
+Edit cellcounter/localsettings.py to contain the following:
+
+    DATABASES = {'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': '/full/path/to/cellcounter/db.sql'
+        }
+    }
+
+    STATICFILES_DIRS = ('/full/path/to/cellcounter/static/',)
+    DEBUG = True
+
+Build the database:
+
+    python manage.py syncdb
+
+Run the Django webserver:
+
+    python manage.py runserver
