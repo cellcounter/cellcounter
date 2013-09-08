@@ -17,11 +17,17 @@ DATABASES = {'default': {
     }
 }
 
-STATICFILES_DIRS = ('/full/path/to/cellcounter/static/',)
 DEBUG = True
+
 
 Build the database:
     python manage.py syncdb
+
+Migrate to the latest schema:
+    python manage.py migrate
+
+Collect the static files:
+    python manage.py collectstatic
 
 Run the Django webserver:
     python manage.py runserver

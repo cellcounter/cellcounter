@@ -97,6 +97,7 @@ MIDDLEWARE_CLASSES = (
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'cellcounter.middleware.SecureRequiredMiddleware',
+    'cellcounter.middleware.RequestLoggerMiddleware',
 )
 
 # HTTPS_SUPPORT = True
@@ -144,6 +145,7 @@ INSTALLED_APPS = (
     'south',
     'cellcounter.main',
     'cellcounter.keyboardapi',
+    'cellcounter.logs',
 )
 
 # A sample logging configuration. The only tangible logging
