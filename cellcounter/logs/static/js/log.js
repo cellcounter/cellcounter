@@ -136,11 +136,11 @@ function update_referrers() {
         var x = referrers_sorted[i];
         j++;
         referrers_text += "<tr><td>"+j+".</td><td>"+escapeHtml(x["referrer"])+"</td><td>"+x["count"]+"</td></tr>";
+        if(j>=10) break;
     }
     referrers_text += "</table>"
     $('div#referralsdata').empty().append(referrers_text);
 
-    if(j>=10) break;
 }
 
 function get_dates() {
