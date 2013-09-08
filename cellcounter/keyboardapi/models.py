@@ -19,6 +19,9 @@ class CustomKeyboard(models.Model):
     last_modified = models.DateTimeField(auto_now=True)
     mappings = models.ManyToManyField(KeyMap)
 
+    class ObjectDoesNotExist(KeyError):
+        pass
+
     class Meta:
         unique_together = ('user', 'label')
 
