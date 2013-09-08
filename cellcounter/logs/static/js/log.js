@@ -64,6 +64,7 @@ function update_hosts() {
         var x = hosts_sorted[i];
         j++;
         hosts_text += "<tr><td>"+j+".</td><td>"+x["host"]+"</td><td>"+x["count"]+"</td></tr>";
+        if(j>=10) break;
     }
     hosts_text += "</table>"
     $('div#hostsdata').empty().append(hosts_text);
@@ -100,6 +101,7 @@ function update_pages() {
         var x = pages_sorted[i];
         j++;
         pages_text += "<tr><td>"+j+".</td><td>"+x["page"]+"</td><td>"+x["count"]+"</td></tr>";
+        if(j>=10) break;
     }
     pages_text += "</table>"
     $('div#pagesdata').empty().append(pages_text);
@@ -137,6 +139,8 @@ function update_referrers() {
     }
     referrers_text += "</table>"
     $('div#referralsdata').empty().append(referrers_text);
+
+    if(j>=10) break;
 }
 
 function get_dates() {
