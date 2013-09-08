@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView
-from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.exceptions import PermissionDenied, ValidationError, ObjectDoesNotExist
 
 from cellcounter.main.models import CellType
 from cellcounter.keyboardapi.models import CustomKeyboard, KeyMap
@@ -53,7 +53,7 @@ class KeyboardAPIView(DetailView):
                 try:
                     object = CustomKeyboard.objects.get(user=self.request.user, is_primary=True)
                     return object
-                except CustomKeyboard.ObjectDoesNotExist:
+                except ObjectDoesNotExist:
                     return None
 
             object = super(KeyboardAPIView, self).get_object()
