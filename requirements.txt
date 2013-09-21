@@ -2,12 +2,12 @@ Django==1.5.4
 Pillow==2.1.0
 South==0.8.2
 argparse==1.2.1
-boto==2.10.0
+boto==2.13.3
 django-storages==1.1.8
 dj-database-url==0.2.2
 django-colorful==0.1.3
 distribute==0.6.4
 psycopg2==2.5.1
 wsgiref==0.1.2
-uWSGI==1.9.14
+uWSGI==1.9.16
 -e git+https://github.com/jvc26/validictory.git@9e581cf25365e28188f016ad8d289171c370f213#egg=validictory-dev
