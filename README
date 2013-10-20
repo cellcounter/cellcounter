@@ -4,11 +4,25 @@ Quick start instructions
 Install required software (Ubuntu):
     sudo apt-get install python-dev libpq-dev python-pip virtualenvwrapper sqlite3
 
+
 Clone the repository:
-    git clone ...
+    git clone https://github.com/cellcounter/cellcounter.git
+
 
 Create a virtual environment:
     mkvirtualenv -r requirements.txt env1
+    (MAC USERS: virtualenv env1; source env1/bin/activate;)
+
+
+Delete all easy_install setuptools things from env1/bin/python2.7 etc
+
+
+Get this: http://python-distribute.org/distribute_setup.py
+	Run it (python distribute_setup.py)
+
+
+Use pip to install django-seo
+
 
 Edit cellcounter/localsettings.py to contain the following:
 DATABASES = {'default': {
@@ -19,16 +33,27 @@ DATABASES = {'default': {
 
 DEBUG = True
 
+***NOTE: you need to enter your own path in 'NAME' field***
+
 
 Build the database:
     python manage.py syncdb
 
+
 Migrate to the latest schema:
     python manage.py migrate
+
 
 Collect the static files:
     python manage.py collectstatic
 
+
 Run the Django webserver:
     python manage.py runserver
+
+
+Browse to 127.0.0.1:8000
+
+
+Pat yourself on the back if this worked...
 
