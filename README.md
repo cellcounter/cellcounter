@@ -24,6 +24,10 @@ Build the database:
 
     python manage.py syncdb
 
+Apply database migrations:
+
+    python manage.py migrate
+
 Run the Django webserver:
 
     python manage.py runserver
