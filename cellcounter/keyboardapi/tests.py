@@ -41,6 +41,7 @@ class KeyboardFactory(factory.django.DjangoModelFactory):
 
 
 class CustomKeyboardTestCase(TestCase):
+    fixtures = ['cellcounter/main/fixtures/initial_data.json']
 
     def test_unicode(self):
         keyboard = KeyboardFactory.build(user__username='alpha', label='alpha')
