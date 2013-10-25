@@ -16,26 +16,6 @@ font2 { text-decoration: none; font-weight: bold; color: #AAA; font-size: 12px }
 font3 { text-decoration: none; font-weight: bold; color: black; font-size: 18px }
 font4 { text-decoration: none; font-weight: bold; color: #AAA; font-size: 11px }
 
-h4
-{ padding: 0.75em 0 0 0; }
-
-.table
-{ display:table; }
-
-.table-row
-{ display:table-row; }
-
-.table-cell-def
-{ padding: 0 15px 0 0;
-  font-weight: bold;
-  text-align: right;
-  width: 150px;
-  display:table-cell; }
-
-.table-cell-desc
-{ padding:1px;
-  display:table-cell; }
-
 .header{margin-top: 1em;}
 
 .logo{text-decoration: none;
