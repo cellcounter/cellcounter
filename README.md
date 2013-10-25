@@ -28,6 +28,7 @@ Apply database migrations:
 
     python manage.py migrate
 
-Run the Django webserver:
+Run the Django webserver, setting the DEBUG environment variable:
 
+    export DEBUG=True
     python manage.py runserver
