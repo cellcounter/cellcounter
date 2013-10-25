@@ -6,7 +6,7 @@ boto==2.15.0
 dj-database-url==0.2.2
 django-colorful==0.1.3
 django-storages==1.1.8
+djangorestframework==2.3.8
 psycopg2==2.5.1
 uWSGI==1.9.18.2
-git+https://github.com/jvc26/validictory.git@9e581cf25365e28188f016ad8d289171c370f213#egg=validictory-jvc26-fork
 wsgiref==0.1.2
