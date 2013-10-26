@@ -6,7 +6,6 @@ var abnormal = false;
 var undo = false;
 var keyboard_active = false;
 var img_displayed = false;
-var keyboard_map = { 'u': {'name': 'neutro'} };
 var doughnut = {};
 var pie = {};
 var arc = {};
@@ -15,6 +14,9 @@ var size = 200;
 var editing_keyboard = false;
 var edit_cell_id = -1;
 var selected_element = {};
+var date_now = new Date(Date.now()).toISOString()
+var keyboard_map = {"label": "Default", "is_primary": true, "created": date_now,
+                    "last_modified": date_now, "mappings": new Array()};
 
 $(document).ready(function() {
     "use strict";
