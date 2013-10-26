@@ -1,4 +1,6 @@
 import json
+import random
+import string
 
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
@@ -51,15 +53,15 @@ class KeyboardAPIView(DetailView):
         else:
             if not self.kwargs.get('pk', None):
                 try:
-                    object = CustomKeyboard.objects.get(user=self.request.user, is_primary=True)
-                    return object
+                    obj = CustomKeyboard.objects.get(user=self.request.user, is_primary=True)
+                    return obj
                 except ObjectDoesNotExist:
                     return None
 
-            object = super(KeyboardAPIView, self).get_object()
+            obj = super(KeyboardAPIView, self).get_object()
 
-            if self.request.user == object.user:
-                return object
+            if self.request.user == obj.user:
+                return obj
             else:
                 raise PermissionDenied
 
