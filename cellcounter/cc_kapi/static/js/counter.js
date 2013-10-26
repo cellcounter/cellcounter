@@ -612,12 +612,18 @@ function end_keyboard_edit() {
 function clear_keyboard() {
     "use strict";
     /* Clear keyboard needs to provide the correct keyboard_map structure
-     * otherwise modification of a blank keyboard fails.
+     * otherwise modification of a blank keyboard fails. Also maintain
+     * object ID when clearing keyboards so we save to the right place.
       * N.B. .toISOString() requires a shim for IE<= 8 */
+    if ('id' in keyboard_map) {
+        var id = keyboard_map['id'];
+    }
     var date = new Date(Date.now()).toISOString()
     keyboard_map = {"label": "Default", "is_primary": true, "created": date,
                     "last_modified": date, "mappings": new Array()};
-    console.log(keyboard_map);
+    if (id) {
+        keyboard_map['id'] = id;
+    }
     update_keyboard();
 }
 
