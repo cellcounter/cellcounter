@@ -118,7 +118,7 @@ $(document).ready(function() {
                 var erythroid = cell_types[8].count + cell_types[8].abnormal;
                 var myeloid = 0;
                 var myeloid_cells = [1, 2, 3, 4, 6, 7];
-                for(var i in myeloid_cells) {
+                for (var i = 0; i < myeloid_cells.length; i++) {
                     myeloid += cell_types[myeloid_cells[i]].count;
                     myeloid += cell_types[myeloid_cells[i]].abnormal;
                 }

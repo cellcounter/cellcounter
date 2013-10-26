@@ -14,13 +14,11 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 
-    url(r'^$', TemplateView.as_view(template_name="main/index.html"),
-            name="index"),
+    url(r'^$', new_count, name="new_count"),
 
-    url(r'^count/$', new_count, name="count_home"),
-    url(r'^count/new/$', new_count, name="new_count"),
     url(r'^discover/$', TemplateView.as_view(template_name="main/discover.html"), name="discover"),
     url(r'^about/$', TemplateView.as_view(template_name="main/about.html"), name="about"),
+    url(r'^help/$', TemplateView.as_view(template_name="main/help.html"), name="help"),
 
     url(r'^images/celltype/(?P<cell_type>\w+)/$', images_by_cell_type, name="images_by_cell_type"),
     url(r'^images/similar/(?P<cell_image_pk>\d+)/$', similar_images, name="images_by_similar_cell"),

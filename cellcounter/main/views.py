@@ -31,7 +31,7 @@ def new_count(request):
         for celltype in CellType.objects.all():
             cellcount_form_list.append(celltype)
 
-        return render_to_response('main/submit.html',
+        return render_to_response('main/count.html',
             {'cellcountformslist': cellcount_form_list,
              'logged_in': request.user.is_authenticated(),},
             context_instance=RequestContext(request))
