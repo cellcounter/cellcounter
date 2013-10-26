@@ -143,9 +143,10 @@ INSTALLED_APPS = (
     'colorful',
     'storages',
     'south',
+    'rest_framework',
     'cellcounter.main',
-    'cellcounter.keyboardapi',
     'cellcounter.logs',
+    'cellcounter.cc_kapi',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -200,3 +201,9 @@ if 'AWS_STORAGE_BUCKET_NAME' in os.environ:
     STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
     S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
     STATIC_URL = S3_URL
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+    )
+}

@@ -82,6 +82,7 @@
 
 </div>
 
+<!--[if lte IE 8]><!--><script src="{% static "js/toisostringshim.js" %}"></script><!--<![endif]-->
 <script src="{% static "js/jquery-1.10.2.min.js" %}"></script>
 <script src="{% static "js/jquery.tablesorter.min.js" %}"></script>
 <script src="{% static "js/jquery-ui-1.10.0.custom.min.js" %}"></script>
@@ -96,7 +97,8 @@
 <script type="text/javascript" src="{% static "js/downloadify.min.js" %}"></script>
 <script type="text/javascript" src="{% static "js/download.js" %}"></script>
 <script type="text/javascript" src="{% static "js/csv.js" %}"></script>
-        
+<script type="text/javascript" src="{% static "js/jquery.cookie.js" %}"></script>
+
 {% block additional_scripts %}{% endblock %}
 
 </body>
