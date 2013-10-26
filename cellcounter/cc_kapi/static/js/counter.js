@@ -426,39 +426,39 @@ function load_keyboard() {
 
 function update_keyboard() {
 
-        var keyboard_keys = $("#keysbox").find("div.box1");
+    var keyboard_keys = $("#keysbox").find("div.box1");
 
-        for(var x in cell_types) {
-            cell_types[x].box = [];
-        }
+    for(var x in cell_types) {
+        cell_types[x].box = [];
+    }
 
-        for (var i = 0; i < keyboard_keys.length; i++) {
+    for (var i = 0; i < keyboard_keys.length; i++) {
 
-            var item = $(keyboard_keys[i]);
-            var key = item.attr("id");
+        var item = $(keyboard_keys[i]);
+        var key = item.attr("id");
             
-            item.empty();
-            item.append("<p>"+key+"</p>");
+        item.empty();
+        item.append("<p>"+key+"</p>");
 
-            for (var j = 0; j < keyboard_map['mappings'].length; j++) {
+        for (var j = 0; j < keyboard_map['mappings'].length; j++) {
 
-                if (keyboard_map['mappings'][j]['key'] === key) {
+            if (keyboard_map['mappings'][j]['key'] === key) {
 
-                    var cell_id = keyboard_map['mappings'][j]['cellid'];
+                var cell_id = keyboard_map['mappings'][j]['cellid'];
 
-                    var cell_data = cell_types[cell_id];
-                    cell_data.box.push(item);
-                    var name = cell_data.abbr;
+                var cell_data = cell_types[cell_id];
+                cell_data.box.push(item);
+                var name = cell_data.abbr;
 
-                    item.append("<div class=\"name\">"+name+"</div>");
-                    item.append("<div class=\"count\"><span class=\"countval\">"+cell_types[cell_id].count+"</span> (<span class=\"abnormal\">"+cell_types[cell_id].abnormal+"</span>)</div>");
+                item.append("<div class=\"name\">"+name+"</div>");
+                item.append("<div class=\"count\"><span class=\"countval\">"+cell_types[cell_id].count+"</span> (<span class=\"abnormal\">"+cell_types[cell_id].abnormal+"</span>)</div>");
 
-                    // Attach cell colour to key
-                    item.find("p").css("background-color", cell_data.colour);
-                }
+                // Attach cell colour to key
+                item.find("p").css("background-color", cell_data.colour);
             }
         }
     }
+}
 
 function edit_keyboard() {
     "use strict";
@@ -609,8 +609,13 @@ function end_keyboard_edit() {
 
 function clear_keyboard() {
     "use strict";
-
-    keyboard_map = {};
+    /* Clear keyboard needs to provide the correct keyboard_map structure
+     * otherwise modification of a blank keyboard fails.
+      * N.B. .toISOString() requires a shim for IE<= 8 */
+    var date = new Date(Date.now()).toISOString()
+    keyboard_map = {"label": "Default", "is_primary": true, "created": date,
+                    "last_modified": date, "mappings": new Array()};
+    console.log(keyboard_map);
     update_keyboard();
 }
 
