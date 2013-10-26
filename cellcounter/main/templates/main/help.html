@@ -1,0 +1,28 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<h1>Help</h1>
+
+<p>CellCountr provides a simple way for cells on a peripheral blood or bone marrow aspirate film to be counted and analysed.</p>
+
+<p align=center><a href="{% url "new_count" %}"><button type="button" class="btn btn-danger" style="height: 50px;">Click here to start counting cells</button></a>
+
+<h3>Work</h3>
+<p>Counts can be performed on Cellcounter with ease <a href="{% url "new_count" %}">click here</a> to begin.</p>
+
+<div class="well well-small">
+<ul>
+    <li>Click <b></b><a href="http://www.youtube.com/embed/e3ja3-1gk_0">here</a></b> to watch a screencast giving an overview of how CellCountr works.</li>
+    <li>Press the key corresponding to a cell type to add a count.</li>
+    <li>To remove a count press 'Backspace+Key'.</li>
+    <li>To flag a cell as abnormal press 'Space+Key'.</li>
+    <li>To see example images of the cells in question press 'Shift+Key'.</li>
+    <li>Once your count is complete, click 'Close Keyboard' to see a tabulated report, and to download as a .csv</li>
+</ul>
+</div>
+
+<h3>Discover</h3>
+<p>Visit our <a href="{% url "discover" %}">Discover</a> page to find links to haematology resources at your fingertips</p>
+
+{% endblock %}
