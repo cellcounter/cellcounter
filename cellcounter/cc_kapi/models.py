@@ -54,6 +54,14 @@ class Keyboard(models.Model):
             if keyboards:
                 keyboards[0].set_primary()
 
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        super(Keyboard, self).save(force_insert=False, force_update=False, using=None,
+                                   update_fields=None)
+        if self.is_primary:
+            self.set_primary()
+
+
 
 class KeyMap(models.Model):
     cellid = models.ForeignKey(CellType)
