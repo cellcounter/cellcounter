@@ -33,8 +33,7 @@ $(document).ready(function() {
             cell_types[x].box = [];
         }
 
-        load_keyboard();
-    
+        load_keyboard();    
     });
 
     $('#edit_button').on('click', edit_keyboard);
@@ -54,27 +53,13 @@ $(document).ready(function() {
         });
     });
 
-    $('#openkeyboard').click(function () {
-        $('#fuzz').fadeIn('slow', function () {
-            resize_keyboard($("div#content").width());
-            $('#counterbox').slideDown('slow', function () {
-                $("#fuzz").css("height", $(document).height());
-                keyboard_active = true;
-            });
-        });
-        count_total = 0;
-        for (var prop in counters) {
-            if (counters.hasOwnProperty(prop))  {
-                count_total += counters[prop].abnormal;
-                count_total += counters[prop].count;
-            }
-        }
-        $("#total").text(count_total);
-        $('div#statistics').empty();
-        $("#visualise2").css("display", "none");
-        $("#savefilebutton").css("display", "none");
-        init_visualisation("#doughnut");
-        update_visualisation();
+    $('#continuecounting').click(function () {
+        open_keyboard();
+    });    
+
+    $('#restartcounting').click(function () {
+        reset_counters();
+        open_keyboard();
     });
 
     $('#fuzz, #close_button').click(function () {
@@ -142,7 +127,22 @@ $(document).ready(function() {
                 $("#total2").text(total);
                 $("#savefilebutton").css("display", "block");
                 add_save_file_button();
+
+
+                // Make buttons show appropratiely i.e. make continue button appear
+                $('#continuecounting').css('display', 'inline-block');
+                $('#continuecounting').fadeIn('slow', function () {
+                });
+
             }
+            //else
+            // make continue count button diosappear
+            else
+            {
+                $('#continuecounting').fadeOut('slow', function () {
+                });
+            }
+
 
             $('#counterbox').slideUp('slow', function () {
                 $('#fuzz').fadeOut('slow', function () {
@@ -426,6 +426,29 @@ function load_keyboard() {
     });
 }
 
+function open_keyboard() {
+    $('#fuzz').fadeIn('slow', function () {
+            resize_keyboard($("div#content").width());
+            $('#counterbox').slideDown('slow', function () {
+                $("#fuzz").css("height", $(document).height());
+                keyboard_active = true;
+            });
+        });
+        count_total = 0;
+        for (var prop in counters) {
+            if (counters.hasOwnProperty(prop))  {
+                count_total += counters[prop].abnormal;
+                count_total += counters[prop].count;
+            }
+        }
+        $("#total").text(count_total);
+        $('div#statistics').empty();
+        $("#visualise2").css("display", "none");
+        $("#savefilebutton").css("display", "none");
+        init_visualisation("#doughnut");
+        update_visualisation();
+}
+
 function update_keyboard() {
 
     var keyboard_keys = $("#keysbox").find("div.box1");
@@ -657,3 +680,5 @@ $.ajaxSetup({
         }
     }
 });
+
+

@@ -44,6 +44,11 @@ div#counterbox {
   border-radius: 15px;
 }
 
+
+div#continuecounting {
+  display: none;
+  }
+
 div#keysbox {
   margin-top: 40px;
   margin-left: 30px;
