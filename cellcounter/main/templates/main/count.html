@@ -17,20 +17,23 @@
 var notloggedin=true;
 </script>
 {% endif %}
-<h1>Welcome to Cellcountr</h1>
-<p>To <b>get started</b>, click the red button to start performing a count.</p>
 
+<h3>Welcome to CellCountr!</h3>
+CellCountr provides a simple way for cells on a peripheral blood or bone marrow aspirate film to be counted and analysed. CellCountr can help you perform counts with ease. Click the red button to get started.</p>
+
+<h4>Instructions</h4>
 <div class="well well-small">
 <ul>
     <li>Press the key corresponding to a cell type to add a count.</li>
     <li>To remove a count press 'Backspace+Key'.</li>
     <li>To flag a cell as abnormal press 'Space+Key'.</li>
     <li>To see example images of the cells in question press 'Shift+Key'.</li>
-    <li>Once your count is complete, click 'Close Keyboard' to see a tabulated report, and to download as a .csv</li>
+    <li>Once your count is complete, click 'Close & Save Results' to see a tabulated report
+    <li>Download as a .csv if you like using the blue button below the report.</li>
+    <li>Continue counting where you left off using the green button above the report, or start a new count using the red button.</li>
 </ul>
 </div>
 
-<p>To see a tabulated differential report close the keyboard. You may also save the report to your local disk.</p>
 
 {% include "main/keyboard_snippet.html" %}
 
