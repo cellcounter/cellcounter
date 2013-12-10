@@ -16,7 +16,31 @@
 
 </head>
 <body>
-    
+
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="brand" href="/"><span class="logocell">Cell</span><span class="logocount">countr</span></a>
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    <li><a href="{% url "new_count" %}">Work</a></li>
+                    <li><a href="{% url "discover" %}">Discover</a></li>
+                    <li><a href="{% url "about" %}">About</a></li>
+                    <li><a href="{% url "help" %}">Help</a></li>
+                </ul>
+
+                <ul class="nav navbar-right">
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url "logout" %}">logout</a></li>
+                    {% else %}
+                        <li><a href="{% url "login" %}">login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!--
 <div class="container">
     <div class="row header">
     <div class="span2">
@@ -38,9 +62,9 @@
         </ul>
     </div>
 </div>
-
+-->
 <div id="fuzz"></div>
-
+<div class="container">
 <div id="content" class="row">
     {% if messages %}
     {% for message in messages %}
@@ -79,7 +103,6 @@
       </li>
     </ul>
 </div>
-
 </div>
 
 <!--[if lte IE 8]><!--><script src="{% static "js/toisostringshim.js" %}"></script><!--<![endif]-->
