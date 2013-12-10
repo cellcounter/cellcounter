@@ -16,32 +16,36 @@
 
 </head>
 <body>
-    
-<div class="container">
-    <div class="row header">
-    <div class="span2">
-        <a class="logo" href="/"><span class="logocell">Cell</span><span class="logocount">Countr</span></a>
-    </div>
-    <div style="float: right;">
-            {% if user.is_authenticated %}
-            <a href="{% url "logout" %}">logout</a>
-            {% else %}
-            <a href="{% url "login" %}">login</a>
-            {% endif %}
-    </div>
-    <div class="span6 navbar" style="clear: both">
-        <ul class="nav">
-            <li><a href="{% url "new_count" %}">Work</a></li>
-            <li><a href="{% url "discover" %}">Discover</a></li>
-            <li><a href="{% url "about" %}">About</a></li>
-            <li><a href="{% url "help" %}">Help</a></li>
-        </ul>
+
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="brand" href="/"><span class="logocell">Cell</span><span class="logocount">countr</span></a>
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    <li><a href="{% url "new_count" %}">Work</a></li>
+                    <li><a href="{% url "discover" %}">Discover</a></li>
+                    <li><a href="{% url "about" %}">About</a></li>
+                    <li><a href="{% url "help" %}">Help</a></li>
+                </ul>
+
+                <ul class="nav navbar-right">
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url "logout" %}">logout</a></li>
+                    {% else %}
+                        <li><a href="{% url "login" %}">login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 
 <div id="fuzz"></div>
 
-<div id="content" class="row">
+<div class="container">
+<div id="content">
+<div class="row">
     {% if messages %}
     {% for message in messages %}
     <div class="alert {% if message.tags == "error" %}alert-error{% endif%}">
@@ -51,7 +55,9 @@
     </div>
     {% endfor %}
     {% endif %}
+</div>
 
+<div class="row">
     <div class="span12">
         {% block content %}{% endblock %}
     </div>
@@ -79,7 +85,6 @@
       </li>
     </ul>
 </div>
-
 </div>
 
 <!--[if lte IE 8]><!--><script src="{% static "js/toisostringshim.js" %}"></script><!--<![endif]-->
