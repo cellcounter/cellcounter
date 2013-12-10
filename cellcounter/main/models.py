@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 
 from colorful.fields import RGBColorField
 
+
 class CellType(models.Model):
     readable_name = models.CharField(max_length=50)
     # TODO Use a slugfield
@@ -26,6 +27,7 @@ class CellImage(models.Model):
     uploader = models.ForeignKey(User)
     copyright = models.ForeignKey('CopyrightHolder')
     license = models.ForeignKey('License')
+
     def similar_cells(self):
         groups = self.similarlookinggroup_set.all()
         similarcells = []
@@ -33,25 +35,32 @@ class CellImage(models.Model):
             for image in group.cell_image.all():
                 similarcells.append(image)
         return similarcells
+
     def __unicode__(self):
         return self.title
 
+
 class SimilarLookingGroup(models.Model):
     name = models.CharField(max_length=100)
-    cell_image = models.ManyToManyField("CellImage")    
+    cell_image = models.ManyToManyField("CellImage")
+
     def __unicode__(self):
         return self.name
+
 
 class License(models.Model):
     title = models.CharField(max_length=100)
     details = models.TextField()
+
     def __unicode__(self):
         return self.title
+
 
 class CopyrightHolder(models.Model):
     name = models.CharField(max_length=300)
     link_title = models.CharField(max_length=300, null = True, blank = True)
     link_url = models.CharField(max_length=300, null = True, blank = True)
-    user = models.ManyToManyField(User) #These users may apply this copyright to an image. 
+    user = models.ManyToManyField(User)  # These users may apply this copyright to an image
+
     def __unicode__(self):
         return self.name
