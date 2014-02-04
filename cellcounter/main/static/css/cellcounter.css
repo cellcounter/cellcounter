@@ -33,6 +33,10 @@ font4 { text-decoration: none; font-weight: bold; color: #AAA; font-size: 11px }
 
 .username {padding:10px 15px 10px;}
 
+.abnormal_count {
+    color: red;
+}
+
 div#statistics table.statistics {
     text-align: center;
     width: 100%;
