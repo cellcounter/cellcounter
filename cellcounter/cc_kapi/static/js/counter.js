@@ -454,7 +454,7 @@ function update_keyboard() {
                 var name = cell_data.abbr;
 
                 item.append("<div class=\"name\">"+name+"</div>");
-                item.append("<div class=\"count\"><span class=\"countval\">"+cell_types[cell_id].count+"</span> (<span class=\"abnormal\">"+cell_types[cell_id].abnormal+"</span>)</div>");
+                item.append("<div class=\"count\"><span class=\"countval\">"+cell_types[cell_id].count+"</span> (<span class=\"abnormal abnormal_count\">"+cell_types[cell_id].abnormal+"</span>)</div>");
 
                 // Attach cell colour to key
                 item.find("p").css("background-color", cell_data.colour);
