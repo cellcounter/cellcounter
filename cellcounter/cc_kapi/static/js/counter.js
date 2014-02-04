@@ -308,6 +308,8 @@ $(document).ready(function() {
                                 width: 900,
                                 height: 700
                             });
+                        /* Close any open dialogues before opening*/
+                        $(".ui-dialog-content").dialog("close");
                         $dialog.dialog('open');
                         /* No further need to iterate through list */
                         break;
