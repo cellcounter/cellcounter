@@ -12,6 +12,7 @@ var arc = {};
 var cell_types = [];
 var size = 200;
 var editing_keyboard = false;
+var first_count = true;
 var edit_cell_id = -1;
 var selected_element = {};
 var date_now = new Date(Date.now()).toISOString()
@@ -38,44 +39,9 @@ $(document).ready(function() {
     });
 
     $('#edit_button').on('click', edit_keyboard);
-    $('#reset_button').on('click', function() {
-        $( "#dialog-confirm" ).dialog({
-            resizable: false,
-            modal: true,
-            buttons: {
-            "Reset all counters": function() {
-                reset_counters();
-                $( this ).dialog( "close" );
-            },
-            Cancel: function() {
-                $( this ).dialog( "close" );
-            }
-            }
-        });
-    });
+    register_resets();
 
-    $('#openkeyboard').click(function () {
-        $('#fuzz').fadeIn('slow', function () {
-            resize_keyboard($("div#content").width());
-            $('#counterbox').slideDown('slow', function () {
-                $("#fuzz").css("height", $(document).height());
-                keyboard_active = true;
-            });
-        });
-        count_total = 0;
-        for (var prop in counters) {
-            if (counters.hasOwnProperty(prop))  {
-                count_total += counters[prop].abnormal;
-                count_total += counters[prop].count;
-            }
-        }
-        $("#total").text(count_total);
-        $('div#statistics').empty();
-        $("#visualise2").css("display", "none");
-        $("#savefilebutton").css("display", "none");
-        init_visualisation("#doughnut");
-        update_visualisation();
-    });
+    $('#openkeyboard').on('click', open_keyboard);
 
     $('#fuzz, #close_button').click(function () {
         var total, percent, per;
@@ -149,6 +115,14 @@ $(document).ready(function() {
                 $('#fuzz').fadeOut('slow', function () {
                 });
             });
+
+            if (first_count === true) {
+                $('#openkeyboard').text('Continue counting');
+                $('#openkeyboard').removeClass('btn-danger').addClass('btn-success');
+                $("<div class='btn btn-large btn-danger reset_button restart_button' style='margin-left: 5px'>Reset counters</div>").insertAfter('#openkeyboard');
+                register_resets();
+                first_count = false;
+            }
         }
     });
 
@@ -403,6 +377,26 @@ function resize_keyboard(width) {
     }*/
 }
 
+function register_resets() {
+    "use strict";
+    $('.reset_button').on('click', function() {
+        $( "#dialog-confirm" ).dialog({
+            resizable: false,
+            modal: true,
+            buttons: {
+            "Reset all counters": function() {
+                reset_counters();
+                $( this ).dialog( "close" );
+            },
+            Cancel: function() {
+                $( this ).dialog( "close" );
+            }
+            }
+        });
+    });
+}
+
+
 function reset_counters() {
     for(var x in cell_types) {
         cell_types[x].count = 0;
@@ -411,13 +405,32 @@ function reset_counters() {
     update_keyboard();
     init_visualisation("#doughnut");
     update_visualisation();
+    open_keyboard();
 }
 
-/*window.onkeydown=function(e){
-if(e.keyCode==32){
-return false;
+function open_keyboard() {
+    $('#fuzz').fadeIn('slow', function () {
+        resize_keyboard($("div#content").width());
+        $('#counterbox').slideDown('slow', function () {
+            $("#fuzz").css("height", $(document).height());
+            keyboard_active = true;
+        });
+    });
+    var count_total = 0;
+    for (var prop in counters) {
+        if (counters.hasOwnProperty(prop)) {
+            count_total += counters[prop].abnormal;
+            count_total += counters[prop].count;
+        }
+    }
+    $("#total").text(count_total);
+    $('div#statistics').empty();
+    $("#visualise2").css("display", "none");
+    $("#savefilebutton").css("display", "none");
+    init_visualisation("#doughnut");
+    update_visualisation();
 }
-}; */
+
 function load_keyboard() {
     $.getJSON("/api/keyboard/", function(data) {
         keyboard_map = data;
