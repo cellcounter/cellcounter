@@ -119,7 +119,7 @@ $(document).ready(function() {
                 //XXX: hack! The cell ids might change
                 var erythroid = cell_types[8].count + cell_types[8].abnormal;
                 var myeloid = 0;
-                var myeloid_cells = [1, 2, 3, 4, 6, 7];
+                var myeloid_cells = [1, 2, 3, 4, 6, 7, 10];
                 for (var i = 0; i < myeloid_cells.length; i++) {
                     myeloid += cell_types[myeloid_cells[i]].count;
                     myeloid += cell_types[myeloid_cells[i]].abnormal;
@@ -127,7 +127,7 @@ $(document).ready(function() {
                 var meratio = parseFloat(myeloid / erythroid).toFixed(2);
                 var stats_text = '<h3>Count statistics</h3><table class="statistics">';
                 stats_text += '<tr><td colspan="2" class="celltypes">Total cells</td><td>' + total + '</td><td class="noborder" colspan="2"></td></tr>';
-                stats_text += '<tr><td colspan="2" class="celltypes">ME ratio</td><td>' + meratio + '</td><td class="noborder" colspan="2"></td></tr>';
+                stats_text += '<tr><td colspan="2" class="celltypes">ME ratio *</td><td>' + meratio + '</td><td class="noborder" colspan="2"></td></tr>';
                 stats_text += '<tr><th colspan="2" style="width: 30%"></th>';
                 stats_text += '<th style="width: 16%">Normal</th>';
                 stats_text += '<th style="width: 16%">Abnormal</th>';
@@ -135,6 +135,7 @@ $(document).ready(function() {
                 stats_text += '<th style="width: 22%">% of CellType Abnormal</th></tr>';
                 stats_text += per;
                 stats_text += '</table>';
+                stats_text += '<p>* Note: Myeloid/erythroid ratio does not include blast count.</p>';
                 $('div#statistics').empty().append(stats_text);
                 $("#visualise2").css("display", "block");
                 init_visualisation("#doughnut2");
