@@ -3,7 +3,6 @@
 //$box = new Array();
 var counters = {};
 var abnormal = false;
-var undo = false;
 var keyboard_active = false;
 var img_displayed = false;
 var doughnut = {};
@@ -17,6 +16,7 @@ var selected_element = {};
 var date_now = new Date(Date.now()).toISOString()
 var keyboard_map = {"label": "Default", "is_primary": true, "created": date_now,
                     "last_modified": date_now, "mappings": new Array()};
+var history = [];
 
 $(document).ready(function() {
     "use strict";
@@ -25,7 +25,6 @@ $(document).ready(function() {
     
     $.getJSON("/api/cell_types/", function(data) {
         cell_types = data;
-        //console.log(cell_types);
         //for(var i=0; i<cell_types.length; i++) {
         for(var x in cell_types) {
             cell_types[x].count = 0;
@@ -172,6 +171,7 @@ $(document).ready(function() {
             key = String.fromCharCode(e.which).toUpperCase();
             code = e.which;
             shift_pressed = e.shiftKey;
+
             if (/[a-z]/i.test(key) && !shift_pressed) {
                 alpha = true;
             }
@@ -186,10 +186,6 @@ $(document).ready(function() {
                 //Event.stop(e);
                 return false;
                 //$("div#imagebox").css("background-image", "");
-            }
-            else if (code === 8) {
-                undo = true;
-                return false;
             }
             else if (code === 13) {
                 enter = true;
@@ -323,48 +319,60 @@ $(document).ready(function() {
             /* We are now counting, and mapping keypresses to the outcome */
             //count_total = 0;
 
-            for (var i = 0; i < keyboard_map['mappings'].length; i++) {
-                if (keyboard_map['mappings'][i]['key'].toUpperCase() == key && !(shift_pressed)) {
-                    var id = keyboard_map['mappings'][i]['cellid'];
-
-                    // Add highlighting to keyboard
-                    // Remove all currently active highlights (stops a queue developing)
-                    for(var i=0; i<cell_types[id].box.length; i++){
-                        $(cell_types[id].box[i]).stop(true, true).css("background-color", '#ffffff');
+            if (code === 8) {
+                /* Time to remove the key from the history and decrement count
+                *  Last key should be an array containing:
+                *  {c_id:n, c_type:normal/abnormal} */
+                var last_key = history.pop();
+                if (typeof last_key !== "undefined") {
+                    var c_id = last_key['c_id'];
+                    var c_type = last_key['c_type'];
+                    if (cell_types[c_id][c_type] > 0) {
+                        cell_types[c_id][c_type]--;
                     }
+                    /* Generate the appropriate span name to find */
+                    var span_field = "span." + c_type;
+                    if (span_field === "span.count"){
+                        span_field += "val";
+                    }
+                    for (var i=0; i<cell_types[c_id].box.length; i++){
+                        $(cell_types[c_id].box[i]).find(span_field).text(cell_types[c_id][c_type]);
+                    }
+                } else {
+                    /* Nothing to delete */
+                    history = [];
+                }
 
-                    // Add highlight to typed key
-                    $(cell_types[id].box).effect("highlight", {}, 200);
+            } else {
+                for (var i = 0; i < keyboard_map['mappings'].length; i++) {
+                    if (keyboard_map['mappings'][i]['key'].toUpperCase() == key && !(shift_pressed)) {
+                        var id = keyboard_map['mappings'][i]['cellid'];
 
-                    if(abnormal === true) {
-                        if(undo) {
-                            if(cell_types[id].abnormal > 0) {
-                                cell_types[id].abnormal--;
-                                for(var i=0; i<cell_types[id].box.length; i++){
-                                    $(cell_types[id].box[i]).find("span.abnormal").text(cell_types[id].abnormal);
-                                }
-                            }
-                        } else {
+                        // Add highlighting to keyboard
+                        // Remove all currently active highlights (stops a queue developing)
+                        for(var i=0; i<cell_types[id].box.length; i++){
+                            $(cell_types[id].box[i]).stop(true, true).css("background-color", '#ffffff');
+                        }
+
+                        // Add highlight to typed key
+                        $(cell_types[id].box).effect("highlight", {}, 200);
+
+                        if(abnormal === true) {
                             cell_types[id].abnormal++;
                             for(var i=0; i<cell_types[id].box.length; i++){
                                 $(cell_types[id].box[i]).find("span.abnormal").text(cell_types[id].abnormal);
                             }
-                        }
-                    } else if(undo) {
-                        if(cell_types[id].count > 0) {
-                            cell_types[id].count--;
+                            history.push({c_id: id, c_type: 'abnormal'});
+                        } else {
+                            cell_types[id].count++;
                             for(var i=0; i<cell_types[id].box.length; i++){
                                 $(cell_types[id].box[i]).find("span.countval").text(cell_types[id].count);
                             }
+                            history.push({c_id: id, c_type: 'count'});
                         }
-                    } else {
-                        cell_types[id].count++;
-                        for(var i=0; i<cell_types[id].box.length; i++){
-                            $(cell_types[id].box[i]).find("span.countval").text(cell_types[id].count);
-                        }
+                        /* No further need to iterate through list */
+                        break;
                     }
-                    /* No further need to iterate through list */
-                    break;
                 }
             }
             update_visualisation();
@@ -381,9 +389,6 @@ $(document).ready(function() {
             }
             if (key === " ") {
                 abnormal = false;
-            }
-            if (code === 8) {
-                undo = false;
             }
         }
     });
@@ -408,6 +413,7 @@ function reset_counters() {
         cell_types[x].count = 0;
         cell_types[x].abnormal = 0;
     }
+    history = [];
     update_keyboard();
     init_visualisation("#doughnut");
     update_visualisation();
