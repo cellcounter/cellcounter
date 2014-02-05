@@ -342,7 +342,6 @@ $(document).ready(function() {
                     /* Nothing to delete */
                     history = [];
                 }
-
             } else {
                 for (var i = 0; i < keyboard_map['mappings'].length; i++) {
                     if (keyboard_map['mappings'][i]['key'].toUpperCase() == key && !(shift_pressed)) {
