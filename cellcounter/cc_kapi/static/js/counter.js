@@ -111,7 +111,7 @@ $(document).ready(function() {
                     }
                     else
                         abnormal[cell] = "N/A";
-                    per += '<tr><td class="celltypes">' + cell_types[cell].name + '</td><td class="ignore" style="width: 20px; background-color:'+ cell_types[cell].colour +'"></td><td>'+cell_types[cell].count+'</td><td>'+cell_types[cell].abnormal+'</td><td>' + parseFloat(percent[cell]).toFixed(0) + "%</td><td>"+abnormal[cell]+"</td></tr>";
+                    per += '<tr><td class="celltypes">' + cell_types[cell].name + '</td><td class="ignore" style="width: 20px; background-color:'+ cell_types[cell].colour +'"></td><td>'+cell_types[cell].count+'</td><td class="abnormal_count">'+cell_types[cell].abnormal+'</td><td>' + parseFloat(percent[cell]).toFixed(0) + "%</td><td>"+abnormal[cell]+"</td></tr>";
                 }
             }
 
@@ -454,7 +454,7 @@ function update_keyboard() {
                 var name = cell_data.abbr;
 
                 item.append("<div class=\"name\">"+name+"</div>");
-                item.append("<div class=\"count\"><span class=\"countval\">"+cell_types[cell_id].count+"</span> (<span class=\"abnormal\">"+cell_types[cell_id].abnormal+"</span>)</div>");
+                item.append("<div class=\"count\"><span class=\"countval\">"+cell_types[cell_id].count+"</span> (<span class=\"abnormal abnormal_count\">"+cell_types[cell_id].abnormal+"</span>)</div>");
 
                 // Attach cell colour to key
                 item.find("p").css("background-color", cell_data.colour);
