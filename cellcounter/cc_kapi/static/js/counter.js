@@ -323,6 +323,7 @@ $(document).ready(function() {
                 /* Time to remove the key from the history and decrement count
                 *  Last key should be an array containing:
                 *  {c_id:n, c_type:normal/abnormal} */
+                e.preventDefault();
                 var last_key = history.pop();
                 if (typeof last_key !== "undefined") {
                     var c_id = last_key['c_id'];
