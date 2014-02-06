@@ -1,6 +1,4 @@
 /*global $:false, jQuery:false */
-//counters = new Array();
-//$box = new Array();
 var counters = {};
 var abnormal = false;
 var undo = false;
@@ -9,33 +7,30 @@ var img_displayed = false;
 var doughnut = {};
 var pie = {};
 var arc = {};
-var cell_types = [];
+var cell_types = {};
 var size = 200;
 var editing_keyboard = false;
 var first_count = true;
 var edit_cell_id = -1;
 var selected_element = {};
-var date_now = new Date(Date.now()).toISOString()
+var date_now = new Date(Date.now()).toISOString();
 var keyboard_map = {"label": "Default", "is_primary": true, "created": date_now,
-                    "last_modified": date_now, "mappings": new Array()};
+                    "last_modified": date_now, "mappings": []};
 
 $(document).ready(function() {
     "use strict";
-    var key, name, img, count_total;
+    var count_total;
     $("#myCounts").tablesorter();
     
     $.getJSON("/api/cell_types/", function(data) {
-        cell_types = data;
-        //console.log(cell_types);
-        //for(var i=0; i<cell_types.length; i++) {
-        for(var x in cell_types) {
-            cell_types[x].count = 0;
-            cell_types[x].abnormal = 0;
-            cell_types[x].box = [];
-        }
-
+        cell_types = {};
+        $.each(data, function(key, cell) {
+            cell.count = 0;
+            cell.abnormal = 0;
+            cell.box = [];
+            cell_types[cell.id] = cell;
+        });
         load_keyboard();
-    
     });
 
     $('#edit_button').on('click', edit_keyboard);
@@ -44,17 +39,20 @@ $(document).ready(function() {
     $('#openkeyboard').on('click', open_keyboard);
 
     $('#fuzz, #close_button').click(function () {
-        var total, percent, per;
+        var total, cell;
+        var percent = {};
+        var abnormal = {};
+        var per = "";
 
-        if(editing_keyboard)
+        if (editing_keyboard) {
             return;
-        
+        }
+
         if (keyboard_active) {
             keyboard_active = false;
             total = 0;
 
-            // Put counts into the ModelForms, increment total
-            for (var cell in cell_types) {
+            for (cell in cell_types) {
                 if (cell_types.hasOwnProperty(cell)) {
                     $("#id_"+cell+"-normal_count").prop("value", cell_types[cell].count);
                     $("#id_"+cell+"-abnormal_count").prop("value", cell_types[cell].abnormal);
@@ -62,22 +60,18 @@ $(document).ready(function() {
                     total += cell_types[cell].abnormal;
                 }
             }
-       
-            var percent = {};
-            var abnormal = {};
-            var per = "";
-       
-            for (var cell in cell_types) {
+
+            for (cell in cell_types) {
                 if (cell_types.hasOwnProperty(cell)) { 
                     // or if (Object.prototype.hasOwnProperty.call(obj,prop)) for safety...
                     percent[cell] = (cell_types[cell].count + cell_types[cell].abnormal) / total * 100;
-                    if(cell_types[cell].count + cell_types[cell].abnormal != 0) {
+                    if(cell_types[cell].count + cell_types[cell].abnormal !== 0) {
                         abnormal[cell] = cell_types[cell].abnormal / (cell_types[cell].count + cell_types[cell].abnormal) * 100;
                         abnormal[cell] = parseFloat(abnormal[cell]).toFixed(0) + "%";
-                    }
-                    else
+                    } else {
                         abnormal[cell] = "N/A";
-                    per += '<tr><td class="celltypes">' + cell_types[cell].name + '</td><td class="ignore" style="width: 20px; background-color:'+ cell_types[cell].colour +'"></td><td>'+cell_types[cell].count+'</td><td>'+cell_types[cell].abnormal+'</td><td>' + parseFloat(percent[cell]).toFixed(0) + "%</td><td>"+abnormal[cell]+"</td></tr>";
+                    }
+                    per += '<tr><td class="celltypes">' + cell_types[cell].name + '</td><td class="ignore" style="width: 20px; background-color:'+ cell_types[cell].colour +'"></td><td>'+cell_types[cell].count+'</td><td class="abnormal_count">'+cell_types[cell].abnormal+'</td><td>' + parseFloat(percent[cell]).toFixed(0) + "%</td><td>"+abnormal[cell]+"</td></tr>";
                 }
             }
 
@@ -132,20 +126,22 @@ $(document).ready(function() {
         //$("#total").text($("#counterbox").width());
         //$("#fuzz").css("top", $(window).top());
 
-        if(keyboard_active)
+        if (keyboard_active) {
             resize_keyboard($("div#content").width());
+        }
     });
     //$("#fuzz").css("height", $(document).height());
 
     //$(document).keypress(function(e) {
     jQuery(document).bind('keydown', function (e) {
-        var key, code, shift_pressed, el, count_total, enter=false;
+        var key, code, shift_pressed, el, i, enter=false;
         var alpha = false, up = false, down = false;
-        //Event.stop(e);
+
         if (keyboard_active) {
             key = String.fromCharCode(e.which).toUpperCase();
             code = e.which;
             shift_pressed = e.shiftKey;
+
             if (/[a-z]/i.test(key) && !shift_pressed) {
                 alpha = true;
             }
@@ -157,9 +153,7 @@ $(document).ready(function() {
             }
             if (key === " ") {
                 abnormal = true;
-                //Event.stop(e);
                 return false;
-                //$("div#imagebox").css("background-image", "");
             }
             else if (code === 8) {
                 undo = true;
@@ -176,50 +170,50 @@ $(document).ready(function() {
             }
 
             if(editing_keyboard) {
-                if(enter) {
+                if (enter) {
                     deselect_element(selected_element);
                     select_element(selected_element.next());
                     return;
                 }
-                else if(down) {
+                else if (down) {
                     deselect_element(selected_element);
                     select_element(selected_element.next());
                     return false;
                 }
-                else if(up) {
+                else if (up) {
                     deselect_element(selected_element);
-                    var el = selected_element.prev();
-                    if(!$(el).html()) el = $("div#celllist").find("li").last();
+                    el = selected_element.prev();
+                    if (!$(el).html()) {
+                        el = $("div#celllist").find("li").last();
+                    }
                     select_element(el);
                     return false;
-                }
-                else if(alpha) {
-                    if(cell_types.hasOwnProperty(edit_cell_id)) {
-
+                } else if (alpha) {
+                    if (cell_types.hasOwnProperty(edit_cell_id.toString())) {
                         if($("#multi_key").is(':checked')) {
                             /* DENIES ABILITY TO MAP MULTIPLE KEYS TO THE SAME CELL TYPE
                              * Iterate through all key mappings, looking for any which map to the current cell_id.
                              * If found, delete them. N.B. we decrement the iterator if we've spliced to avoid
                              * issues with the length of the array and correct iteration position.
                              */
-                            for (var i = 0; i < keyboard_map['mappings'].length; i++) {
-                                if (keyboard_map['mappings'][i]['cellid'] == edit_cell_id) {
-                                    keyboard_map['mappings'].splice(i, 1);
+                            for (i = 0; i < keyboard_map.mappings.length; i++) {
+                                if (keyboard_map.mappings[i].cellid == edit_cell_id) {
+                                    keyboard_map.mappings.splice(i, 1);
                                     i--;
                                 }
                             }
                             /* Remove any previous mappings for the key we're trying to add - prevents assigning
                              * two celltypes to a given key.
                              */
-                            for (var i = 0; i < keyboard_map['mappings'].length; i++) {
-                                if (keyboard_map['mappings'][i]['key'] == key.toLowerCase()) {
-                                    keyboard_map['mappings'].splice(i, 1);
+                            for (i = 0; i < keyboard_map.mappings.length; i++) {
+                                if (keyboard_map.mappings[i].key == key.toLowerCase()) {
+                                    keyboard_map.mappings.splice(i, 1);
                                     i--;
                                 }
                             }
 
                             /* Add the new mapping for this keypress */
-                            keyboard_map['mappings'].push({'cellid': parseInt(edit_cell_id), 'key': key.toLowerCase()});
+                            keyboard_map.mappings.push({'cellid': parseInt(edit_cell_id), 'key': key.toLowerCase()});
 
                             if($("#auto_advance").is(':checked')) {
                                 deselect_element(selected_element);
@@ -230,29 +224,29 @@ $(document).ready(function() {
                             /* We allow multiple mappings to the same cell_id , here we check if the key has been
                              * previously mapped, and if so, we remove any mappings for that key.
                              */
-                            for (var i = 0; i < keyboard_map['mappings'].length; i++) {
-                                if (keyboard_map['mappings'][i]['key'] == key.toLowerCase()) {
-                                    keyboard_map['mappings'].splice(i, 1);
+                            for (i = 0; i < keyboard_map.mappings.length; i++) {
+                                if (keyboard_map.mappings[i].key == key.toLowerCase()) {
+                                    keyboard_map.mappings.splice(i, 1);
                                     i--;
                                 }
                             }
 
                             /* Add the new mapping */
-                            keyboard_map['mappings'].push({'cellid': parseInt(edit_cell_id), 'key': key.toLowerCase()});
+                            keyboard_map.mappings.push({'cellid': parseInt(edit_cell_id), 'key': key.toLowerCase()});
 
                             /* Now we need to check that we have indeed mapped a key. If we haven't, it means we are
                              * creating a new map for a previously unmapped key, and therefore should just insert it
                              * into the mappings array.
                              */
                             var is_mapped = false;
-                            for (var i = 0; i < keyboard_map['mappings'].length; i++) {
-                                if (keyboard_map['mappings'][i]['key'] == key.toLowerCase() &&
-                                    keyboard_map['mappings'][i]['cellid'] == edit_cell_id) {
+                            for (i = 0; i < keyboard_map.mappings.length; i++) {
+                                if (keyboard_map.mappings[i].key == key.toLowerCase() &&
+                                    keyboard_map.mappings[i].cellid == edit_cell_id) {
                                     is_mapped = true;
                                 }
                             }
                             if (is_mapped === false) {
-                                keyboard_map['mappings'].push({'cellid': parseInt(edit_cell_id), 'key': key.toLowerCase()});
+                                keyboard_map.mappings.push({'cellid': parseInt(edit_cell_id), 'key': key.toLowerCase()});
                             }
 
                             if($("#auto_advance").is(':checked')) {
@@ -268,9 +262,9 @@ $(document).ready(function() {
 
             if (shift_pressed) {
                 /* We now show the image overlay to the user with the selected celltype images */
-                for (var i = 0; i < keyboard_map['mappings'].length; i++) {
-                    if (keyboard_map['mappings'][i]['key'].toUpperCase() == key) {
-                        var cell_id = keyboard_map['mappings'][i]['cellid'];
+                for (i = 0; i < keyboard_map.mappings.length; i++) {
+                    if (keyboard_map.mappings[i].key.toUpperCase() == key) {
+                        var cell_id = keyboard_map.mappings[i].cellid;
                         var slug = cell_types[cell_id].slug;
                         var fullname = cell_types[cell_id].name;
 
@@ -282,6 +276,8 @@ $(document).ready(function() {
                                 width: 900,
                                 height: 700
                             });
+                        /* Close any open dialogues before opening*/
+                        $(".ui-dialog-content").dialog("close");
                         $dialog.dialog('open');
                         /* No further need to iterate through list */
                         break;
@@ -294,16 +290,13 @@ $(document).ready(function() {
                 return;
             }
 
-            /* We are now counting, and mapping keypresses to the outcome */
-            //count_total = 0;
-
-            for (var i = 0; i < keyboard_map['mappings'].length; i++) {
-                if (keyboard_map['mappings'][i]['key'].toUpperCase() == key && !(shift_pressed)) {
-                    var id = keyboard_map['mappings'][i]['cellid'];
+            for (i = 0; i < keyboard_map.mappings.length; i++) {
+                if (keyboard_map.mappings[i].key.toUpperCase() == key && !(shift_pressed)) {
+                    var id = keyboard_map.mappings[i].cellid;
 
                     // Add highlighting to keyboard
                     // Remove all currently active highlights (stops a queue developing)
-                    for(var i=0; i<cell_types[id].box.length; i++){
+                    for(i=0; i<cell_types[id].box.length; i++){
                         $(cell_types[id].box[i]).stop(true, true).css("background-color", '#ffffff');
                     }
 
@@ -314,26 +307,26 @@ $(document).ready(function() {
                         if(undo) {
                             if(cell_types[id].abnormal > 0) {
                                 cell_types[id].abnormal--;
-                                for(var i=0; i<cell_types[id].box.length; i++){
+                                for(i = 0 ; i < cell_types[id].box.length; i++){
                                     $(cell_types[id].box[i]).find("span.abnormal").text(cell_types[id].abnormal);
                                 }
                             }
                         } else {
                             cell_types[id].abnormal++;
-                            for(var i=0; i<cell_types[id].box.length; i++){
+                            for(i = 0; i < cell_types[id].box.length; i++){
                                 $(cell_types[id].box[i]).find("span.abnormal").text(cell_types[id].abnormal);
                             }
                         }
                     } else if(undo) {
                         if(cell_types[id].count > 0) {
                             cell_types[id].count--;
-                            for(var i=0; i<cell_types[id].box.length; i++){
+                            for(i = 0; i<cell_types[id].box.length; i++){
                                 $(cell_types[id].box[i]).find("span.countval").text(cell_types[id].count);
                             }
                         }
                     } else {
                         cell_types[id].count++;
-                        for(var i=0; i<cell_types[id].box.length; i++){
+                        for(i = 0; i < cell_types[id].box.length; i++){
                             $(cell_types[id].box[i]).find("span.countval").text(cell_types[id].count);
                         }
                     }
@@ -364,17 +357,7 @@ $(document).ready(function() {
 });
 
 function resize_keyboard(width) {
-
-    /* Don't do anything as we're using media selectors in the CSS to control the keyboard sizing */
-
-    /*if(width < 1024) {
-        $("#keysbox").removeClass("largekeyboard");
-        $("#keysbox").addClass("smallkeyboard");
-    }
-    else {
-        $("#keysbox").removeClass("smallkeyboard");
-        $("#keysbox").addClass("largekeyboard");
-    }*/
+    /* Does nothing */
 }
 
 function register_resets() {
@@ -396,11 +379,13 @@ function register_resets() {
     });
 }
 
-
 function reset_counters() {
-    for(var x in cell_types) {
-        cell_types[x].count = 0;
-        cell_types[x].abnormal = 0;
+    "use strict";
+    for (var cell in cell_types) {
+        if (cell_types.hasOwnProperty(cell)) {
+            cell_types[cell].count = 0;
+            cell_types[cell].abnormal = 0;
+        }
     }
     update_keyboard();
     init_visualisation("#doughnut");
@@ -432,6 +417,7 @@ function open_keyboard() {
 }
 
 function load_keyboard() {
+    "use strict";
     $.getJSON("/api/keyboard/", function(data) {
         keyboard_map = data;
         update_keyboard();
@@ -441,33 +427,33 @@ function load_keyboard() {
 }
 
 function update_keyboard() {
-
+    "use strict";
+    var i, j;
     var keyboard_keys = $("#keysbox").find("div.box1");
 
-    for(var x in cell_types) {
-        cell_types[x].box = [];
+    for (var cell in cell_types) {
+        if (cell_types.hasOwnProperty(cell)) {
+            cell_types[cell].box = [];
+        }
     }
 
-    for (var i = 0; i < keyboard_keys.length; i++) {
-
+    for (i = 0; i < keyboard_keys.length; i++) {
         var item = $(keyboard_keys[i]);
         var key = item.attr("id");
             
         item.empty();
         item.append("<p>"+key+"</p>");
 
-        for (var j = 0; j < keyboard_map['mappings'].length; j++) {
+        for (j = 0; j < keyboard_map.mappings.length; j++) {
 
-            if (keyboard_map['mappings'][j]['key'] === key) {
-
-                var cell_id = keyboard_map['mappings'][j]['cellid'];
-
+            if (keyboard_map.mappings[j].key === key) {
+                var cell_id = keyboard_map.mappings[j].cellid;
                 var cell_data = cell_types[cell_id];
                 cell_data.box.push(item);
                 var name = cell_data.abbr;
 
                 item.append("<div class=\"name\">"+name+"</div>");
-                item.append("<div class=\"count\"><span class=\"countval\">"+cell_types[cell_id].count+"</span> (<span class=\"abnormal\">"+cell_types[cell_id].abnormal+"</span>)</div>");
+                item.append("<div class=\"count\"><span class=\"countval\">"+cell_types[cell_id].count+"</span> (<span class=\"abnormal abnormal_count\">"+cell_types[cell_id].abnormal+"</span>)</div>");
 
                 // Attach cell colour to key
                 item.find("p").css("background-color", cell_data.colour);
@@ -478,30 +464,32 @@ function update_keyboard() {
 
 function edit_keyboard() {
     "use strict";
-    //var keyboard_keys = $("#keysbox").find("div.box1");
 
-    if(editing_keyboard) return;
-
+    if (editing_keyboard) {
+        return;
+    }
+    var cell;
     var list = "<ul>";
 
-    for(var x in cell_types) {
-        //list += "<li><div class=\"edit_colour_swatch\" id=\"swatch_"+x+"\"></div>"+cell_types[x].name+"<div class=\"cellid\" style=\"display: none;\">"+x+"</div></li>";
-        list += "<li><div class=\"element\"><div class=\"edit_colour_swatch\" id=\"swatch_"+x+"\"></div>"+cell_types[x].name+"</div><div class=\"cellid\" style=\"display: none;\">"+x+"</div></li>";
+    for (cell in cell_types) {
+        if (cell_types.hasOwnProperty(cell)) {
+            list += "<li><div class=\"element\"><div class=\"edit_colour_swatch\" id=\"swatch_"+cell+"\"></div>"+cell_types[cell].name+"</div><div class=\"cellid\" style=\"display: none;\">"+cell+"</div></li>";
+        }
     }
-    
     list += "</ul>";
 
     $("div#celllist").empty();
     $("div#celllist").append(list);
 
-    for(var x in cell_types) {
-        $("div#swatch_"+x).css("background-color", cell_types[x].colour);
+    for (cell in cell_types) {
+        if (cell_types.hasOwnProperty(cell)) {
+            $("div#swatch_"+cell).css("background-color", cell_types[cell].colour);
+        }
     }
 
     $("div#celllist").find("div.element").click(function() {
         edit_cell_id = $(this).find("div.cellid").text();
         $("div#celllist").find("li").css("background", "");
-        //$(this).addClass("selectedtype");
         deselect_element(selected_element);
         selected_element = $(this).parent();
         select_element($(this).parent());
@@ -519,7 +507,7 @@ function edit_keyboard() {
     var save_text = "Save";
     var cancel_text = "Cancel";
     var save_keys = true;
-    if(typeof notloggedin != 'undefined') {
+    if(typeof notloggedin !== 'undefined') {
         save_text = "Close";
         cancel_text = "Revert";
         save_keys = false;
@@ -527,8 +515,9 @@ function edit_keyboard() {
 
     var d = $("div#editkeymapbox").dialog({
         close: function() {
-            if(save_keys)
+            if (save_keys) {
                 load_keyboard();
+            }
             end_keyboard_edit();
         },
         open: function() {
@@ -538,16 +527,18 @@ function edit_keyboard() {
         resizable: false,
         buttons: [ {text: save_text,
                     click: function() {
-                        if(save_keys)
+                        if (save_keys) {
                             save_keyboard();
-                        else
+                        } else {
                             end_keyboard_edit();
+                        }
                     }
                     },
                     {text: cancel_text,
                     click: function() {
-                        if(!save_keys)
+                        if (!save_keys) {
                             load_keyboard();
+                        }
                         $("div#editkeymapbox").dialog("close");
                     }
                     }
@@ -589,7 +580,7 @@ function save_keyboard() {
 
     if ("id" in keyboard_map) {
         $.ajax({
-            url: '/api/keyboard/' + keyboard_map['id'] + '/',
+            url: '/api/keyboard/' + keyboard_map.id + '/',
             type: 'PUT',
             data: JSON.stringify(keyboard_map),
             contentType: "application/json; charset=utf-8",
@@ -630,23 +621,25 @@ function clear_keyboard() {
      * object ID when clearing keyboards so we save to the right place.
       * N.B. .toISOString() requires a shim for IE<= 8 */
     if ('id' in keyboard_map) {
-        var id = keyboard_map['id'];
+        var id = keyboard_map.id;
     }
-    var date = new Date(Date.now()).toISOString()
+    var date = new Date(Date.now()).toISOString();
     keyboard_map = {"label": "Default", "is_primary": true, "created": date,
-                    "last_modified": date, "mappings": new Array()};
-    if (id) {
-        keyboard_map['id'] = id;
+                    "last_modified": date, "mappings": []};
+    if (typeof id !== 'undefined') {
+        keyboard_map.id = id;
     }
     update_keyboard();
 }
 
 function csrfSafeMethod(method) {
+    "use strict";
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
 
 function sameOrigin(url) {
+    "use strict";
     // test that a given url is a same-origin URL
     // url could be relative or scheme relative or absolute
     var host = document.location.host; // host + port
@@ -662,6 +655,7 @@ function sameOrigin(url) {
 
 $.ajaxSetup({
     beforeSend: function(xhr, settings) {
+        "use strict";
         var csrftoken = $.cookie('csrftoken');
         if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
             // Send the token to same-origin, relative URLs only.
