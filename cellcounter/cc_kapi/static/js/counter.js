@@ -317,8 +317,8 @@ $(document).ready(function() {
                 e.preventDefault();
                 var last_key = key_history.pop();
                 if (typeof last_key !== "undefined") {
-                    var c_id = last_key['c_id'];
-                    var c_type = last_key['c_type'];
+                    var c_id = last_key.c_id;
+                    var c_type = last_key.c_type;
                     if (cell_types[c_id][c_type] > 0) {
                         cell_types[c_id][c_type]--;
                     }
