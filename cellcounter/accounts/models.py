@@ -1,3 +1,4 @@
+import hoedown
 from django.db import models
 
 try:
@@ -40,6 +41,9 @@ class LicenseAgreement(models.Model):
         self.is_active = True
         self.save()
         self._sync_active()
+
+    def get_html_text(self):
+        return hoedown.html(self.text)
 
 
 class UserLicenseAgreement(models.Model):

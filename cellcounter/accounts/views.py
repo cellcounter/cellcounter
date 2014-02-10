@@ -81,7 +81,7 @@ class LicenseDetailView(DetailView):
     def get_context_data(self, **kwargs):
         """Adds a HTML rendered version of Markdown to context"""
         context = super(LicenseDetailView, self).get_context_data(**kwargs)
-        context['license_text'] = hoedown.html(self.object.text)
+        context['license_text'] = self.object.get_html_text()
         return context
 
     def get_object(self):
