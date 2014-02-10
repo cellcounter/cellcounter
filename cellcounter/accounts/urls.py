@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 
-from .views import RegistrationView, PasswordChangeView, password_reset_sent, password_reset_done
+from .views import RegistrationView, PasswordChangeView, password_reset_sent, password_reset_done, LicenseDetailView
 
 
 urlpatterns = patterns('',
@@ -22,4 +22,5 @@ urlpatterns = patterns('',
             },
         name='password-reset-confirm'),
     url('^password/change/$', PasswordChangeView.as_view(), name='change-password'),
+    url('^license/$', LicenseDetailView.as_view(), name='license')
 )

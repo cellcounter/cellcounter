@@ -1,11 +1,24 @@
+import factory
+
 from django_webtest import WebTest
 from django.core.urlresolvers import reverse
 
 from cellcounter.cc_kapi.factories import UserFactory
+from .models import LicenseAgreement
+
+
+class LicenseFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = LicenseAgreement
+    title = factory.Sequence(lambda n: "License Agreement%s" % n)
+    text = "License agreement text"
+
 
 
 class RegistrationViewTest(WebTest):
     csrf_test = False
+
+    def setUp(self):
+        self.license = LicenseFactory()
 
     def _get_registration_form(self):
         return self.app.get(reverse('register')).form
@@ -25,8 +38,20 @@ class RegistrationViewTest(WebTest):
         form['email'] = 'user@example.com'
         form['password1'] = 'test'
         form['password2'] = 'test'
+        form['tos'] = True
         response = form.submit()
         self.assertIn('Successfully registered', response.headers['Set-Cookie'])
+
+    def test_no_tos(self):
+        form = self._get_registration_form()
+        form['username'] = 'Example'
+        form['email'] = 'user@example.com'
+        form['password1'] = 'test'
+        form['password2'] = 'test'
+        form['tos'] = False
+        response = form.submit()
+        self.assertIn('You must agree our Terms of Service', response.body)
+        self.assertEqual(response.context['user'].username, '')
 
     def test_mismatched_passwords(self):
         form = self._get_registration_form()
@@ -34,6 +59,7 @@ class RegistrationViewTest(WebTest):
         form['email'] = 'user@example.com'
         form['password1'] = 'test'
         form['password2'] = 'test2'
+        form['tos'] = True
         response = form.submit()
         self.assertIn('The two password fields didn&#39;t match.', response.body)
         self.assertEqual(response.context['user'].username, '')
@@ -45,6 +71,7 @@ class RegistrationViewTest(WebTest):
         form['email'] = 'user@example.com'
         form['password1'] = 'test'
         form['password2'] = 'test'
+        form['tos'] = True
         response = form.submit()
         self.assertIn('A user with that username already exists', response.body)
         self.assertEqual(response.context['user'].username, '')
@@ -55,6 +82,7 @@ class RegistrationViewTest(WebTest):
         form['email'] = 'user@'
         form['password1'] = 'test'
         form['password2'] = 'test'
+        form['tos'] = True
         response = form.submit()
         self.assertIn('Enter a valid email address', response.body)
         self.assertEqual(response.context['user'].username, '')
@@ -65,6 +93,7 @@ class RegistrationViewTest(WebTest):
         form['email'] = 'user@example.com'
         form['password1'] = 'test'
         form['password2'] = 'test'
+        form['tos'] = True
         response = form.submit().follow()
         self.assertIn('Logout', response.body)
         self.assertEqual(response.context['user'].username, 'Example')

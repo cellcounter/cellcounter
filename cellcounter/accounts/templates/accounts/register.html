@@ -4,7 +4,15 @@
 
 <form action="" method="post">
 {% csrf_token %}
-{{ form.as_p }}
+{% for field in form %}
+    <p>
+        {{ field.errors }}
+        {{ field.label_tag }}: {{ field }}
+        {% if field.name == "tos" %}
+          I agree with <a href="{% url "license" %}">Terms and Conditions</a>
+        {% endif %}
+    </p>
+{% endfor %}
 <input type="submit" class="btn btn-success" value="Create New User">
 </form>
 

@@ -1,0 +1,9 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<h1>{{ license.title }}</h1>
+
+{{ license_text | safe }}
+
+{% endblock %}
