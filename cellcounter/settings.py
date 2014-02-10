@@ -147,6 +147,7 @@ INSTALLED_APPS = (
     'cellcounter.main',
     'cellcounter.logs',
     'cellcounter.cc_kapi',
+    'cellcounter.accounts',
 )
 
 # A sample logging configuration. The only tangible logging
