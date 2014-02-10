@@ -1,7 +1,6 @@
 from django.conf.urls import patterns, url
-from django.core.urlresolvers import reverse
 
-from .views import RegistrationView, PasswordChangeView, password_reset_done
+from .views import RegistrationView, PasswordChangeView, password_reset_sent, password_reset_done
 
 
 urlpatterns = patterns('',
@@ -11,13 +10,15 @@ urlpatterns = patterns('',
         'email_template_name': 'accounts/reset_email.txt',
         'subject_template_name': 'accounts/reset_subject.txt',
         'current_app': 'cellcounter.accounts',
-        'post_reset_redirect': '/',
+        'post_reset_redirect': 'password-reset-sent',
         },
-        name='reset-request'),
-    url('^password/reset/confirm/(?P<uidb64>\d+)/(?P<token>[\d\w-]+)/$',
+        name='password-reset'),
+    url('^password/reset/sent/$', password_reset_sent, name='password-reset-sent'),
+    url('^password/reset/done/$', password_reset_done, name='password-reset-done'),
+    url('^password/reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[\d\w\-]+)/$',
         'django.contrib.auth.views.password_reset_confirm', {
             'template_name': 'accounts/reset_confirm.html',
-            'post_reset_redirect': password_reset_done,
+            'post_reset_redirect': 'password-reset-done',
             },
         name='password-reset-confirm'),
     url('^password/change/$', PasswordChangeView.as_view(), name='change-password'),
