@@ -8,4 +8,4 @@ install:
  - pip install --use-mirrors -r test-requirements.txt
 
 # command to run tests
-script: python manage.py test cellcounter.main cellcounter.cc_kapi
+script: python manage.py test cellcounter.main cellcounter.cc_kapi cellcounter.accounts
