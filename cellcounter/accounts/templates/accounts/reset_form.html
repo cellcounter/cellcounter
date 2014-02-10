@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<form method="post" action="{% url 'reset-request' %}">
+<form method="post" action="{% url 'password-reset' %}">
 {% csrf_token %}
 {{  form.as_p }}
 <button type="submit" class="btn btn-success">Send new password</button>
