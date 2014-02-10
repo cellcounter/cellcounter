@@ -1,4 +1,5 @@
 from django.shortcuts import render_to_response
+from django.template.response import SimpleTemplateResponse
 from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.views.generic.base import View
@@ -56,4 +57,9 @@ class PasswordChangeView(View):
 
 def password_reset_done(request):
     messages.info(request, "Successfully reset password")
-    return HttpResponseRedirect('/')
+    return SimpleTemplateResponse('accounts/reset_done.html')
+
+
+def password_reset_sent(request):
+    messages.info(request, "Reset email sent")
+    return SimpleTemplateResponse('accounts/reset_sent.html')
