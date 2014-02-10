@@ -1,6 +1,7 @@
 import factory
 
 from django_webtest import WebTest
+from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from cellcounter.cc_kapi.factories import UserFactory
@@ -12,6 +13,33 @@ class LicenseFactory(factory.DjangoModelFactory):
     title = factory.Sequence(lambda n: "License Agreement%s" % n)
     text = "License agreement text"
 
+
+class LicenseAgreementTest(TestCase):
+    def setUp(self):
+        self.license = LicenseFactory()
+
+    def test_is_active(self):
+        self.assertTrue(self.license.is_active)
+
+    def test_set_active(self):
+        license = LicenseFactory(is_active=False)
+        self.assertFalse(license.is_active)
+        license.set_active()
+        self.assertTrue(license.is_active)
+
+    def test_sync_active(self):
+        license = LicenseFactory()
+        self.assertTrue(self.license.is_active)
+        self.assertTrue(license.is_active)
+        license.set_active()
+        self.assertTrue(license.is_active)
+        self.assertFalse(
+            LicenseAgreement.objects.get(id=self.license.id).is_active)
+        self.license.set_active()
+        self.assertTrue(
+            LicenseAgreement.objects.get(id=self.license.id).is_active)
+        self.assertFalse(
+            LicenseAgreement.objects.get(id=license.id).is_active)
 
 
 class RegistrationViewTest(WebTest):
