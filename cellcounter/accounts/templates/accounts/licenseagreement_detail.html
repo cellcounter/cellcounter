@@ -2,8 +2,12 @@
 
 {% block content %}
 
+{% if license and license_text %}
 <h1>{{ license.title }}</h1>
 
 {{ license_text | safe }}
+{% else %}
+<p>No License set</p>
+{% endif %}
 
 {% endblock %}
