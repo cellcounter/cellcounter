@@ -41,6 +41,39 @@ class LicenseAgreementTest(TestCase):
         self.assertFalse(
             LicenseAgreement.objects.get(id=license.id).is_active)
 
+    def test_get_html(self):
+        license = LicenseFactory()
+        self.assertEqual('<p>License agreement text</p>\n', license.get_html_text())
+
+
+class LicenseViewTest(WebTest):
+    csrf_test = False
+
+    def test_get_license_no_license(self):
+        response = self.app.get(reverse('license'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(None, response.context['object'])
+        self.assertIn('No License set', response.body)
+
+    def test_get_license_license(self):
+        license = LicenseFactory()
+        response = self.app.get(reverse('license'))
+        self.assertNotEqual(None, response.context['object'])
+        self.assertEqual(license, response.context['object'])
+        self.assertIn(license.title, response.body)
+
+    def test_race_license(self):
+        """Ugly test, required due to potential for two active licenses to be
+        present whilst waiting for LicenseAgreement._sync_active() to be called.
+        Ensure that only the latest active license is returned, and display
+        does not break should this occur."""
+        LicenseFactory(is_active=True)
+        license2 = LicenseFactory(is_active=True)
+        response = self.app.get(reverse('license'))
+        self.assertNotEqual(None, response.context['object'])
+        self.assertEqual(license2, response.context['object'])
+        self.assertIn(license2.title, response.body)
+
 
 class RegistrationViewTest(WebTest):
     csrf_test = False
