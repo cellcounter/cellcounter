@@ -1,8 +1,5 @@
-import hoedown
-
 from django.shortcuts import render_to_response
 from django.template.response import SimpleTemplateResponse
-from django.http import HttpResponseRedirect, Http404
 from django.template import RequestContext
 from django.views.generic.base import View
 from django.views.generic import DetailView
