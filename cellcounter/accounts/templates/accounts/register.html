@@ -2,18 +2,62 @@
 
 {% block content %}
 
-<form action="" method="post">
+<form action="" method="post" class="form-horizontal">
 {% csrf_token %}
-{% for field in form %}
-    <p>
-        {{ field.errors }}
-        {{ field.label_tag }}: {{ field }}
-        {% if field.name == "tos" %}
-          I agree with <a href="{% url "license" %}">Terms and Conditions</a>
-        {% endif %}
-    </p>
-{% endfor %}
-<input type="submit" class="btn btn-success" value="Create New User">
+
+{% if form.non_field_errors %}
+    <div class="alert alert-danger">
+        <a class="close" data-dismiss="alert">&times;</a>
+        {% for non_field_error in form.non_field_errors %}
+             {{ non_field_error }}
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="control-group {% if form.username.errors %}error{% endif %}">
+    <label class="control-label" for="id_username">Username</label>
+    <div class="controls">
+        {{ form.username }}
+        {% if form.username.errors %}<span class="help-inline">{{ form.username.errors }}</span>{% endif %}
+    </div>
+</div>
+
+<div class="control-group {% if form.email.errors %}error{% endif %}">
+    <label class="control-label" for="id_email">Email Address</label>
+    <div class="controls">
+        {{ form.email }}
+        {% if form.email.errors %}<span class="help-inline">{{ form.email.errors }}</span>{% endif %}
+    </div>
+</div>
+
+<div class="control-group {% if form.password1.errors %}error{% endif %}">
+    <label class="control-label" for="id_password1">Password</label>
+    <div class="controls">
+        {{ form.password1 }}
+        {% if form.password1.errors %}<span class="help-inline">{{ form.password1.errors }}</span>{% endif %}
+    </div>
+</div>
+
+<div class="control-group {% if form.password2.errors %}error{% endif %}">
+    <label class="control-label" for="id_password2">Repeat Password</label>
+    <div class="controls">
+        {{ form.password2 }}
+        {% if form.password2.errors %}<span class="help-inline">{{ form.password2.errors }}</span>{% endif %}
+    </div>
+</div>
+
+<div class="control-group {% if form.tos.errors %}error{% endif %}">
+    <div class="controls">
+        <label class="checkbox">{{ form.tos }} I Agree <a href="/accounts/license">TOS</a></label>
+        {% if form.tos.errors %}<span class="help-inline">{{ form.tos.errors }}</span>{% endif %}
+    </div>
+</div>
+
+<div class="control-group">
+    <div class="controls">
+        <input type="submit" class="btn btn-success" value="Create New User">
+    </div>
+</div>
 </form>
 
 {% endblock %}
