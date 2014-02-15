@@ -1,5 +1,5 @@
 from django.shortcuts import render_to_response
-from django.views import HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.template.response import SimpleTemplateResponse
 from django.template import RequestContext
 from django.views.generic.base import View
