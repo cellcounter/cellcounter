@@ -31,6 +31,7 @@
 
                 <ul class="nav navbar-right">
                     {% if user.is_authenticated %}
+                        <li><a href="{% url "user-detail" user.id %}">{{ user }}</a></li>
                         <li><a href="{% url "logout" %}">Logout</a></li>
                     {% else %}
                         <li><a href="{% url "register" %}">Register</a></li>
