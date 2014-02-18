@@ -4,13 +4,15 @@ from django.template.response import SimpleTemplateResponse
 from django.template import RequestContext
 from django.core.exceptions import PermissionDenied
 from django.views.generic.base import View
+from django.views.generic.edit import UpdateView
 from django.views.generic import DetailView, DeleteView
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
+from django.utils.safestring import mark_safe
 from django.contrib import messages
 
 from .forms import EmailUserCreationForm
@@ -31,11 +33,14 @@ class RegistrationView(View):
             agreement = UserLicenseAgreement(user=user,
                                              license=la)
             agreement.save()
-            messages.info(request, "Successfully registered, you are now logged in!")
+            messages.success(request,
+                          mark_safe(
+                              "Successfully registered, you are now logged in! <a href='%s'>View your profile</a>" %
+                              reverse('user-detail', kwargs={'pk': user.id})))
             user = authenticate(username=request.POST['username'],
                                     password=request.POST['password1'])
             login(request, user)
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect(reverse('new_count'))
         else:
             return render_to_response('accounts/register.html',
                                       {'form': form},
@@ -56,8 +61,8 @@ class PasswordChangeView(View):
         form = PasswordChangeForm(user=request.user, data=request.POST)
         if form.is_valid():
             form.save()
-            messages.info(request, "Password changed successfully")
-            return HttpResponseRedirect('/')
+            messages.success(request, "Password changed successfully")
+            return HttpResponseRedirect(reverse('new_count'))
         else:
             return render_to_response('accounts/password_change.html',
                                       {'form': form},
@@ -65,12 +70,12 @@ class PasswordChangeView(View):
 
 
 def password_reset_done(request):
-    messages.info(request, "Successfully reset password")
+    messages.success(request, "Successfully reset password")
     return SimpleTemplateResponse('accounts/reset_done.html')
 
 
 def password_reset_sent(request):
-    messages.info(request, "Reset email sent")
+    messages.success(request, "Reset email sent")
     return SimpleTemplateResponse('accounts/reset_sent.html')
 
 
@@ -122,7 +127,6 @@ class UserDetailView(DetailView):
 
 class UserDeleteView(DeleteView):
     model = User
-    success_url = reverse_lazy('new_count')
     context_object_name = 'user_object'
     template_name = 'accounts/user_check_delete.html'
 
@@ -131,3 +135,23 @@ class UserDeleteView(DeleteView):
             return super(UserDeleteView, self).get_object()
         else:
             raise PermissionDenied
+
+    def get_success_url(self):
+        messages.success(self.request, "User account deleted")
+        return reverse('new_count')
+
+
+class UserUpdateView(UpdateView):
+    model = User
+    fields = ['first_name', 'last_name', 'email', ]
+    template_name = 'accounts/user_update.html'
+
+    def get_object(self, queryset=None):
+        if self.request.user.id == int(self.kwargs['pk']):
+            return super(UserUpdateView, self).get_object()
+        else:
+            raise PermissionDenied
+
+    def get_success_url(self):
+        messages.success(self.request, "User details updated")
+        return reverse('user-detail', kwargs={'pk': self.kwargs['pk']})

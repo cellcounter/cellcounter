@@ -6,6 +6,7 @@ urlpatterns = patterns('',
     url('^new/$', views.RegistrationView.as_view(), name='register'),
     url('^(?P<pk>[0-9]+)/$', views.UserDetailView.as_view(), name='user-detail'),
     url('^(?P<pk>[0-9]+)/delete/$', views.UserDeleteView.as_view(), name='user-delete'),
+    url('^(?P<pk>[0-9]+)/edit/$', views.UserUpdateView.as_view(), name='user-update'),
     url('^password/reset/$', 'django.contrib.auth.views.password_reset', {
         'template_name': 'accounts/reset_form.html',
         'email_template_name': 'accounts/reset_email.txt',
