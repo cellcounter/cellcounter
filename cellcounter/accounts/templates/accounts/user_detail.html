@@ -1,0 +1,21 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+{% if user_detail %}
+<h1>{{ user_detail.username }}</h1>
+<p>Welcome to <span class="logocell">Cell</span><span class="logocount">countr</span> {{ user_detail.first_name }}.</p>
+
+<h2>License</h2>
+<p>Review signed <a href="{% url "license-detail" license.id %}">license agreement</a></p>
+
+<form method="GET" action="{% url "user-delete" user.id %}">
+    {% csrf_token %}
+    <input type="submit" class="btn btn-danger" value="Delete My User">
+</form>
+
+{% else %}
+<p>Not permitted to view this user.</p>
+{% endif %}
+
+{% endblock %}

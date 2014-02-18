@@ -2,11 +2,14 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 from django.template.response import SimpleTemplateResponse
 from django.template import RequestContext
+from django.core.exceptions import PermissionDenied
 from django.views.generic.base import View
-from django.views.generic import DetailView
+from django.views.generic import DetailView, DeleteView
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 
@@ -71,14 +74,14 @@ def password_reset_sent(request):
     return SimpleTemplateResponse('accounts/reset_sent.html')
 
 
-class LicenseDetailView(DetailView):
+class LatestLicenseDetailView(DetailView):
     model = LicenseAgreement
     context_object_name = 'license'
     queryset = LicenseAgreement.objects.filter(is_active=True)
 
     def get_context_data(self, **kwargs):
         """Adds a HTML rendered version of Markdown to context"""
-        context = super(LicenseDetailView, self).get_context_data(**kwargs)
+        context = super(LatestLicenseDetailView, self).get_context_data(**kwargs)
         if self.object:
             context['license_text'] = self.object.get_html_text()
         return context
@@ -88,3 +91,43 @@ class LicenseDetailView(DetailView):
             return self.get_queryset()[0]
         except IndexError:
             return None
+
+
+class LicenseDetailView(DetailView):
+    model = LicenseAgreement
+    context_object_name = 'license'
+
+    def get_context_data(self, **kwargs):
+        context = super(LicenseDetailView, self).get_context_data(**kwargs)
+        context['license_text'] = self.object.get_html_text()
+        return context
+
+
+class UserDetailView(DetailView):
+    model = User
+    context_object_name = 'user_detail'
+    template_name = 'accounts/user_detail.html'
+
+    def get_object(self, queryset=None):
+        if self.request.user.id == int(self.kwargs['pk']):
+            return super(UserDetailView, self).get_object()
+        else:
+            raise PermissionDenied
+
+    def get_context_data(self, **kwargs):
+        context = super(UserDetailView, self).get_context_data(**kwargs)
+        context['license'] = self.object.licenseagreement_set.latest()
+        return context
+
+
+class UserDeleteView(DeleteView):
+    model = User
+    success_url = reverse_lazy('new_count')
+    context_object_name = 'user_object'
+    template_name = 'accounts/user_check_delete.html'
+
+    def get_object(self, queryset=None):
+        if self.request.user.id == int(self.kwargs['pk']):
+            return super(UserDeleteView, self).get_object()
+        else:
+            raise PermissionDenied

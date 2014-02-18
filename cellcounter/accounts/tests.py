@@ -4,8 +4,9 @@ from django_webtest import WebTest
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from cellcounter.cc_kapi.factories import UserFactory
-from .models import LicenseAgreement
+from cellcounter.cc_kapi.factories import UserFactory, KeyboardFactory
+from cellcounter.cc_kapi.models import Keyboard
+from .models import LicenseAgreement, UserLicenseAgreement
 
 
 class LicenseFactory(factory.DjangoModelFactory):
@@ -47,17 +48,15 @@ class LicenseAgreementTest(TestCase):
 
 
 class LicenseViewTest(WebTest):
-    csrf_test = False
-
     def test_get_license_no_license(self):
-        response = self.app.get(reverse('license'))
+        response = self.app.get(reverse('latest-license'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(None, response.context['object'])
         self.assertIn('No License set', response.body)
 
     def test_get_license_license(self):
         license = LicenseFactory()
-        response = self.app.get(reverse('license'))
+        response = self.app.get(reverse('latest-license'))
         self.assertNotEqual(None, response.context['object'])
         self.assertEqual(license, response.context['object'])
         self.assertIn(license.title, response.body)
@@ -69,15 +68,20 @@ class LicenseViewTest(WebTest):
         does not break should this occur."""
         LicenseFactory(is_active=True)
         license2 = LicenseFactory(is_active=True)
-        response = self.app.get(reverse('license'))
+        response = self.app.get(reverse('latest-license'))
         self.assertNotEqual(None, response.context['object'])
         self.assertEqual(license2, response.context['object'])
         self.assertIn(license2.title, response.body)
 
+    def test_get_specific_license(self):
+        license = LicenseFactory()
+        response = self.app.get(reverse('license-detail', kwargs={'pk': license.id}))
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(license, response.context['license'])
+        self.assertEqual(license.get_html_text(), response.context['license_text'])
+
 
 class RegistrationViewTest(WebTest):
-    csrf_test = False
-
     def setUp(self):
         self.license = LicenseFactory()
 
@@ -161,8 +165,6 @@ class RegistrationViewTest(WebTest):
 
 
 class PasswordChangeViewTest(WebTest):
-    csrf_test = False
-
     def setUp(self):
         self.user = UserFactory()
 
@@ -214,3 +216,69 @@ class PasswordChangeViewTest(WebTest):
         form['new_password2'] = 'new2'
         response = form.submit()
         self.assertIn('The two password fields didn&#39;t match', response.body)
+
+
+class UserManagementTest(WebTest):
+    csrf_checks = False
+
+    def setUp(self):
+        self.user = UserFactory()
+        self.license = LicenseFactory()
+        self.agreement = UserLicenseAgreement(user=self.user, license=self.license).save()
+
+    def test_get_own_profile(self):
+        response = self.app.get(
+            reverse('user-detail', kwargs={'pk': self.user.id}),
+            user=self.user)
+        self.assertEquals(200, response.status_code)
+
+    def test_get_other_profile(self):
+        user2 = UserFactory()
+        response = self.app.get(
+            reverse('user-detail', kwargs={'pk': self.user.id}),
+            user=user2, status=403)
+        self.assertEquals(403, response.status_code)
+
+    def test_delete_logged_out(self):
+        user2 = UserFactory()
+        response = self.app.post(
+            reverse('user-delete', kwargs={'pk': user2.id}),
+            status=403)
+        self.assertEquals(403, response.status_code)
+
+    def test_get_delete_own_user(self):
+        user2 = UserFactory()
+        response = self.app.get(
+            reverse('user-delete', kwargs={'pk': user2.id}),
+            user=user2
+        )
+        self.assertEquals(200, response.status_code)
+        self.assertIn('Are you sure you want to delete', response.body)
+
+    def test_get_delete_other_user(self):
+        user2 = UserFactory()
+        response = self.app.get(
+            reverse('user-delete', kwargs={'pk': user2.id}),
+            user=self.user, status=403
+        )
+        self.assertEquals(403, response.status_code)
+
+    def test_post_delete_own_user(self):
+        user2 = UserFactory()
+        keyboard = KeyboardFactory(is_primary=True, user=user2)
+        self.assertEquals(keyboard, Keyboard.objects.get(id=keyboard.id))
+        response = self.app.post(
+            reverse('user-delete', kwargs={'pk': user2.id}),
+            user=user2
+        )
+        self.assertEquals(302, response.status_code)
+        with self.assertRaises(Keyboard.DoesNotExist):
+            Keyboard.objects.get(id=keyboard.id)
+
+    def test_post_delete_other_user(self):
+        user2 = UserFactory()
+        response = self.app.post(
+            reverse('user-delete', kwargs={'pk': user2.id}),
+            user=self.user, status=403
+        )
+        self.assertEquals(403, response.status_code)
