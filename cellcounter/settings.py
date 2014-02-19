@@ -20,6 +20,9 @@ if TEST:
     DEFAULT_DATABASE_URL = 'sqlite://:memory:'
     RATELIMIT_ENABLE = False
 
+# Change default address if env-var is set
+DEFAULT_FROM_EMAIL = os.environ.get('DJANGO_FROM_ADDRESS', 'webmaster@localhost')
+
 DATABASES = {'default': dj_database_url.config(default=DEFAULT_DATABASE_URL)}
 
 # Local time zone for this installation. Choices can be found here:
