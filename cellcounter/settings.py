@@ -141,7 +141,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'colorful',
-    'storages',
     'south',
     'rest_framework',
     'cellcounter.main',
@@ -195,12 +194,6 @@ if 'ENABLE_DJANGO_LOGGING' in os.environ:
             },
         }
     }
-
-if 'AWS_STORAGE_BUCKET_NAME' in os.environ:
-    AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
-    STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-    S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
-    STATIC_URL = S3_URL
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
