@@ -417,6 +417,36 @@ function load_keyboard() {
     });
 }
 
+function load_specific_keyboard(keyboard_id) {
+    "use strict";
+    console.log(keyboard_id);
+    $.getJSON("/api/keyboard/" + keyboard_id + "/", function(data) {
+        var keyboard = data;
+        console.log(keyboard);
+        return keyboard;
+    });
+}
+
+function set_keyboard_primary(keyboard_id) {
+    "use strict";
+    var keyboard = load_specific_keyboard(keyboard_id);
+    keyboard.is_primary = true;
+    save_keyboard(keyboard);
+}
+
+function delete_specific_keyboard(keyboard_id) {
+    "use strict";
+    var keyboard = load_specific_keyboard(keyboard_id);
+    $.ajax({
+        url: '/api/keyboard/' + keyboard.id + '/',
+        type: 'DELETE',
+        data: JSON.stringify(keyboard),
+        contentType: "application/json; charset=utf-8",
+        async: false
+    });
+}
+
+
 function update_keyboard() {
     "use strict";
     var i, j;
@@ -566,14 +596,18 @@ function deselect_element(el) {
     $(el).removeClass("selected");
 }
 
-function save_keyboard() {
+function save_keyboard(keyboard) {
     "use strict";
 
-    if ("id" in keyboard_map) {
+    if (typeof keyboard === 'undefined') {
+        keyboard = keyboard_map;
+    }
+
+    if ("id" in keyboard) {
         $.ajax({
-            url: '/api/keyboard/' + keyboard_map.id + '/',
+            url: '/api/keyboard/' + keyboard.id + '/',
             type: 'PUT',
-            data: JSON.stringify(keyboard_map),
+            data: JSON.stringify(keyboard),
             contentType: "application/json; charset=utf-8",
             async: false,
             success: function(msg) {
@@ -584,7 +618,7 @@ function save_keyboard() {
         $.ajax({
             url: '/api/keyboard/',
             type: 'POST',
-            data: JSON.stringify(keyboard_map),
+            data: JSON.stringify(keyboard),
             contentType: "application/json; charset=utf-8",
             async: false,
             success: function(msg) {
