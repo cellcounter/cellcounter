@@ -4,25 +4,42 @@
 
 {% if user_detail %}
 <h1>{{ user_detail.username }}</h1>
-<p>Welcome to <span class="logocell">Cell</span><span class="logocount">countr</span> {{ user_detail.first_name }}.</p>
 
-<h2>User Details</h2>
+<h2>Details</h2>
 <table class="table">
 <tr><th>Full Name</th><td>{{ user_detail.first_name }} {{ user_detail.last_name }}</td></tr>
 <tr><th>Email Address</th><td>{{ user_detail.email }}</td></tr>
 </table>
 
+<h2>License</h2>
+<p>Review signed <a href="{% url "license-detail" license.id %}">license agreement</a></p>
+
 <h2>User Functions</h2>
 <table class="table">
 <tr><td><a href="{% url "user-update" user.id %}" class="btn btn-success">Update My Details</a></td></tr>
 <tr><td><a href="{% url "change-password" %}" class="btn btn-primary">Change Password</a></td></tr>
-<tr><td><form method="GET" action="{% url "user-delete" user.id %}">{% csrf_token %}
-    <input type="submit" class="btn btn-danger" value="Delete My User">
-</form></td></tr>
+<tr><td><a href="{% url "user-delete" user.id %}" class="btn btn-danger">Delete My User</a></td></tr>
 </table>
 
-<h2>License</h2>
-<p>Review signed <a href="{% url "license-detail" license.id %}">license agreement</a></p>
+<h2>Manage Keyboards</h2>
+
+{% if keyboards %}
+    <table class="table">
+        <tr><th>Label</th><th>Primary Status</th><th>Management Function</th></tr>
+    {% for keyboard in keyboards %}
+        <tr><td>{{ keyboard.label }}</td><td>{% if keyboard.is_primary %}<i class="icon-ok"></i>{% endif %}</td>
+            <td>
+                <a href="" title="Change label" class="btn btn-primary"><i class="icon-pencil icon-white"></i></a>
+                <a href="" title="Set primary" class="btn btn-success" onclick="set_keyboard_primary({{ keyboard.id }});"><i class="icon-ok icon-white"></i></a>
+                <a href="" title="Delete keyboard" class="btn btn-danger"><i class="icon-trash icon-white"></i></a>
+            </td>
+        </tr>
+        <p>{{ keyboard.label }}</p>
+    {% endfor %}
+    </table>
+{% else %}
+<p>No keyboards to manage</p>
+{% endif %}
 
 {% else %}
 <p>Not permitted to view this user.</p>
