@@ -561,13 +561,23 @@ function edit_keyboard() {
                         }
                     }
                     },
+                    {text: 'Save as New',
+                     click: function() {
+                         if (save_keys) {
+                             delete(keyboard_map['id']);
+                             save_keyboard();
+                         } else {
+                             end_keyboard_edit();
+                         }
+                     }
+                    },
                     {text: cancel_text,
-                    click: function() {
-                        if (!save_keys) {
-                            load_keyboard();
-                        }
-                        $("div#editkeymapbox").dialog("close");
-                    }
+                     click: function() {
+                         if (!save_keys) {
+                             load_keyboard();
+                         }
+                         $("div#editkeymapbox").dialog("close");
+                     }
                     }
                 ],
         width: "368px"
