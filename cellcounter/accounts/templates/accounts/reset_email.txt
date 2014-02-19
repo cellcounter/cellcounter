@@ -1,7 +1,7 @@
 Thanks for requesting to reset your password for Cellcountr for email {{ email }}.
 
 Follow the link below:
-{{ protocol}}://{{ domain }}{% url 'password-reset-confirm' uidb64=uid token=token %}
+{{ protocol }}://{{ domain }}{% url 'password-reset-confirm' uidb64=uid token=token %}
 
 Any issues, feel free to contact us.
 
