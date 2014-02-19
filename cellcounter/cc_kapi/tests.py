@@ -339,3 +339,40 @@ class TestKeyboardAPIStatic(TestCase):
         with self.assertRaises(PermissionDenied):
             KeyboardView.get_keyboard(user2,
                                       keyboard_id=self.keyboard.id)
+
+
+class TestKeyboardLabelChange(WebTest):
+    fixtures = ['initial_data.json']
+
+    def setUp(self):
+        self.user = UserFactory()
+        self.keyboard = KeyboardFactory(user=self.user, is_primary=True)
+
+    def test_get_label_change(self):
+        response = self.app.get(reverse('rename-keyboard', kwargs={'pk': self.keyboard.id}),
+                                user=self.user)
+        self.assertEqual(200, response.status_code)
+        self.assertIn('<label class="control-label" for="id_label">New Label</label>', response.body)
+
+    def test_get_other_label_change(self):
+        user2 = UserFactory()
+        response = self.app.get(reverse('rename-keyboard', kwargs={'pk': self.keyboard.id}),
+                                user=user2, status=403)
+        self.assertEqual(403, response.status_code)
+
+    def test_post_label_change(self):
+        form = self.app.get(reverse('rename-keyboard', kwargs={'pk': self.keyboard.id}),
+                            user=self.user).form
+        form['label'] = 'New label'
+        response = form.submit()
+        self.assertEqual(302, response.status_code)
+        self.assertEqual(Keyboard.objects.get(id=self.keyboard.id).label, 'New label')
+
+    def test_post_other_label_change(self):
+        """Note this gets the form as the correct user and posts as different user"""
+        user2 = UserFactory()
+        form = self.app.get(reverse('rename-keyboard', kwargs={'pk': self.keyboard.id}),
+                            user=self.user).form
+        form['label'] = 'New label'
+        response = form.submit(user=user2, status=403)
+        self.assertEqual(403, response.status_code)
