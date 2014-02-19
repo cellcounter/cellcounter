@@ -17,6 +17,7 @@ DEFAULT_DATABASE_URL = "sqlite:///%s" % os.path.join(PROJECT_DIR, 'db.sqlite3')
 
 if TEST:
     DEFAULT_DATABASE_URL = 'sqlite://:memory:'
+    RATELIMIT_ENABLE = False
 
 DATABASES = {'default': dj_database_url.config(default=DEFAULT_DATABASE_URL)}
 
