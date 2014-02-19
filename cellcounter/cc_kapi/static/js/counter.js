@@ -419,12 +419,18 @@ function load_keyboard() {
 
 function load_specific_keyboard(keyboard_id) {
     "use strict";
-    console.log(keyboard_id);
-    $.getJSON("/api/keyboard/" + keyboard_id + "/", function(data) {
-        var keyboard = data;
-        console.log(keyboard);
-        return keyboard;
+    var keyboard = {};
+    $.ajax({
+        url: '/api/keyboard/' + keyboard_id + '/',
+        type: 'GET',
+        dataType: 'json',
+        contentType: "application/json; charset=utf-8",
+        async: false,
+        success: function(data) {
+            keyboard = data;
+        }
     });
+    return keyboard;
 }
 
 function set_keyboard_primary(keyboard_id) {
@@ -432,6 +438,7 @@ function set_keyboard_primary(keyboard_id) {
     var keyboard = load_specific_keyboard(keyboard_id);
     keyboard.is_primary = true;
     save_keyboard(keyboard);
+    return false;
 }
 
 function delete_specific_keyboard(keyboard_id) {
@@ -445,7 +452,6 @@ function delete_specific_keyboard(keyboard_id) {
         async: false
     });
 }
-
 
 function update_keyboard() {
     "use strict";
