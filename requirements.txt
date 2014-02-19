@@ -11,5 +11,4 @@ hoedown==0.2
 pytz==2013.9
 psycopg2==2.5.2
 uWSGI==2.0.1
-gunicorn==18.0
 wsgiref==0.1.2
