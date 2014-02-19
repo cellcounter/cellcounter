@@ -98,6 +98,7 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'cellcounter.middleware.SecureRequiredMiddleware',
     'cellcounter.middleware.RequestLoggerMiddleware',
+    'ratelimit.middleware.RatelimitMiddleware',
 )
 
 # HTTPS_SUPPORT = True
@@ -149,6 +150,14 @@ INSTALLED_APPS = (
     'cellcounter.cc_kapi',
     'cellcounter.accounts',
 )
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
+    }
+}
+
+RATELIMIT_VIEW = 'cellcounter.accounts.views.rate_limited'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

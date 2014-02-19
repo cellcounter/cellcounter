@@ -5,7 +5,7 @@ from django.template import RequestContext
 from django.core.exceptions import PermissionDenied
 from django.views.generic.base import View
 from django.views.generic.edit import UpdateView
-from django.views.generic import DetailView, DeleteView
+from django.views.generic import DetailView, DeleteView, TemplateView
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
@@ -14,6 +14,7 @@ from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.utils.safestring import mark_safe
 from django.contrib import messages
+from ratelimit.decorators import ratelimit
 
 from .forms import EmailUserCreationForm
 from .models import LicenseAgreement, UserLicenseAgreement
@@ -25,6 +26,7 @@ class RegistrationView(View):
                                   {'form': EmailUserCreationForm()},
                                   context_instance=RequestContext(request))
 
+    @method_decorator(ratelimit(block=True, rate='2/h'))
     def post(self, request, *args, **kwargs):
         form = EmailUserCreationForm(request.POST)
         if form.is_valid():
@@ -156,3 +158,8 @@ class UserUpdateView(UpdateView):
     def get_success_url(self):
         messages.success(self.request, "User details updated")
         return reverse('user-detail', kwargs={'pk': self.kwargs['pk']})
+
+
+def rate_limited(request, exception):
+    messages.error(request, 'You have been ratelimited - please wait before registering an account')
+    return HttpResponseRedirect(reverse('new_count'))
