@@ -16,6 +16,7 @@ PROJECT_DIR = os.path.dirname(__file__)
 DEFAULT_DATABASE_URL = "sqlite:///%s" % os.path.join(PROJECT_DIR, 'db.sqlite3')
 
 if TEST:
+    # Need to disable rate limiting for test purposes
     DEFAULT_DATABASE_URL = 'sqlite://:memory:'
     RATELIMIT_ENABLE = False
 
