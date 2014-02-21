@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 
-from .views import KeyboardView, KeyboardRenameView
+from .views import KeyboardView
 
 urlpatterns = patterns('',
     url('^$', KeyboardView.as_view(),
