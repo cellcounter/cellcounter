@@ -141,19 +141,3 @@ class KeyboardView(GenericAPIView, CreateModelMixin, UpdateModelMixin, DestroyMo
         keyboard.delete()
         messages.info(request, 'Keyboard deleted successfully')
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class KeyboardRenameView(UpdateView):
-    model = Keyboard
-    fields = ['label']
-    template_name = 'cc_kapi/change_keyboard_label.html'
-
-    def get_object(self, queryset=None):
-        keyboard = super(KeyboardRenameView, self).get_object()
-        if keyboard.user != self.request.user:
-            raise PermissionDenied
-        return keyboard
-
-    def get_success_url(self):
-        messages.success(self.request, "Changed keyboard label")
-        return reverse('user-detail', kwargs={'pk': self.request.user.id})

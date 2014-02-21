@@ -7,6 +7,4 @@ urlpatterns = patterns('',
         name='keyboard'),
     url('^(?P<keyboard_id>\d+)/$', KeyboardView.as_view(),
         name='keyboard-detail'),
-    url('^(?P<pk>\d+)/update/$', KeyboardRenameView.as_view(),
-        name='rename-keyboard'),
 )

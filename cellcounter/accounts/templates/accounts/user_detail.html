@@ -24,12 +24,12 @@
 <h2>Manage Keyboards</h2>
 
 {% if keyboards %}
+    <p>To change a keyboard's label, click on the keyboard name.</p>
     <table class="table">
     <tr><th>Label</th><th>Current Default</th><th>Management Function</th></tr>
     {% for keyboard in keyboards %}
-        <tr><td>{{ keyboard.label }}</td><td>{% if keyboard.is_primary %}<i class="icon-ok"></i>{% endif %}</td>
+        <tr><td><a href="" id="keyboard-label" data-type="text" data-pk="{{ keyboard.id }}" title="Click to change label">{{ keyboard.label }}</a></td><td>{% if keyboard.is_primary %}<i class="icon-ok"></i>{% endif %}</td>
             <td>
-                <a href="{% url "rename-keyboard" keyboard.id %}" title="Change label" class="btn btn-primary"><i class="icon-pencil icon-white"></i></a>
                 <a href="" title="Set keyboard as default" class="btn btn-success" onclick="set_keyboard_primary({{ keyboard.id }});"><i class="icon-ok icon-white"></i></a>
                 <a href="" title="Delete keyboard" class="btn btn-danger" onclick="delete_specific_keyboard({{ keyboard.id }});"><i class="icon-trash icon-white"></i></a>
             </td>
