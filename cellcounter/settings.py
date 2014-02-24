@@ -71,6 +71,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'compressor.finders.CompressorFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -142,6 +143,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'colorful',
     'south',
+    'compressor',
     'rest_framework',
     'cellcounter.main',
     'cellcounter.logs',
@@ -200,3 +202,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     )
 }
+
+COMPRESS_OFFLINE = True
+COMPRESS_ENABLED = True
+COMPRESS_CLOSURE_COMPILER_BINARY = "java -jar /home/jvc26/compiler.jar"
+COMPRESS_CSS_FILTERS = ["compressor.filters.cssmin.CSSMinFilter",]
