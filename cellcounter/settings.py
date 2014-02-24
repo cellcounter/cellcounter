@@ -205,5 +205,5 @@ REST_FRAMEWORK = {
 
 COMPRESS_OFFLINE = True
 COMPRESS_ENABLED = True
-COMPRESS_CLOSURE_COMPILER_BINARY = "java -jar /home/jvc26/compiler.jar"
+COMPRESS_CLOSURE_COMPILER_BINARY = "java -jar closure-compiler"
 COMPRESS_CSS_FILTERS = ["compressor.filters.cssmin.CSSMinFilter",]
