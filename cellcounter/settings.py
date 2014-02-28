@@ -155,11 +155,13 @@ INSTALLED_APPS = (
     'cellcounter.accounts',
 )
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
-    }
-}
+CACHES = {'default': {}}
+
+if DEBUG or TEST:
+    CACHES['default']['BACKEND'] = 'django.core.cache.backends.locmem.LocMemCache'
+else:
+    CACHES['default']['BACKEND'] = 'django.core.cache.backends.memcached.PyLibMCCache'
+    CACHES['default']['LOCATION'] = os.environ.get('MEMCACHED_LOCATION')
 
 RATELIMIT_VIEW = 'cellcounter.accounts.views.rate_limited'
 
