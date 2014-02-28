@@ -205,5 +205,7 @@ REST_FRAMEWORK = {
 
 COMPRESS_OFFLINE = True
 COMPRESS_ENABLED = True
-COMPRESS_CLOSURE_COMPILER_BINARY = "java -jar /usr/local/bin/closure-compiler"
+# Adds JS_COMPILER to env vars - should be a path to the closure compiler jar
+# e.g. "java -jar /usr/local/bin/closure-compiler"
+COMPRESS_CLOSURE_COMPILER_BINARY = os.environ.get('JS_COMPILER', False)
 COMPRESS_CSS_FILTERS = ["compressor.filters.cssmin.CSSMinFilter",]
