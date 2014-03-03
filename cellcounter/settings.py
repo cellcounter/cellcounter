@@ -21,7 +21,7 @@ if TEST:
     RATELIMIT_ENABLE = False
 
 # Change default address if env-var is set
-DEFAULT_FROM_EMAIL = os.environ.get('DJANGO_FROM_ADDRESS', 'webmaster@localhost')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
 
 DATABASES = {'default': dj_database_url.config(default=DEFAULT_DATABASE_URL)}
 
