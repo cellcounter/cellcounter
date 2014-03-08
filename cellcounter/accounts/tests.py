@@ -1,89 +1,11 @@
-import factory
-
 from django_webtest import WebTest
-from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from cellcounter.cc_kapi.factories import UserFactory, KeyboardFactory
 from cellcounter.cc_kapi.models import Keyboard
-from .models import LicenseAgreement, UserLicenseAgreement
-
-
-class LicenseFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = LicenseAgreement
-    title = factory.Sequence(lambda n: "License Agreement%s" % n)
-    text = "License agreement text"
-
-
-class LicenseAgreementTest(TestCase):
-    def setUp(self):
-        self.license = LicenseFactory()
-
-    def test_is_active(self):
-        self.assertTrue(self.license.is_active)
-
-    def test_set_active(self):
-        license = LicenseFactory(is_active=False)
-        self.assertFalse(license.is_active)
-        license.set_active()
-        self.assertTrue(license.is_active)
-
-    def test_sync_active(self):
-        license = LicenseFactory()
-        self.assertTrue(self.license.is_active)
-        self.assertTrue(license.is_active)
-        license.set_active()
-        self.assertTrue(license.is_active)
-        self.assertFalse(
-            LicenseAgreement.objects.get(id=self.license.id).is_active)
-        self.license.set_active()
-        self.assertTrue(
-            LicenseAgreement.objects.get(id=self.license.id).is_active)
-        self.assertFalse(
-            LicenseAgreement.objects.get(id=license.id).is_active)
-
-    def test_get_html(self):
-        license = LicenseFactory()
-        self.assertEqual('<p>License agreement text</p>\n', license.get_html_text())
-
-
-class LicenseViewTest(WebTest):
-    def test_get_license_no_license(self):
-        response = self.app.get(reverse('latest-license'))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(None, response.context['object'])
-        self.assertIn('No License set', response.body)
-
-    def test_get_license_license(self):
-        license = LicenseFactory()
-        response = self.app.get(reverse('latest-license'))
-        self.assertNotEqual(None, response.context['object'])
-        self.assertEqual(license, response.context['object'])
-        self.assertIn(license.title, response.body)
-
-    def test_race_license(self):
-        """Ugly test, required due to potential for two active licenses to be
-        present whilst waiting for LicenseAgreement._sync_active() to be called.
-        Ensure that only the latest active license is returned, and display
-        does not break should this occur."""
-        LicenseFactory(is_active=True)
-        license2 = LicenseFactory(is_active=True)
-        response = self.app.get(reverse('latest-license'))
-        self.assertNotEqual(None, response.context['object'])
-        self.assertEqual(license2, response.context['object'])
-        self.assertIn(license2.title, response.body)
-
-    def test_get_specific_license(self):
-        license = LicenseFactory()
-        response = self.app.get(reverse('license-detail', kwargs={'pk': license.id}))
-        self.assertEqual(200, response.status_code)
-        self.assertEqual(license, response.context['license'])
-        self.assertEqual(license.get_html_text(), response.context['license_text'])
 
 
 class RegistrationViewTest(WebTest):
-    def setUp(self):
-        self.license = LicenseFactory()
 
     def _get_registration_form(self):
         return self.app.get(reverse('register')).form
@@ -223,8 +145,6 @@ class UserManagementTest(WebTest):
 
     def setUp(self):
         self.user = UserFactory()
-        self.license = LicenseFactory()
-        self.agreement = UserLicenseAgreement(user=self.user, license=self.license).save()
 
     def test_get_own_profile(self):
         response = self.app.get(

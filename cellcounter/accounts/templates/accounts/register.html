@@ -48,7 +48,7 @@
 
 <div class="control-group {% if form.tos.errors %}error{% endif %}">
     <div class="controls">
-        <label class="checkbox">{{ form.tos }} I have read & agree the <a href="{% url "latest-license" %}">Cellcountr Terms of Service</a></label>
+        <label class="checkbox">{{ form.tos }} I have read & agree the <a href="{% url "terms" %}">Cellcountr Terms of Service</a></label>
         {% if form.tos.errors %}<span class="help-inline">{{ form.tos.errors }}</span>{% endif %}
     </div>
 </div>

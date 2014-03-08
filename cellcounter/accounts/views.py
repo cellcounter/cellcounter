@@ -17,7 +17,6 @@ from django.contrib import messages
 from ratelimit.decorators import ratelimit
 
 from .forms import EmailUserCreationForm
-from .models import LicenseAgreement, UserLicenseAgreement
 
 
 class RegistrationView(View):
@@ -31,10 +30,6 @@ class RegistrationView(View):
         form = EmailUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            la = LicenseAgreement.objects.filter(is_active=True).latest()
-            agreement = UserLicenseAgreement(user=user,
-                                             license=la)
-            agreement.save()
             messages.success(request,
                           mark_safe(
                               "Successfully registered, you are now logged in! <a href='%s'>View your profile</a>" %
@@ -81,35 +76,6 @@ def password_reset_sent(request):
     return SimpleTemplateResponse('accounts/reset_sent.html')
 
 
-class LatestLicenseDetailView(DetailView):
-    model = LicenseAgreement
-    context_object_name = 'license'
-    queryset = LicenseAgreement.objects.filter(is_active=True)
-
-    def get_context_data(self, **kwargs):
-        """Adds a HTML rendered version of Markdown to context"""
-        context = super(LatestLicenseDetailView, self).get_context_data(**kwargs)
-        if self.object:
-            context['license_text'] = self.object.get_html_text()
-        return context
-
-    def get_object(self):
-        try:
-            return self.get_queryset()[0]
-        except IndexError:
-            return None
-
-
-class LicenseDetailView(DetailView):
-    model = LicenseAgreement
-    context_object_name = 'license'
-
-    def get_context_data(self, **kwargs):
-        context = super(LicenseDetailView, self).get_context_data(**kwargs)
-        context['license_text'] = self.object.get_html_text()
-        return context
-
-
 class UserDetailView(DetailView):
     model = User
     context_object_name = 'user_detail'
@@ -123,7 +89,6 @@ class UserDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(UserDetailView, self).get_context_data(**kwargs)
-        context['license'] = self.object.licenseagreement_set.latest()
         context['keyboards'] = self.object.keyboard_set.all()
         return context
 

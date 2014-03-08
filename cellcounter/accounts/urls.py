@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, url
+from django.views.generic import TemplateView
 
 from cellcounter.accounts import views
 
@@ -24,6 +25,5 @@ urlpatterns = patterns('',
             },
         name='password-reset-confirm'),
     url('^password/change/$', views.PasswordChangeView.as_view(), name='change-password'),
-    url('^license/$', views.LatestLicenseDetailView.as_view(), name='latest-license'),
-    url('^license/(?P<pk>[0-9]+)/$', views.LicenseDetailView.as_view(), name='license-detail'),
+    url('^terms/$', TemplateView.as_view(template_name="accounts/terms.html"), name='terms'),
 )
