@@ -25,17 +25,17 @@ class RegistrationView(View):
                                   {'form': EmailUserCreationForm()},
                                   context_instance=RequestContext(request))
 
-    @method_decorator(ratelimit(block=True, rate='2/h'))
+    @method_decorator(ratelimit(block=True, rate='5/h'))
     def post(self, request, *args, **kwargs):
         form = EmailUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             messages.success(request,
-                          mark_safe(
-                              "Successfully registered, you are now logged in! <a href='%s'>View your profile</a>" %
-                              reverse('user-detail', kwargs={'pk': user.id})))
+                             mark_safe(
+                                 "Successfully registered, you are now logged in! <a href='%s'>View your profile</a>" %
+                                 reverse('user-detail', kwargs={'pk': user.id})))
             user = authenticate(username=request.POST['username'],
-                                    password=request.POST['password1'])
+                                password=request.POST['password1'])
             login(request, user)
             return HttpResponseRedirect(reverse('new_count'))
         else:
@@ -126,5 +126,5 @@ class UserUpdateView(UpdateView):
 
 
 def rate_limited(request, exception):
-    messages.error(request, 'You have been ratelimited - please wait before registering an account')
+    messages.error(request, 'You have been rate limited - please wait before registering an account')
     return HttpResponseRedirect(reverse('new_count'))
