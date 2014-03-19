@@ -1,89 +1,72 @@
 from django_webtest import WebTest
+from django.test import TestCase
+from django.test.client import Client
 from django.core.urlresolvers import reverse
+from django.conf import settings
+from django.test.utils import override_settings
 
 from cellcounter.cc_kapi.factories import UserFactory, KeyboardFactory
 from cellcounter.cc_kapi.models import Keyboard
 
 
-class RegistrationViewTest(WebTest):
-
-    def _get_registration_form(self):
-        return self.app.get(reverse('register')).form
+class RegistrationViewTest(TestCase):
+    client = Client()
+    full_form = {'username': 'Example', 'email': 'user@example.org',
+                 'password1': 'test', 'password2': 'test', 'tos': True}
+    no_tos = {'username': 'Example', 'email': 'user@example.org',
+              'password1': 'test', 'password2': 'test'}
+    wrong_pwd = {'username': 'Example', 'email': 'user@example.org',
+                 'password1': 'test', 'password2': 'notest', 'tos': True}
+    invalid_email = {'username': 'Example', 'email': 'user@',
+                     'password1': 'test', 'password2': 'test', 'tos': True}
 
     def test_get_register(self):
-        response = self.app.get(reverse('register'))
+        response = self.client.get(reverse('register'))
         self.assertEqual(response.status_code, 200)
 
     def test_empty_registration(self):
-        form = self._get_registration_form()
-        response = form.submit()
-        self.assertIn('This field is required', response.body)
+        response = self.client.post(reverse('register'), {})
+        self.assertIn('This field is required', response.content)
 
     def test_successful_registration(self):
-        form = self._get_registration_form()
-        form['username'] = 'Example'
-        form['email'] = 'user@example.com'
-        form['password1'] = 'test'
-        form['password2'] = 'test'
-        form['tos'] = True
-        response = form.submit()
-        self.assertIn('Successfully registered', response.headers['Set-Cookie'])
+        response = self.client.post(reverse('register'), self.full_form)
+        self.assertTrue('Successfully registered' in response.cookies['messages'].value)
 
     def test_no_tos(self):
-        form = self._get_registration_form()
-        form['username'] = 'Example'
-        form['email'] = 'user@example.com'
-        form['password1'] = 'test'
-        form['password2'] = 'test'
-        form['tos'] = False
-        response = form.submit()
-        self.assertIn('You must agree our Terms of Service', response.body)
+        response = self.client.post(reverse('register'), self.no_tos)
+        self.assertIn('You must agree our Terms of Service', response.content)
         self.assertEqual(response.context['user'].username, '')
 
     def test_mismatched_passwords(self):
-        form = self._get_registration_form()
-        form['username'] = 'Example'
-        form['email'] = 'user@example.com'
-        form['password1'] = 'test'
-        form['password2'] = 'test2'
-        form['tos'] = True
-        response = form.submit()
-        self.assertIn('The two password fields didn&#39;t match.', response.body)
+        response = self.client.post(reverse('register'), self.wrong_pwd)
+        self.assertIn('The two password fields didn&#39;t match.', response.content)
         self.assertEqual(response.context['user'].username, '')
 
     def test_non_unique_username(self):
-        form = self._get_registration_form()
-        user = UserFactory()
-        form['username'] = user.username
-        form['email'] = 'user@example.com'
-        form['password1'] = 'test'
-        form['password2'] = 'test'
-        form['tos'] = True
-        response = form.submit()
-        self.assertIn('A user with that username already exists', response.body)
+        user = UserFactory(username='Example')
+        response = self.client.post(reverse('register'), self.full_form)
+        self.assertIn('A user with that username already exists', response.content)
         self.assertEqual(response.context['user'].username, '')
 
     def test_invalid_email(self):
-        form = self._get_registration_form()
-        form['username'] = 'Example'
-        form['email'] = 'user@'
-        form['password1'] = 'test'
-        form['password2'] = 'test'
-        form['tos'] = True
-        response = form.submit()
-        self.assertIn('Enter a valid email address', response.body)
+        response = self.client.post(reverse('register'), self.invalid_email)
+        self.assertIn('Enter a valid email address', response.content)
         self.assertEqual(response.context['user'].username, '')
 
     def test_login_on_register(self):
-        form = self._get_registration_form()
-        form['username'] = 'Example'
-        form['email'] = 'user@example.com'
-        form['password1'] = 'test'
-        form['password2'] = 'test'
-        form['tos'] = True
-        response = form.submit().follow()
-        self.assertIn('Logout', response.body)
+        response = self.client.post(reverse('register'), self.full_form, follow=True)
+        self.assertIn('Logout', response.content)
         self.assertEqual(response.context['user'].username, 'Example')
+
+    @override_settings(RATELIMIT_ENABLE=True)
+    def test_ratelimit(self):
+        self.client.post(reverse('register'), self.full_form)
+        self.client.logout()
+        form_data = self.full_form
+        form_data['username'] = 'Another'
+        response = self.client.post(reverse('register'), form_data, follow=True)
+        self.assertNotIn('Successfully registered', response.content)
+        self.assertIn('You have been rate limited', response.content)
 
 
 class PasswordChangeViewTest(WebTest):
