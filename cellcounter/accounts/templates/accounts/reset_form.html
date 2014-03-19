@@ -1,0 +1,22 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<form method="post" action="{% url 'password-reset' %}" class="form-horizontal">
+{% csrf_token %}
+<div class="control-group {% if form.email.errors %}error{% endif %}">
+    <label class="control-label" for="id_email">Email Address</label>
+    <div class="controls">
+        {{ form.email }}
+        {% if form.email.errors %}<span class="help-inline">{{ form.email.errors }}</span>{% endif %}
+    </div>
+</div>
+<div class="control-group">
+    <div class="controls">
+        <button type="submit" class="btn btn-success">Send new password</button>
+    </div>
+</div>
+
+</form>
+
+{% endblock %}

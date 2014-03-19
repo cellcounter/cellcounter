@@ -16,7 +16,12 @@ PROJECT_DIR = os.path.dirname(__file__)
 DEFAULT_DATABASE_URL = "sqlite:///%s" % os.path.join(PROJECT_DIR, 'db.sqlite3')
 
 if TEST:
+    # Need to disable rate limiting for test purposes
     DEFAULT_DATABASE_URL = 'sqlite://:memory:'
+    RATELIMIT_ENABLE = False
+
+# Change default address if env-var is set
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
 
 DATABASES = {'default': dj_database_url.config(default=DEFAULT_DATABASE_URL)}
 
@@ -98,6 +103,7 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'cellcounter.middleware.SecureRequiredMiddleware',
     'cellcounter.middleware.RequestLoggerMiddleware',
+    'ratelimit.middleware.RatelimitMiddleware',
 )
 
 # HTTPS_SUPPORT = True
@@ -146,7 +152,18 @@ INSTALLED_APPS = (
     'cellcounter.main',
     'cellcounter.logs',
     'cellcounter.cc_kapi',
+    'cellcounter.accounts',
 )
+
+CACHES = {'default': {}}
+
+if DEBUG or TEST:
+    CACHES['default']['BACKEND'] = 'django.core.cache.backends.locmem.LocMemCache'
+else:
+    CACHES['default']['BACKEND'] = 'django.core.cache.backends.memcached.PyLibMCCache'
+    CACHES['default']['LOCATION'] = os.environ.get('MEMCACHED_LOCATION')
+
+RATELIMIT_VIEW = 'cellcounter.accounts.views.rate_limited'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

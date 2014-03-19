@@ -6,8 +6,6 @@
     <p class="error">Sorry, that's not a valid username or password</p>
 {% endif %}
 
-<p>User accounts where you can save your own keyboard map will be available shortly.</p>
-
 <form action="" method="POST" class="form-horizontal">
     {% csrf_token %}
     <div class="control-group">
@@ -20,6 +18,11 @@
         <label class="control-label" for="password">Password</label>
         <div class="controls">
             <input type="password" name="password" id="password" placeholder="Password">
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <a href="{% url "password-reset" %}">Forgotten password?</a>
         </div>
     </div>
     <div class="control-group">

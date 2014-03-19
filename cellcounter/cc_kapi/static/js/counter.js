@@ -20,6 +20,14 @@ $(document).ready(function() {
     "use strict";
     var count_total;
     $("#myCounts").tablesorter();
+
+    $('#keyboard-label').editable({
+        url: function(params) {
+            var keyboard = load_specific_keyboard(params.pk);
+            keyboard.label = params.value;
+            save_keyboard(keyboard);
+        }
+    });
     
     $.getJSON("/api/cell_types/", function(data) {
         cell_types = {};
@@ -417,6 +425,42 @@ function load_keyboard() {
     });
 }
 
+function load_specific_keyboard(keyboard_id) {
+    "use strict";
+    var keyboard = {};
+    $.ajax({
+        url: '/api/keyboard/' + keyboard_id + '/',
+        type: 'GET',
+        dataType: 'json',
+        contentType: "application/json; charset=utf-8",
+        async: false,
+        success: function(data) {
+            keyboard = data;
+        }
+    });
+    return keyboard;
+}
+
+function set_keyboard_primary(keyboard_id) {
+    "use strict";
+    var keyboard = load_specific_keyboard(keyboard_id);
+    keyboard.is_primary = true;
+    save_keyboard(keyboard);
+    return false;
+}
+
+function delete_specific_keyboard(keyboard_id) {
+    "use strict";
+    var keyboard = load_specific_keyboard(keyboard_id);
+    $.ajax({
+        url: '/api/keyboard/' + keyboard.id + '/',
+        type: 'DELETE',
+        data: JSON.stringify(keyboard),
+        contentType: "application/json; charset=utf-8",
+        async: false
+    });
+}
+
 function update_keyboard() {
     "use strict";
     var i, j;
@@ -525,13 +569,23 @@ function edit_keyboard() {
                         }
                     }
                     },
+                    {text: 'Save as New',
+                     click: function() {
+                         if (save_keys) {
+                             delete(keyboard_map['id']);
+                             save_keyboard();
+                         } else {
+                             end_keyboard_edit();
+                         }
+                     }
+                    },
                     {text: cancel_text,
-                    click: function() {
-                        if (!save_keys) {
-                            load_keyboard();
-                        }
-                        $("div#editkeymapbox").dialog("close");
-                    }
+                     click: function() {
+                         if (!save_keys) {
+                             load_keyboard();
+                         }
+                         $("div#editkeymapbox").dialog("close");
+                     }
                     }
                 ],
         width: "368px"
@@ -566,14 +620,18 @@ function deselect_element(el) {
     $(el).removeClass("selected");
 }
 
-function save_keyboard() {
+function save_keyboard(keyboard) {
     "use strict";
 
-    if ("id" in keyboard_map) {
+    if (typeof keyboard === 'undefined') {
+        keyboard = keyboard_map;
+    }
+
+    if ("id" in keyboard) {
         $.ajax({
-            url: '/api/keyboard/' + keyboard_map.id + '/',
+            url: '/api/keyboard/' + keyboard.id + '/',
             type: 'PUT',
-            data: JSON.stringify(keyboard_map),
+            data: JSON.stringify(keyboard),
             contentType: "application/json; charset=utf-8",
             async: false,
             success: function(msg) {
@@ -584,7 +642,7 @@ function save_keyboard() {
         $.ajax({
             url: '/api/keyboard/',
             type: 'POST',
-            data: JSON.stringify(keyboard_map),
+            data: JSON.stringify(keyboard),
             contentType: "application/json; charset=utf-8",
             async: false,
             success: function(msg) {
