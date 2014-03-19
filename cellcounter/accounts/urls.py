@@ -25,5 +25,4 @@ urlpatterns = patterns('',
             },
         name='password-reset-confirm'),
     url('^password/change/$', views.PasswordChangeView.as_view(), name='change-password'),
-    url('^terms/$', TemplateView.as_view(template_name="accounts/terms.html"), name='terms'),
 )
