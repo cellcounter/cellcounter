@@ -5,7 +5,7 @@ from django.template import RequestContext
 from django.core.exceptions import PermissionDenied
 from django.views.generic.base import View
 from django.views.generic.edit import UpdateView
-from django.views.generic import DetailView, DeleteView, TemplateView
+from django.views.generic import DetailView, DeleteView
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
@@ -14,10 +14,9 @@ from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.utils.safestring import mark_safe
 from django.contrib import messages
-from ratelimit.decorators import ratelimit
 
 from .forms import EmailUserCreationForm
-
+from .decorators import registration_ratelimit
 
 class RegistrationView(View):
     def get(self, request, *args, **kwargs):
@@ -25,7 +24,7 @@ class RegistrationView(View):
                                   {'form': EmailUserCreationForm()},
                                   context_instance=RequestContext(request))
 
-    @method_decorator(ratelimit(block=True, rate='5/h'))
+    @method_decorator(registration_ratelimit(block=True, rate='1/h'))
     def post(self, request, *args, **kwargs):
         form = EmailUserCreationForm(request.POST)
         if form.is_valid():
@@ -37,11 +36,12 @@ class RegistrationView(View):
             user = authenticate(username=request.POST['username'],
                                 password=request.POST['password1'])
             login(request, user)
-            return HttpResponseRedirect(reverse('new_count'))
+            return HttpResponseRedirect(reverse('new_count')), True
         else:
-            return render_to_response('accounts/register.html',
+            return (render_to_response('accounts/register.html',
                                       {'form': form},
-                                      context_instance=RequestContext(request))
+                                      context_instance=RequestContext(request)),
+                    False)
 
 
 class PasswordChangeView(View):
