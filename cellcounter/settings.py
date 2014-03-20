@@ -22,6 +22,7 @@ if TEST:
 
 # Change default address if env-var is set
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 DATABASES = {'default': dj_database_url.config(default=DEFAULT_DATABASE_URL)}
 
