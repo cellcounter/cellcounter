@@ -22,12 +22,13 @@
     </div>
     <div class="control-group">
         <div class="controls">
-            <a href="{% url "password-reset" %}">Forgotten password?</a>
+            <input class="btn btn-primary" type="submit" value="Login" />
         </div>
     </div>
     <div class="control-group">
         <div class="controls">
-            <input class="btn btn-primary" type="submit" value="Login" />
+            <a class="btn" href="{% url "password-reset" %}">Forgotten password?</a>
+            <a class="btn btn-success" href="{% url "register" %}">Register for an account</a>
         </div>
     </div>
 </form>
