@@ -6,7 +6,6 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from rest_framework.renderers import JSONRenderer
-from rest_framework.generics import GenericAPIView
 
 from cellcounter.main.models import CellType
 from .defaults import MOCK_KEYBOARD, DEFAULT_KEYBOARD_STRING
