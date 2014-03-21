@@ -79,7 +79,7 @@ class KeyboardsListCreateView(GenericAPIView, ListModelMixin, CreateModelMixin):
         return self.create(request, *args, **kwargs)
 
 
-class KeyboardsView(GenericAPIView, UpdateModelMixin, DestroyModelMixin):
+class KeyboardGetUpdateDestroyView(GenericAPIView, UpdateModelMixin, DestroyModelMixin):
     """Retrieve, update, or delete a keyboard and associated mappings"""
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = KeyboardOnlySerializer
