@@ -89,7 +89,7 @@ class UserDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(UserDetailView, self).get_context_data(**kwargs)
-        context['keyboards'] = self.object.keyboard_set.all()
+        context['keyboards'] = self.object.user.keyboard_set.all().order_by('-is_primary')
         return context
 
 
