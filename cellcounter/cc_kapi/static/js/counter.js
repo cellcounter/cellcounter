@@ -417,7 +417,7 @@ function reset_counters() {
 
 function load_keyboard() {
     "use strict";
-    $.getJSON("/api/keyboard/", function(data) {
+    $.getJSON("/api/keyboards/default/", function(data) {
         keyboard_map = data;
         update_keyboard();
         init_visualisation("#doughnut");
@@ -429,7 +429,7 @@ function load_specific_keyboard(keyboard_id) {
     "use strict";
     var keyboard = {};
     $.ajax({
-        url: '/api/keyboard/' + keyboard_id + '/',
+        url: '/api/keyboards/' + keyboard_id + '/',
         type: 'GET',
         dataType: 'json',
         contentType: "application/json; charset=utf-8",
@@ -453,7 +453,7 @@ function delete_specific_keyboard(keyboard_id) {
     "use strict";
     var keyboard = load_specific_keyboard(keyboard_id);
     $.ajax({
-        url: '/api/keyboard/' + keyboard.id + '/',
+        url: '/api/keyboards/' + keyboard.id + '/',
         type: 'DELETE',
         data: JSON.stringify(keyboard),
         contentType: "application/json; charset=utf-8",
@@ -629,7 +629,7 @@ function save_keyboard(keyboard) {
 
     if ("id" in keyboard) {
         $.ajax({
-            url: '/api/keyboard/' + keyboard.id + '/',
+            url: '/api/keyboards/' + keyboard.id + '/',
             type: 'PUT',
             data: JSON.stringify(keyboard),
             contentType: "application/json; charset=utf-8",
@@ -640,7 +640,7 @@ function save_keyboard(keyboard) {
         });
     } else {
         $.ajax({
-            url: '/api/keyboard/',
+            url: '/api/keyboards/',
             type: 'POST',
             data: JSON.stringify(keyboard),
             contentType: "application/json; charset=utf-8",
