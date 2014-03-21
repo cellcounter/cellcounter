@@ -21,7 +21,7 @@ $(document).ready(function() {
     var count_total;
     $("#myCounts").tablesorter();
 
-    $('#keyboard-label').editable({
+    $('.keyboard-label').editable({
         url: function(params) {
             var keyboard = load_specific_keyboard(params.pk);
             keyboard.label = params.value;
