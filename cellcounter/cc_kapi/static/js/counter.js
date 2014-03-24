@@ -44,8 +44,6 @@ $(document).ready(function() {
     $('#edit_button').on('click', edit_keyboard);
     register_resets();
 
-    $('#openkeyboard').on('click', open_keyboard);
-
     $('#fuzz, #close_button').click(function () {
         var total, cell;
         var percent = {};
@@ -119,9 +117,9 @@ $(document).ready(function() {
             });
 
             if (first_count === true) {
-                $('#openkeyboard').text('Continue counting');
-                $('#openkeyboard').removeClass('btn-danger').addClass('btn-success');
-                $("<div class='btn btn-large btn-danger reset_button restart_button' style='margin-left: 5px'>Reset counters</div>").insertAfter('#openkeyboard');
+                $("#keyboard-buttons").append("<div id='openkeyboard' class='btn btn-success btn-large'>Continue counting</div>");
+                $('#openkeyboard').on('click', open_keyboard);
+                $("#keyboard-buttons").append("<div class='btn btn-large btn-danger reset_button restart_button' style='margin-left: 5px'>Reset counters</div>");
                 register_resets();
                 first_count = false;
             }
