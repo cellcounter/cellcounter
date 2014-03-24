@@ -1,14 +1,12 @@
-from django.http import HttpResponse
-from django.template import RequestContext, loader
-
-from cellcounter.logs.models import AccessRequest
-from collections import OrderedDict
-
 import json
 import datetime
-from django.core import serializers
 
+from django.http import HttpResponse
+from django.template import RequestContext, loader
 from django.contrib.admin.views.decorators import staff_member_required
+
+from cellcounter.logs.models import AccessRequest
+
 
 class DateTimeEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -18,11 +16,13 @@ class DateTimeEncoder(json.JSONEncoder):
             encoded_object = json.JSONEncoder.default(self, obj)
         return encoded_object
 
+
 @staff_member_required
 def index(request):
     template = loader.get_template('logs/index.html')
     context = RequestContext(request)
     return HttpResponse(template.render(context))
+
 
 @staff_member_required
 def host_access(request):
@@ -49,7 +49,8 @@ def host_access(request):
     latest_access_list = AccessRequest.objects.order_by('-time_local')[:10]
 
     return HttpResponse(json.dumps(hosts_data, cls=DateTimeEncoder),
-                                mimetype="application/json" )
+                        mimetype="application/json" )
+
 
 @staff_member_required
 def page_access(request):
@@ -68,7 +69,8 @@ def page_access(request):
     pages_data["pages"] = pages
 
     return HttpResponse(json.dumps(pages_data, cls=DateTimeEncoder),
-                                mimetype="application/json" )
+                        mimetype="application/json" )
+
 
 @staff_member_required
 def referrer_access(request):
@@ -90,7 +92,7 @@ def referrer_access(request):
     referrers_data["referrers"] = referrers
 
     return HttpResponse(json.dumps(referrers_data, cls=DateTimeEncoder),
-                                mimetype="application/json" )
+                        mimetype="application/json" )
 
 
 @staff_member_required
@@ -118,5 +120,5 @@ def date_access(request):
     dates_data["dates"] = dates
 
     return HttpResponse(json.dumps(dates_data, cls=DateTimeEncoder),
-                                mimetype="application/json" )
+                        mimetype="application/json" )
 

@@ -3,36 +3,50 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from rest_framework.mixins import CreateModelMixin, UpdateModelMixin, DestroyModelMixin
+from rest_framework.mixins import CreateModelMixin, UpdateModelMixin, DestroyModelMixin, ListModelMixin
+from django.contrib import messages
 
 from .models import Keyboard
 from .serializers import KeyboardSerializer, KeyboardOnlySerializer, KeyMapSerializer
 from .defaults import DEFAULT_KEYBOARD_MAP
 
 
-class KeyboardView(GenericAPIView, CreateModelMixin, UpdateModelMixin, DestroyModelMixin):
-    """Retrieve, update, or delete a keyboard and associated mappings"""
+class DefaultKeyboardView(GenericAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = KeyboardOnlySerializer
 
-    @staticmethod
-    def get_keyboard(user, keyboard_id=None):
-        if not keyboard_id:
-            try:
-                return Keyboard.objects.get(user=user, is_primary=True)
-            except Keyboard.DoesNotExist:
-                raise
+    def get(self, request):
+        """Simply returns a user's primary keyboard, or if none is set,
+        or is anonymous, returns DEFAULT_KEYBOARD_MAP"""
+        if not request.user.id:
+            return Response(DEFAULT_KEYBOARD_MAP)
+
         try:
-            keyboard = Keyboard.objects.get(id=keyboard_id)
+            keyboard = Keyboard.objects.get(user=request.user, is_primary=True)
         except Keyboard.DoesNotExist:
-            raise
-        if not keyboard.user == user:
-            raise PermissionDenied
-        return keyboard
+            return Response(DEFAULT_KEYBOARD_MAP)
+
+        serializer = KeyboardSerializer(keyboard)
+        return Response(serializer.data)
+
+
+class KeyboardsListCreateView(GenericAPIView, ListModelMixin, CreateModelMixin):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    serializer_class = KeyboardOnlySerializer
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated():
+            return Keyboard.objects.filter(user=self.request.user)
+        return Keyboard.objects.none()
 
     def pre_save(self, obj):
         obj.user = self.request.user
         return obj
+
+    def list(self, request, *args, **kwargs):
+        object_list = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(object_list, many=True)
+        return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         mappings_data = request.DATA.pop('mappings', None)
@@ -58,9 +72,34 @@ class KeyboardView(GenericAPIView, CreateModelMixin, UpdateModelMixin, DestroyMo
         errors.update(mapping_serializer.errors)
         return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class KeyboardGetUpdateDestroyView(GenericAPIView, UpdateModelMixin, DestroyModelMixin):
+    """Retrieve, update, or delete a keyboard and associated mappings"""
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    serializer_class = KeyboardOnlySerializer
+
+    def get_object(self, keyboard_id):
+        try:
+            keyboard = Keyboard.objects.get(pk=keyboard_id)
+            if not keyboard.user == self.request.user:
+                raise PermissionDenied
+            return keyboard
+        except Keyboard.DoesNotExist:
+            raise
+
+    def pre_save(self, obj):
+        obj.user = self.request.user
+        return obj
+
     def update(self, request, *args, **kwargs):
         try:
-            keyboard = self.get_keyboard(request.user, self.kwargs.get('keyboard_id', None))
+            keyboard = self.get_object(self.kwargs.get('keyboard_id'))
         except Keyboard.DoesNotExist:
             return Response('Keyboard does not exist', status=status.HTTP_404_NOT_FOUND)
         except PermissionDenied:
@@ -91,49 +130,28 @@ class KeyboardView(GenericAPIView, CreateModelMixin, UpdateModelMixin, DestroyMo
         errors.update(mapping_serializer.errors)
         return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request, keyboard_id=None):
-        """Even if keyboard_id is provided, if user is anonymous, they are given the default keyboard
-        without an error, this may not be perfect behaviour, but saves excess error handling in the
-        front end."""
-        if not request.user.id:
-            return Response(DEFAULT_KEYBOARD_MAP)
-
-        if keyboard_id:
-            try:
-                keyboard = self.get_keyboard(request.user, keyboard_id)
-            except Keyboard.DoesNotExist:
-                return Response('No keyboard found', status=status.HTTP_404_NOT_FOUND)
-            except PermissionDenied:
-                raise PermissionDenied
-            serializer = KeyboardSerializer(keyboard)
-            return Response(serializer.data)
-
-        # If the user doesn't have a default keyboard, just give them the DEFAULT_KEYBOARD_MAP
+    def get(self, request, *args, **kwargs):
+        """Gets a given keyboard by keyboard_id, or fails with 403/404 as
+        required"""
         try:
-            keyboard = self.get_keyboard(request.user, keyboard_id)
+            keyboard = self.get_object(self.kwargs.get('keyboard_id'))
         except Keyboard.DoesNotExist:
-            return Response(DEFAULT_KEYBOARD_MAP)
-
-        # Use the normal keyboard serializer with mappings for GET
+            return Response('No keyboard found', status=status.HTTP_404_NOT_FOUND)
+        except PermissionDenied:
+            raise PermissionDenied
         serializer = KeyboardSerializer(keyboard)
         return Response(serializer.data)
-
-    def post(self, request, *args, **kwargs):
-        if self.kwargs.get('keyboard_id', None):
-            return self.update(request, *args, **kwargs)
-        return self.create(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
-        if not self.kwargs.get('keyboard_id', None):
-            return Response('No keyboard ID provided', status=status.HTTP_400_BAD_REQUEST)
         try:
-            keyboard = self.get_keyboard(request.user, self.kwargs.get('keyboard_id', None))
+            keyboard = self.get_object(self.kwargs.get('keyboard_id'))
         except Keyboard.DoesNotExist:
             return Response(status=status.HTTP_204_NO_CONTENT)
         except PermissionDenied:
             raise PermissionDenied
         keyboard.delete()
+        messages.info(request, 'Keyboard deleted successfully')
         return Response(status=status.HTTP_204_NO_CONTENT)

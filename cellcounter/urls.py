@@ -31,13 +31,14 @@ urlpatterns = patterns('',
     url(r'^login/$', login, {'template_name': 'main/login.html'}, name='login'),
     url(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
 
-    url(r'^api/keyboard/', include('cellcounter.cc_kapi.urls')),
+    url(r'^api/keyboards/', include('cellcounter.cc_kapi.urls')),
+    url(r'^accounts/', include('cellcounter.accounts.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^terms$', TemplateView.as_view(template_name="main/terms.html"),
-            name="terms"),
+        name="terms"),
     url(r'^privacy$', TemplateView.as_view(template_name="main/privacy.html"),
-            name="privacy"),
+        name="privacy"),
     
     url(r'^logs/$', index, name="logs"),
     url(r'^logs/hosts/$', host_access, name="log_hosts"),

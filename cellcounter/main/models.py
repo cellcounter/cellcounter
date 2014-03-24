@@ -19,7 +19,7 @@ class CellType(models.Model):
 class CellImage(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
-    file  = models.ImageField(upload_to= "cell_images")
+    file = models.ImageField(upload_to="cell_images")
     celltype = models.ForeignKey(CellType)
     thumbnail_left = models.IntegerField()
     thumbnail_top = models.IntegerField()
@@ -30,11 +30,11 @@ class CellImage(models.Model):
 
     def similar_cells(self):
         groups = self.similarlookinggroup_set.all()
-        similarcells = []
+        similar_cells = []
         for group in groups:
             for image in group.cell_image.all():
-                similarcells.append(image)
-        return similarcells
+                similar_cells.append(image)
+        return similar_cells
 
     def __unicode__(self):
         return self.title
@@ -58,8 +58,8 @@ class License(models.Model):
 
 class CopyrightHolder(models.Model):
     name = models.CharField(max_length=300)
-    link_title = models.CharField(max_length=300, null = True, blank = True)
-    link_url = models.CharField(max_length=300, null = True, blank = True)
+    link_title = models.CharField(max_length=300, null=True, blank=True)
+    link_url = models.CharField(max_length=300, null=True, blank=True)
     user = models.ManyToManyField(User)  # These users may apply this copyright to an image
 
     def __unicode__(self):

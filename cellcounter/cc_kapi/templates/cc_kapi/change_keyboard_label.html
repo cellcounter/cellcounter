@@ -1,0 +1,32 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<form action="" method="post" class="form-horizontal">
+{% csrf_token %}
+{% if form.non_field_errors %}
+    <div class="alert alert-danger">
+        <a class="close" data-dismiss="alert">&times;</a>
+        {% for non_field_error in form.non_field_errors %}
+             {{ non_field_error }}
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="control-group {% if form.label.errors %}error{% endif %}">
+    <label class="control-label" for="id_label">New Label</label>
+    <div class="controls">
+        {{ form.label }}
+        {% if form.label.errors %}<span class="help-inline">{{ form.label.errors }}</span>{% endif %}
+    </div>
+</div>
+
+<div class="control-group">
+    <div class="controls">
+        <input type="submit" class="btn btn-success" value="Update" />
+    </div>
+</div>
+
+</form>
+
+{% endblock %}

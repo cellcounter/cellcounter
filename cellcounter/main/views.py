@@ -5,8 +5,8 @@ from django.views.generic import ListView
 from PIL import Image
 
 from cellcounter.main.models import CellType, CellImage
-
 from cellcounter.mixins import JSONResponseMixin
+
 
 class ListCellTypesView(JSONResponseMixin, ListView):
     model = CellType
@@ -26,15 +26,16 @@ class ListCellTypesView(JSONResponseMixin, ListView):
 
         return new_context
 
+
 def new_count(request):
         cellcount_form_list = []
         for celltype in CellType.objects.all():
             cellcount_form_list.append(celltype)
 
         return render_to_response('main/count.html',
-            {'cellcountformslist': cellcount_form_list,
-             'logged_in': request.user.is_authenticated(),},
-            context_instance=RequestContext(request))
+                                  {'cellcountformslist': cellcount_form_list,
+                                   'logged_in': request.user.is_authenticated()},
+                                  context_instance=RequestContext(request))
 
 
 def images_by_cell_type(request, cell_type):
@@ -46,28 +47,33 @@ def images_by_cell_type(request, cell_type):
             copyrightholders.append(ci.copyright)
         images.append((copyrightholders.index(ci.copyright) + 1, ci))  
     return render_to_response('main/images_by_cell_type.html',
-            {'images': images,
-             'copyrightholders': copyrightholders},
-            context_instance=RequestContext(request))
+                              {'images': images,
+                               'copyrightholders': copyrightholders},
+                              context_instance=RequestContext(request))
+
 
 def similar_images(request, cell_image_pk):
     ci = CellImage.objects.get(pk = cell_image_pk)
     return render_to_response('main/images_by_cell_type.html',
-                {'images': ci.similar_cells(),},
-                context_instance=RequestContext(request))
+                              {'images': ci.similar_cells()},
+                              context_instance=RequestContext(request))
+
 
 def thumbnail(request, cell_image_pk):
-    ci = CellImage.objects.get(pk = cell_image_pk)
+    ci = CellImage.objects.get(pk=cell_image_pk)
 
     image = Image.open(ci.file.file)
-    thumb_image = image.crop((ci.thumbnail_left, ci.thumbnail_top, ci.thumbnail_left + ci.thumbnail_width, ci.thumbnail_top + ci.thumbnail_width))
+    thumb_image = image.crop((ci.thumbnail_left, ci.thumbnail_top,
+                              ci.thumbnail_left + ci.thumbnail_width,
+                              ci.thumbnail_top + ci.thumbnail_width))
     thumb_image = thumb_image.resize((200, 200), Image.ANTIALIAS)
     response = HttpResponse(mimetype="image/png")
     thumb_image.save(response, "PNG")
     return response
 
+
 def page(request, cell_image_pk):
     ci = CellImage.objects.get(pk = cell_image_pk)    
     return render_to_response('main/image_page.html',
-                {'cellimage': ci},
-                context_instance=RequestContext(request))
+                              {'cellimage': ci},
+                              context_instance=RequestContext(request))

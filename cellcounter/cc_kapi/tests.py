@@ -11,8 +11,8 @@ from cellcounter.main.models import CellType
 from .defaults import MOCK_KEYBOARD, DEFAULT_KEYBOARD_STRING
 from .factories import UserFactory, KeyboardFactory, KeyMapFactory
 from .models import KeyMap, Keyboard
-from .views import KeyboardView
-from .serializers import KeyboardSerializer, KeyMapSerializer
+from .views import KeyboardGetUpdateDestroyView
+from .serializers import KeyboardSerializer, KeyMapSerializer, KeyboardOnlySerializer
 
 
 class KeyboardTestCase(TestCase):
@@ -64,7 +64,7 @@ class KeyboardTestCase(TestCase):
         self.assertEqual(len(new_maps), len(keyboard.mappings.all()))
 
 
-class KeyboardAPITest(WebTest):
+class DefaultKeyboardAPITest(WebTest):
     fixtures = ['initial_data.json']
     csrf_checks = False
 
@@ -73,23 +73,85 @@ class KeyboardAPITest(WebTest):
         self.keyboard = KeyboardFactory(is_primary=True, user=self.user)
 
     def test_get_keyboard_anon(self):
-        response = self.app.get(reverse('keyboard'))
+        response = self.app.get(reverse('default-keyboard'))
         self.assertEqual(response.body, DEFAULT_KEYBOARD_STRING)
 
-    def test_get_keyboard_no_primary(self):
+    def test_get_no_primary(self):
         user = UserFactory()
-        response = self.app.get(reverse('keyboard'), user=user.username)
-        self.assertEqual(response.body, DEFAULT_KEYBOARD_STRING)
+        response = self.app.get(reverse('default-keyboard'), user=user.username)
+        self.assertEqual(DEFAULT_KEYBOARD_STRING, response.body)
 
-    def test_get_keyboard_primary(self):
-        response = self.app.get(reverse('keyboard'), user=self.user.username)
+    def test_get_primary_set(self):
+        response = self.app.get(reverse('default-keyboard'), user=self.user.username)
         serializer = KeyboardSerializer(self.keyboard)
-        self.assertEqual(response.body, JSONRenderer().render(serializer.data))
+        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
+
+
+class KeyboardsListCreateAPITest(WebTest):
+    fixtures = ['initial_data.json']
+    csrf_checks = False
+
+    def setUp(self):
+        self.user = UserFactory()
+        self.keyboard = KeyboardFactory(is_primary=True, user=self.user)
+
+    def test_get_anon_empty(self):
+        response = self.app.get(reverse('keyboards'))
+        self.assertEqual(JSONRenderer().render([]), response.body)
+
+    def test_get_user_kb_list(self):
+        response = self.app.get(reverse('keyboards'), user=self.user)
+        queryset = Keyboard.objects.filter(user=self.user)
+        serializer = KeyboardOnlySerializer(queryset, many=True)
+        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
+
+    def test_post_keyboard_logged_out(self):
+        response = self.app.post(reverse('keyboards'), MOCK_KEYBOARD, status=403)
+        self.assertEqual(response.status_code, 403)
+
+    def test_post_keyboard_logged_in(self):
+        response = self.app.post(reverse('keyboards'),
+                                 json.dumps(MOCK_KEYBOARD),
+                                 headers={'Content-Type': 'application/json'},
+                                 user=self.user.username,
+                                 status=201)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(len(Keyboard.objects.filter(user=self.user)), 2)
+
+    def test_post_keyboard_missing_fields(self):
+        response = self.app.post(reverse('keyboards'),
+                                 json.dumps({k: v for k, v in
+                                            MOCK_KEYBOARD.iteritems() if k != 'label'}),
+                                 headers={'Content-Type': 'application/json'},
+                                 user=self.user.username,
+                                 status=400)
+        self.assertEqual(response.body, '{"label": ["This field is required."]}')
+        self.assertEqual(response.status_code, 400)
+
+    def test_post_keyboard_missing_mappings(self):
+        response = self.app.post(reverse('keyboards'),
+                                 json.dumps({k: v for k, v in
+                                            MOCK_KEYBOARD.iteritems() if k != 'mappings'}),
+                                 headers={'Content-Type': 'application/json'},
+                                 user=self.user.username,
+                                 status=400)
+        self.assertEqual('{"non_field_errors": ["Expected a list of items."]}', response.body)
+        self.assertEqual(response.status_code, 400)
+
+
+class KeyboardAPITest(WebTest):
+    fixtures = ['initial_data.json']
+    csrf_checks = False
+
+    def setUp(self):
+        self.user = UserFactory()
+        self.keyboard = KeyboardFactory(is_primary=True, user=self.user)
 
     def test_get_keyboard_detail_anon(self):
         response = self.app.get(reverse('keyboard-detail',
-                                        kwargs={'keyboard_id': self.keyboard.id}))
-        self.assertEqual(response.body, DEFAULT_KEYBOARD_STRING)
+                                        kwargs={'keyboard_id': self.keyboard.id}),
+                                status=403)
+        self.assertEqual(response.status_code, 403)
 
     def test_get_anothers_keyboard(self):
         user = UserFactory()
@@ -112,58 +174,17 @@ class KeyboardAPITest(WebTest):
                                 status=404)
         self.assertEqual(response.status_code, 404)
 
-    def test_post_keyboard_logged_out(self):
-        response = self.app.post(reverse('keyboard'), MOCK_KEYBOARD, status=403)
-        self.assertEqual(response.status_code, 403)
-
-    def test_post_keyboard_logged_in(self):
-        response = self.app.post(reverse('keyboard'),
-                                 json.dumps(MOCK_KEYBOARD),
-                                 headers={'Content-Type': 'application/json'},
-                                 user=self.user.username,
-                                 status=201)
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(len(Keyboard.objects.filter(user=self.user)), 2)
-
-    def test_post_keyboard_detail_updates(self):
+    def test_post_keyboard_detail_fails(self):
         response = self.app.post(reverse('keyboard-detail',
                                          kwargs={'keyboard_id': self.keyboard.id}),
                                  json.dumps(MOCK_KEYBOARD),
                                  headers={'Content-Type': 'application/json'},
                                  user=self.user.username,
-                                 status=204)
-        self.assertEqual(response.status_code, 204)
-        self.assertEqual(len(Keyboard.objects.filter(user=self.user)), 1)
-
-    def test_post_keyboard_missing_fields(self):
-        response = self.app.put(reverse('keyboard-detail', kwargs={'keyboard_id': self.keyboard.id}),
-                                json.dumps({k: v for k, v in
-                                            MOCK_KEYBOARD.iteritems() if k != 'label'}),
-                                headers={'Content-Type': 'application/json'},
-                                user=self.user.username,
-                                status=400)
-        self.assertEqual(response.body, '{"label": ["This field is required."]}')
-        self.assertEqual(response.status_code, 400)
-
-    def test_post_keyboard_missing_mappings(self):
-        response = self.app.put(reverse('keyboard-detail', kwargs={'keyboard_id': self.keyboard.id}),
-                                json.dumps({k: v for k, v in
-                                            MOCK_KEYBOARD.iteritems() if k != 'mappings'}),
-                                headers={'Content-Type': 'application/json'},
-                                user=self.user.username,
-                                status=400)
-        self.assertEqual('{"non_field_errors": ["Expected a list of items."]}', response.body)
-        self.assertEqual(response.status_code, 400)
+                                 status=405)
+        self.assertEqual(response.status_code, 405)
 
     def test_put_own_keyboard_logged_in(self):
         keyboard = KeyboardFactory(user=self.user, is_primary=False)
-        response = self.app.put(reverse('keyboard'),
-                                json.dumps(MOCK_KEYBOARD),
-                                headers={'Content-Type': 'application/json'},
-                                user=self.user.username,
-                                status=204)
-        self.assertEqual(response.status_code, 204)
-
         response = self.app.put(reverse('keyboard-detail', kwargs={'keyboard_id': keyboard.id}),
                                 json.dumps(MOCK_KEYBOARD),
                                 headers={'Content-Type': 'application/json'},
@@ -221,12 +242,6 @@ class KeyboardAPITest(WebTest):
                                            kwargs={'keyboard_id': self.keyboard.id}),
                                    status=403)
         self.assertEqual(response.status_code, 403)
-
-    def test_delete_keyboard_no_keyboard_id(self):
-        response = self.app.delete(reverse('keyboard'),
-                                   user=self.user.username,
-                                   status=400)
-        self.assertEqual(response.status_code, 400)
 
     def test_delete_keyboard_not_exists(self):
         response = self.app.delete(reverse('keyboard-detail',
@@ -302,40 +317,3 @@ class TestKeyMapSerializer(TestCase):
             map_list.append(mapping)
         self.assertIn(keymap1, map_list)
         self.assertIn(keymap2, map_list)
-
-
-class TestKeyboardAPIStatic(TestCase):
-    fixtures = ['initial_data.json']
-
-    def setUp(self):
-        self.user = UserFactory()
-        self.keyboard = KeyboardFactory(user=self.user, is_primary=True)
-
-    def test_get_keyboard_no_id(self):
-        """Returns primary"""
-        keyboard = KeyboardView.get_keyboard(self.user,
-                                             keyboard_id=None)
-        self.assertEqual(keyboard, self.keyboard)
-
-    def test_get_keyboard_no_id_no_primary(self):
-        """Returns not exist"""
-        user2 = UserFactory()
-        with self.assertRaises(Keyboard.DoesNotExist):
-            KeyboardView.get_keyboard(user2,
-                                      keyboard_id=None)
-
-    def test_get_keyboard_id(self):
-        """Returns keyboard_id"""
-        keyboard = KeyboardView.get_keyboard(self.user,
-                                             keyboard_id=self.keyboard.id)
-        self.assertEqual(keyboard, self.keyboard)
-
-    def test_get_keyboard_id_not_exist(self):
-        with self.assertRaises(Keyboard.DoesNotExist):
-            KeyboardView.get_keyboard(self.user, keyboard_id=99)
-
-    def test_get_anothers_keyboard(self):
-        user2 = UserFactory()
-        with self.assertRaises(PermissionDenied):
-            KeyboardView.get_keyboard(user2,
-                                      keyboard_id=self.keyboard.id)

@@ -1,7 +1,6 @@
 /*global $:false, jQuery:false */
 var counters = {};
 var abnormal = false;
-var undo = false;
 var keyboard_active = false;
 var img_displayed = false;
 var doughnut = {};
@@ -16,11 +15,20 @@ var selected_element = {};
 var date_now = new Date(Date.now()).toISOString();
 var keyboard_map = {"label": "Default", "is_primary": true, "created": date_now,
                     "last_modified": date_now, "mappings": []};
+var key_history = [];
 
 $(document).ready(function() {
     "use strict";
     var count_total;
     $("#myCounts").tablesorter();
+
+    $('.keyboard-label').editable({
+        url: function(params) {
+            var keyboard = load_specific_keyboard(params.pk);
+            keyboard.label = params.value;
+            save_keyboard(keyboard);
+        }
+    });
     
     $.getJSON("/api/cell_types/", function(data) {
         cell_types = {};
@@ -130,9 +138,7 @@ $(document).ready(function() {
             resize_keyboard($("div#content").width());
         }
     });
-    //$("#fuzz").css("height", $(document).height());
 
-    //$(document).keypress(function(e) {
     jQuery(document).bind('keydown', function (e) {
         var key, code, shift_pressed, el, i, enter=false;
         var alpha = false, up = false, down = false;
@@ -153,10 +159,6 @@ $(document).ready(function() {
             }
             if (key === " ") {
                 abnormal = true;
-                return false;
-            }
-            else if (code === 8) {
-                undo = true;
                 return false;
             }
             else if (code === 13) {
@@ -290,48 +292,64 @@ $(document).ready(function() {
                 return;
             }
 
-            for (i = 0; i < keyboard_map.mappings.length; i++) {
-                if (keyboard_map.mappings[i].key.toUpperCase() == key && !(shift_pressed)) {
-                    var id = keyboard_map.mappings[i].cellid;
-
-                    // Add highlighting to keyboard
-                    // Remove all currently active highlights (stops a queue developing)
-                    for(i=0; i<cell_types[id].box.length; i++){
-                        $(cell_types[id].box[i]).stop(true, true).css("background-color", '#ffffff');
+            if (code === 8) {
+                /* Time to remove the key from the key_history and decrement count
+                *  Last key should be an array containing:
+                *  {c_id:n, c_type:normal/abnormal} */
+                e.preventDefault();
+                var last_key = key_history.pop();
+                if (typeof last_key !== "undefined") {
+                    var c_id = last_key.c_id;
+                    var c_type = last_key.c_type;
+                    if (cell_types[c_id][c_type] > 0) {
+                        cell_types[c_id][c_type]--;
                     }
+                    /* Generate the appropriate span name to find */
+                    var span_field = "span." + c_type;
+                    if (span_field === "span.count"){
+                        span_field += "val";
+                    }
+                    for (i=0; i<cell_types[c_id].box.length; i++){
+                        $(cell_types[c_id].box[i]).find(span_field).text(cell_types[c_id][c_type]);
+                    }
+                    /* Re-initiate visualisation if key_history has been deleted completely */
+                    if (key_history.length === 0) {
+                        init_visualisation("#doughnut");
+                    }
+                } else {
+                    /* Nothing to delete */
+                    key_history = [];
+                }
+            } else {
+                for (i = 0; i < keyboard_map.mappings.length; i++) {
+                    if (keyboard_map.mappings[i].key.toUpperCase() == key && !(shift_pressed)) {
+                        var id = keyboard_map.mappings[i].cellid;
 
-                    // Add highlight to typed key
-                    $(cell_types[id].box).effect("highlight", {}, 200);
+                        // Add highlighting to keyboard
+                        // Remove all currently active highlights (stops a queue developing)
+                        for (i=0; i<cell_types[id].box.length; i++){
+                            $(cell_types[id].box[i]).stop(true, true).css("background-color", '#ffffff');
+                        }
 
-                    if(abnormal === true) {
-                        if(undo) {
-                            if(cell_types[id].abnormal > 0) {
-                                cell_types[id].abnormal--;
-                                for(i = 0 ; i < cell_types[id].box.length; i++){
-                                    $(cell_types[id].box[i]).find("span.abnormal").text(cell_types[id].abnormal);
-                                }
-                            }
-                        } else {
+                        // Add highlight to typed key
+                        $(cell_types[id].box).effect("highlight", {}, 200);
+
+                        if (abnormal === true) {
                             cell_types[id].abnormal++;
                             for(i = 0; i < cell_types[id].box.length; i++){
                                 $(cell_types[id].box[i]).find("span.abnormal").text(cell_types[id].abnormal);
                             }
-                        }
-                    } else if(undo) {
-                        if(cell_types[id].count > 0) {
-                            cell_types[id].count--;
-                            for(i = 0; i<cell_types[id].box.length; i++){
+                            key_history.push({c_id: id, c_type: 'abnormal'});
+                        } else {
+                            cell_types[id].count++;
+                            for (i=0; i<cell_types[id].box.length; i++){
                                 $(cell_types[id].box[i]).find("span.countval").text(cell_types[id].count);
                             }
+                            key_history.push({c_id: id, c_type: 'count'});
                         }
-                    } else {
-                        cell_types[id].count++;
-                        for(i = 0; i < cell_types[id].box.length; i++){
-                            $(cell_types[id].box[i]).find("span.countval").text(cell_types[id].count);
-                        }
+                        /* No further need to iterate through list */
+                        break;
                     }
-                    /* No further need to iterate through list */
-                    break;
                 }
             }
             update_visualisation();
@@ -348,9 +366,6 @@ $(document).ready(function() {
             }
             if (key === " ") {
                 abnormal = false;
-            }
-            if (code === 8) {
-                undo = false;
             }
         }
     });
@@ -387,6 +402,7 @@ function reset_counters() {
             cell_types[cell].abnormal = 0;
         }
     }
+    key_history = [];
     update_keyboard();
     init_visualisation("#doughnut");
     update_visualisation();
@@ -418,11 +434,47 @@ function open_keyboard() {
 
 function load_keyboard() {
     "use strict";
-    $.getJSON("/api/keyboard/", function(data) {
+    $.getJSON("/api/keyboards/default/", function(data) {
         keyboard_map = data;
         update_keyboard();
         init_visualisation("#doughnut");
         update_visualisation();
+    });
+}
+
+function load_specific_keyboard(keyboard_id) {
+    "use strict";
+    var keyboard = {};
+    $.ajax({
+        url: '/api/keyboards/' + keyboard_id + '/',
+        type: 'GET',
+        dataType: 'json',
+        contentType: "application/json; charset=utf-8",
+        async: false,
+        success: function(data) {
+            keyboard = data;
+        }
+    });
+    return keyboard;
+}
+
+function set_keyboard_primary(keyboard_id) {
+    "use strict";
+    var keyboard = load_specific_keyboard(keyboard_id);
+    keyboard.is_primary = true;
+    save_keyboard(keyboard);
+    return false;
+}
+
+function delete_specific_keyboard(keyboard_id) {
+    "use strict";
+    var keyboard = load_specific_keyboard(keyboard_id);
+    $.ajax({
+        url: '/api/keyboards/' + keyboard.id + '/',
+        type: 'DELETE',
+        data: JSON.stringify(keyboard),
+        contentType: "application/json; charset=utf-8",
+        async: false
     });
 }
 
@@ -534,13 +586,23 @@ function edit_keyboard() {
                         }
                     }
                     },
+                    {text: 'Save as New',
+                     click: function() {
+                         if (save_keys) {
+                             delete(keyboard_map['id']);
+                             save_keyboard();
+                         } else {
+                             end_keyboard_edit();
+                         }
+                     }
+                    },
                     {text: cancel_text,
-                    click: function() {
-                        if (!save_keys) {
-                            load_keyboard();
-                        }
-                        $("div#editkeymapbox").dialog("close");
-                    }
+                     click: function() {
+                         if (!save_keys) {
+                             load_keyboard();
+                         }
+                         $("div#editkeymapbox").dialog("close");
+                     }
                     }
                 ],
         width: "368px"
@@ -575,14 +637,18 @@ function deselect_element(el) {
     $(el).removeClass("selected");
 }
 
-function save_keyboard() {
+function save_keyboard(keyboard) {
     "use strict";
 
-    if ("id" in keyboard_map) {
+    if (typeof keyboard === 'undefined') {
+        keyboard = keyboard_map;
+    }
+
+    if ("id" in keyboard) {
         $.ajax({
-            url: '/api/keyboard/' + keyboard_map.id + '/',
+            url: '/api/keyboards/' + keyboard.id + '/',
             type: 'PUT',
-            data: JSON.stringify(keyboard_map),
+            data: JSON.stringify(keyboard),
             contentType: "application/json; charset=utf-8",
             async: false,
             success: function(msg) {
@@ -591,9 +657,9 @@ function save_keyboard() {
         });
     } else {
         $.ajax({
-            url: '/api/keyboard/',
+            url: '/api/keyboards/',
             type: 'POST',
-            data: JSON.stringify(keyboard_map),
+            data: JSON.stringify(keyboard),
             contentType: "application/json; charset=utf-8",
             async: false,
             success: function(msg) {

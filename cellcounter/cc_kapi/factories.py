@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from cellcounter.main.models import CellType
 from .models import Keyboard, KeyMap
 
+
 class UserFactory(factory.DjangoModelFactory):
     FACTORY_FOR = User
 

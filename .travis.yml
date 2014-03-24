@@ -7,5 +7,7 @@ install:
  - pip install --use-mirrors -r requirements.txt
  - pip install --use-mirrors -r test-requirements.txt
 
+env: TEST=True
+
 # command to run tests
-script: python manage.py test main cc_kapi
+script: python manage.py test cellcounter.main cellcounter.cc_kapi cellcounter.accounts

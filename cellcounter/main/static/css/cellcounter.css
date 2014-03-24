@@ -37,26 +37,26 @@ font4 { text-decoration: none; font-weight: bold; color: #AAA; font-size: 11px }
     color: red;
 }
 
-div#statistics table.statistics {
+table.statistics {
     text-align: center;
     width: 100%;
     border-collapse: collapse;
 }
 
-div#statistics th,td {
+table.statistics th, table.statistics td {
     border: 1px solid black;
     padding: 1px 10px;
 }
 
-div#statistics td.noborder {
+table.statistics td.noborder {
     border: none;
 }
 
-div#statistics table.statistics td {
+table.statistics td {
     text-align: right;
 }
 
-div#statistics table.statistics td.celltypes {
+table.statistics td.celltypes {
     text-align: left;
 }
 

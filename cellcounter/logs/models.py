@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class AccessRequest(models.Model):
     remote_addr = models.CharField(max_length=200)
     remote_user = models.CharField(max_length=200)
@@ -13,5 +14,3 @@ class AccessRequest(models.Model):
 
     def __unicode__(self):
         return self.remote_addr
-
-
