@@ -54,3 +54,11 @@ CellCountr provides a simple way for cells on a peripheral blood or bone marrow 
 <br><p>At present this site is optimised for Firefox or Chromium-based web browsers, and display sizes of at least 1024x768. See the <a href="/about/">About</a> section for more information.</p>
 
 {% endblock %}
+
+{% block additional_scripts %}
+<script>
+    $(function() {
+        open_keyboard();
+    });
+</script>
+{% endblock %}
