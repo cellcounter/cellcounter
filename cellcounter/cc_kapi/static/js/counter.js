@@ -378,7 +378,6 @@ $(document).ready(function() {
 
     jQuery(document).bind('keyup', function (e){
         var key, code;
-        console.log("KEYUP");
         if (keyboard_active) {
             code = e.which;
             key = String.fromCharCode(code).toUpperCase();
