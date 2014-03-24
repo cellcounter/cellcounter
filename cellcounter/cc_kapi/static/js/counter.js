@@ -290,6 +290,28 @@ $(document).ready(function() {
                 return;
             }
 
+            if (e.which === 51) {
+                /* Show percentage view */
+                var show_total = 0;
+
+                for (var cell in cell_types) {
+                    if (cell_types.hasOwnProperty(cell)) {
+                        show_total += cell_types[cell].count;
+                        show_total += cell_types[cell].abnormal;
+                    }
+                }
+
+                for (var cell in cell_types) {
+                    if (cell_types.hasOwnProperty(cell)) {
+                        for (i=0; i < cell_types[cell].box.length; i++) {
+                            $(cell_types[cell].box[i]).find("span.countval").text(
+                                Math.floor((cell_types[cell].count+cell_types[cell].abnormal) / show_total * 100) + "%");
+                            $(cell_types[cell].box[i]).find("span.abnormal").text("");
+                        }
+                    }
+                }
+            }
+
             if (code === 8) {
                 /* Time to remove the key from the key_history and decrement count
                 *  Last key should be an array containing:
@@ -335,7 +357,7 @@ $(document).ready(function() {
                         if (abnormal === true) {
                             cell_types[id].abnormal++;
                             for(i = 0; i < cell_types[id].box.length; i++){
-                                $(cell_types[id].box[i]).find("span.abnormal").text(cell_types[id].abnormal);
+                                $(cell_types[id].box[i]).find("span.abnormal").text("("+cell_types[id].abnormal+")");
                             }
                             key_history.push({c_id: id, c_type: 'abnormal'});
                         } else {
@@ -356,6 +378,7 @@ $(document).ready(function() {
 
     jQuery(document).bind('keyup', function (e){
         var key, code;
+        console.log("KEYUP");
         if (keyboard_active) {
             code = e.which;
             key = String.fromCharCode(code).toUpperCase();
@@ -364,6 +387,17 @@ $(document).ready(function() {
             }
             if (key === " ") {
                 abnormal = false;
+            }
+
+            if (e.which === 51) {
+                for (var cell in cell_types) {
+                    if (cell_types.hasOwnProperty(cell)) {
+                        for (var i=0; i < cell_types[cell].box.length; i++) {
+                            $(cell_types[cell].box[i]).find("span.abnormal").text("("+cell_types[cell].abnormal+")");
+                            $(cell_types[cell].box[i]).find("span.countval").text(cell_types[cell].count);
+                        }
+                    }
+                }
             }
         }
     });
@@ -503,7 +537,7 @@ function update_keyboard() {
                 var name = cell_data.abbr;
 
                 item.append("<div class=\"name\">"+name+"</div>");
-                item.append("<div class=\"count\"><span class=\"countval\">"+cell_types[cell_id].count+"</span> (<span class=\"abnormal abnormal_count\">"+cell_types[cell_id].abnormal+"</span>)</div>");
+                item.append("<div class=\"count\"><span class=\"countval\">"+cell_types[cell_id].count+"</span> <span class=\"abnormal abnormal_count\">("+cell_types[cell_id].abnormal+")</span></div>");
 
                 // Attach cell colour to key
                 item.find("p").css("background-color", cell_data.colour);
