@@ -51,29 +51,6 @@ CellCountr provides a simple way for cells on a peripheral blood or bone marrow 
     <button class="btn btn-primary" id="downloadify_button" style="width:130px">Save as CSV</button> (this may be opened with Microsoft Excel)
 </div>
 
-{% comment %}
-<form action="" method="POST" class="form-horizontal">
-    {% csrf_token %}
-    
-    {% include "main/forms/cellcountinstance_form.html" %}
-    {% include "main/forms/bonemarrowbackground_form.html" %}
-    {% include "main/forms/granulopoiesis_form.html" %}
-    {% include "main/forms/erythropoiesis_form.html" %}
-    {% include "main/forms/megakaryocytefeatures_form.html" %}
-    {% include "main/forms/ironstain_form.html" %}
-    {% include "main/forms/overallcomment_form.html" %}
-    
-    {% for form in cellcountformslist %}
-    <div id="{{form.initial.cell.machine_name}}" class="cellcount-form">
-        {{ form.errors }}
-        {{ form.as_p }}
-    </div>
-    {% endfor %}
-    <br>
-    <input class="btn btn-success" type="submit" value="Submit" />
-</form>
-{% endcomment %}
-
 <br><p>At present this site is optimised for Firefox or Chromium-based web browsers, and display sizes of at least 1024x768. See the <a href="/about/">About</a> section for more information.</p>
 
 {% endblock %}

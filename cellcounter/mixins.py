@@ -2,6 +2,7 @@ import json
 
 from django.http import HttpResponse
 
+
 class JSONResponseMixin(object):
     """
     A Mixin that renders context as a JSON response
@@ -17,8 +18,8 @@ class JSONResponseMixin(object):
         Construct an `HttpResponse` object.
         """
         response = HttpResponse(content,
-                                 content_type='application/json',
-                                 **httpresponse_kwargs)
+                                content_type='application/json',
+                                **httpresponse_kwargs)
         return response
 
     def convert_context_to_json(self, context):
