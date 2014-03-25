@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 from django.contrib import admin
 from django.contrib.auth.views import login, logout
 
-from cellcounter.main.views import new_count, images_by_cell_type, CellTypesListView, similar_images, thumbnail, page
+from cellcounter.main.views import NewCountTemplateView, images_by_cell_type, CellTypesListView, similar_images, thumbnail, page
 
 from cellcounter.logs.views import index, host_access, page_access, referrer_access, date_access
 
@@ -14,7 +14,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 
-    url(r'^$', new_count, name="new_count"),
+    url(r'^$', NewCountTemplateView.as_view(), name="new_count"),
 
     url(r'^discover/$', TemplateView.as_view(template_name="main/discover.html"), name="discover"),
     url(r'^about/$', TemplateView.as_view(template_name="main/about.html"), name="about"),
