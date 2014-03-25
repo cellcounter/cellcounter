@@ -8,7 +8,11 @@
         </div>
         <div class="image">
           <a class = "modaldialog" href="{% url "page" cellimage.id %}">
+            {% if not cellimage.thumbnail %}
             <img alt="{{ cellimage.description }}" src="{% url "thumbnail" cellimage.id %}"\>
+            {% else %}
+            <img alt="{{ cellimage.description }}" src="{{ cellimage.thumbnail.url }}"\>
+            {% endif %}
           </a>
         </div>
       </td>
