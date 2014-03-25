@@ -1,30 +1,19 @@
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.views.generic import ListView
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from PIL import Image
 
-from cellcounter.main.models import CellType, CellImage
-from cellcounter.mixins import JSONResponseMixin
+from .models import CellType, CellImage
+from .serializers import CellTypeSerializer
 
 
-class ListCellTypesView(JSONResponseMixin, ListView):
-    model = CellType
-
-    def get_context_data(self, *args, **kwargs):
-        objects = self.object_list
-        new_context = {}
-        for cell in objects:
-            cell_dict = {
-                'id': cell.pk,
-                'name': cell.readable_name,
-                'slug': cell.machine_name,
-                'abbr': cell.abbr_name,
-                'colour': cell.visualisation_colour
-            }
-            new_context[cell.pk] = cell_dict
-
-        return new_context
+class CellTypesListView(APIView):
+    def get(self, request):
+        cell_types = CellType.objects.all()
+        serializer = CellTypeSerializer(cell_types, many=True)
+        return Response(serializer.data)
 
 
 def new_count(request):
