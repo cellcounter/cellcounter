@@ -47,20 +47,6 @@ class CellImageListView(ListView):
         return context
 
 
-def images_by_cell_type(request, cell_type):
-    ct = CellType.objects.get(machine_name = cell_type)
-    images = []
-    copyrightholders = []
-    for ci in ct.cellimage_set.all():
-        if ci.copyright not in copyrightholders:
-            copyrightholders.append(ci.copyright)
-        images.append((copyrightholders.index(ci.copyright) + 1, ci))  
-    return render_to_response('main/images_by_cell_type.html',
-                              {'images': images,
-                               'copyrightholders': copyrightholders},
-                              context_instance=RequestContext(request))
-
-
 def similar_images(request, cell_image_pk):
     ci = CellImage.objects.get(pk = cell_image_pk)
     return render_to_response('main/images_by_cell_type.html',
