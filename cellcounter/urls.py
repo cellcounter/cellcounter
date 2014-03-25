@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 from django.contrib import admin
 from django.contrib.auth.views import login, logout
 
-from cellcounter.main.views import NewCountTemplateView, images_by_cell_type, CellTypesListView, similar_images, thumbnail, page
+from cellcounter.main.views import NewCountTemplateView, CellImageListView, CellTypesListView, similar_images, thumbnail, page
 
 from cellcounter.logs.views import index, host_access, page_access, referrer_access, date_access
 
@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     url(r'^about/$', TemplateView.as_view(template_name="main/about.html"), name="about"),
     url(r'^help/$', TemplateView.as_view(template_name="main/help.html"), name="help"),
 
-    url(r'^images/celltype/(?P<cell_type>\w+)/$', images_by_cell_type, name="images_by_cell_type"),
+    url(r'^images/celltype/(?P<cell_type>\w+)/$', CellImageListView.as_view(), name="images_by_cell_type"),
     url(r'^images/similar/(?P<cell_image_pk>\d+)/$', similar_images, name="images_by_similar_cell"),
     url(r'^images/thumbnail/(?P<cell_image_pk>\d+)/$', thumbnail, name="thumbnail"),
     url(r'^images/page/(?P<cell_image_pk>\d+)/$', page, name="page"),
