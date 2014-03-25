@@ -48,7 +48,7 @@ function init_visualisation(div_id) {
 
     // Add the paths to grouping elements and set the colour.
     doughnut.selectAll('g').append('path')
-        .style("fill", function(d) { return d.data.colour });
+        .style("fill", function(d) { return d.data.visualisation_colour });
 
     // Add the text to grouping elements.
     doughnut.selectAll('g').append('text')

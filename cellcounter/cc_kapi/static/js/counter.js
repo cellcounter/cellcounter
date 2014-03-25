@@ -30,7 +30,7 @@ $(document).ready(function() {
         }
     });
     
-    $.getJSON("/api/cell_types/", function(data) {
+    $.getJSON("api/cell_types/", function(data) {
         cell_types = {};
         $.each(data, function(key, cell) {
             cell.count = 0;
@@ -77,7 +77,7 @@ $(document).ready(function() {
                     } else {
                         abnormal[cell] = "N/A";
                     }
-                    per += '<tr><td class="celltypes">' + cell_types[cell].name + '</td><td class="ignore" style="width: 20px; background-color:'+ cell_types[cell].colour +'"></td><td>'+cell_types[cell].count+'</td><td class="abnormal_count">'+cell_types[cell].abnormal+'</td><td>' + parseFloat(percent[cell]).toFixed(0) + "%</td><td>"+abnormal[cell]+"</td></tr>";
+                    per += '<tr><td class="celltypes">' + cell_types[cell].readable_name + '</td><td class="ignore" style="width: 20px; background-color:'+ cell_types[cell].visualisation_colour +'"></td><td>'+cell_types[cell].count+'</td><td class="abnormal_count">'+cell_types[cell].abnormal+'</td><td>' + parseFloat(percent[cell]).toFixed(0) + "%</td><td>"+abnormal[cell]+"</td></tr>";
                 }
             }
 
@@ -265,8 +265,8 @@ $(document).ready(function() {
                 for (i = 0; i < keyboard_map.mappings.length; i++) {
                     if (keyboard_map.mappings[i].key.toUpperCase() == key) {
                         var cell_id = keyboard_map.mappings[i].cellid;
-                        var slug = cell_types[cell_id].slug;
-                        var fullname = cell_types[cell_id].name;
+                        var slug = cell_types[cell_id].machine_name;
+                        var fullname = cell_types[cell_id].readable_name;
 
                         var $dialog = $('<div></div>')
                             .load('/images/celltype/'+slug+'/')
@@ -533,13 +533,13 @@ function update_keyboard() {
                 var cell_id = keyboard_map.mappings[j].cellid;
                 var cell_data = cell_types[cell_id];
                 cell_data.box.push(item);
-                var name = cell_data.abbr;
+                var name = cell_data.abbr_name;
 
                 item.append("<div class=\"name\">"+name+"</div>");
                 item.append("<div class=\"count\"><span class=\"countval\">"+cell_types[cell_id].count+"</span> <span class=\"abnormal abnormal_count\">("+cell_types[cell_id].abnormal+")</span></div>");
 
-                // Attach cell colour to key
-                item.find("p").css("background-color", cell_data.colour);
+                // Attach cell visualisation_colour to key
+                item.find("p").css("background-color", cell_data.visualisation_colour);
             }
         }
     }
@@ -556,7 +556,7 @@ function edit_keyboard() {
 
     for (cell in cell_types) {
         if (cell_types.hasOwnProperty(cell)) {
-            list += "<li><div class=\"element\"><div class=\"edit_colour_swatch\" id=\"swatch_"+cell+"\"></div>"+cell_types[cell].name+"</div><div class=\"cellid\" style=\"display: none;\">"+cell+"</div></li>";
+            list += "<li><div class=\"element\"><div class=\"edit_colour_swatch\" id=\"swatch_"+cell+"\"></div>"+cell_types[cell].readable_name+"</div><div class=\"cellid\" style=\"display: none;\">"+cell+"</div></li>";
         }
     }
     list += "</ul>";
@@ -566,7 +566,7 @@ function edit_keyboard() {
 
     for (cell in cell_types) {
         if (cell_types.hasOwnProperty(cell)) {
-            $("div#swatch_"+cell).css("background-color", cell_types[cell].colour);
+            $("div#swatch_"+cell).css("background-color", cell_types[cell].visualisation_colour);
         }
     }
 
