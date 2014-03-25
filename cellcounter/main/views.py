@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.views.generic import ListView
+from django.views.generic import ListView, TemplateView
 from PIL import Image
 
 from cellcounter.main.models import CellType, CellImage
@@ -27,15 +27,12 @@ class ListCellTypesView(JSONResponseMixin, ListView):
         return new_context
 
 
-def new_count(request):
-        cellcount_form_list = []
-        for celltype in CellType.objects.all():
-            cellcount_form_list.append(celltype)
+class NewCountTemplateView(TemplateView):
+    template_name = 'main/count.html'
 
-        return render_to_response('main/count.html',
-                                  {'cellcountformslist': cellcount_form_list,
-                                   'logged_in': request.user.is_authenticated()},
-                                  context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+        context = super(NewCountTemplateView, self).get_context_data(**kwargs)
+        context['logged_in'] = self.request.user.is_authenticated()
 
 
 def images_by_cell_type(request, cell_type):
