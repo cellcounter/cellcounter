@@ -290,7 +290,7 @@ $(document).ready(function() {
                 return;
             }
 
-            if (e.which === 51) {
+            if (e.which === 35 || e.which === 51) {
                 /* Show percentage view */
                 var show_total = 0;
 
@@ -388,7 +388,7 @@ $(document).ready(function() {
                 abnormal = false;
             }
 
-            if (e.which === 51) {
+            if (e.which === 35 || e.which === 51) {
                 for (var cell in cell_types) {
                     if (cell_types.hasOwnProperty(cell)) {
                         for (var i=0; i < cell_types[cell].box.length; i++) {
