@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 from django.contrib import admin
 from django.contrib.auth.views import login, logout
 
-from cellcounter.main.views import new_count, images_by_cell_type, ListCellTypesView, similar_images, thumbnail, page
+from cellcounter.main.views import new_count, images_by_cell_type, CellTypesListView, similar_images, thumbnail, page
 
 from cellcounter.logs.views import index, host_access, page_access, referrer_access, date_access
 
@@ -26,7 +26,7 @@ urlpatterns = patterns('',
     url(r'^images/page/(?P<cell_image_pk>\d+)/$', page, name="page"),
 
 
-    url(r'^api/cell_types/$', ListCellTypesView.as_view(), name="cell_types"),
+    url(r'^api/cell_types/$', CellTypesListView.as_view(), name="cell_types"),
 
     url(r'^login/$', login, {'template_name': 'main/login.html'}, name='login'),
     url(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
