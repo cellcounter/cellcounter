@@ -638,8 +638,13 @@ function edit_keyboard() {
                 ],
         width: "368px"
     });
+
     $(d).dialog('widget')
         .position({ my: 'right top', at: 'right top', of: $("div#counterbox") });
+
+    if (!save_keys) {
+        $(":button:contains('Save as New')").prop("disabled", true).addClass("ui-state-disabled");
+    }
 }
 
 function select_element(el) {
