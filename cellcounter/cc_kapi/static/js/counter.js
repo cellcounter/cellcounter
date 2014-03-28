@@ -643,7 +643,7 @@ function edit_keyboard() {
         .position({ my: 'right top', at: 'right top', of: $("div#counterbox") });
 
     if (!save_keys) {
-        $(":button:contains('Save as New')").prop("disabled", true).addClass("ui-state-disabled");
+        $(":button:contains('Save as New')").remove();
     }
 }
 
