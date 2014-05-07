@@ -4,8 +4,8 @@ python:
 
 # command to install dependencies
 install:
- - pip install --use-mirrors -r requirements.txt
- - pip install --use-mirrors -r test-requirements.txt
+    - pip install --allow-all-external -r requirements.txt
+    - pip install --allow-all-external -r test-requirements.txt
 
 env: TEST=True
 
