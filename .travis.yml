@@ -4,8 +4,8 @@ python:
 
 # command to install dependencies
 install:
-    - pip install -r requirements.txt
-    - pip install -r test-requirements.txt
+    - pip install --allow-all-external -r requirements.txt
+    - pip install --allow-all-external -r test-requirements.txt
 
 env: TEST=True
 
