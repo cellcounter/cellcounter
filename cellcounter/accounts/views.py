@@ -1,9 +1,6 @@
-from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 from django.template.response import SimpleTemplateResponse
-from django.template import RequestContext
 from django.core.exceptions import PermissionDenied
-from django.views.generic.base import View
 from django.views.generic import FormView, UpdateView, DetailView, DeleteView
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import PasswordChangeForm
@@ -18,52 +15,46 @@ from .forms import EmailUserCreationForm, PasswordResetForm
 from .decorators import post_ratelimit
 
 
-class RegistrationView(View):
-    def get(self, request, *args, **kwargs):
-        return render_to_response('accounts/register.html',
-                                  {'form': EmailUserCreationForm()},
-                                  context_instance=RequestContext(request))
+class RegistrationView(FormView):
+    template_name = 'accounts/register.html'
+    form_class = EmailUserCreationForm
 
     @method_decorator(post_ratelimit(block=True, rate='1/h'))
     def post(self, request, *args, **kwargs):
-        form = EmailUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            messages.success(request,
-                             mark_safe(
-                                 "Successfully registered, you are now logged in! <a href='%s'>View your profile</a>" %
-                                 reverse('user-detail', kwargs={'pk': user.id})))
-            user = authenticate(username=request.POST['username'],
-                                password=request.POST['password1'])
-            login(request, user)
-            return HttpResponseRedirect(reverse('new_count')), True
-        else:
-            return (render_to_response('accounts/register.html',
-                                       {'form': form},
-                                       context_instance=RequestContext(request)),
-                    False)
+        return super(RegistrationView, self).post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        user = form.save()
+        messages.success(self.request,
+                         mark_safe(
+                             "Successfully registered, you are now logged in! <a href='%s'>View your profile</a>" %
+                             reverse('user-detail', kwargs={'pk': user.id})))
+        user = authenticate(username=form.cleaned_data['username'],
+                            password=form.cleaned_data['password1'])
+        login(self.request, user)
+        return HttpResponseRedirect(reverse('new_count')), True
+
+    def form_invalid(self, form):
+        return super(RegistrationView, self).form_invalid(form), False
 
 
-class PasswordChangeView(View):
+class PasswordChangeView(FormView):
+    template_name = 'accounts/password_change.html'
+    form_class = PasswordChangeForm
+
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(PasswordChangeView, self).dispatch(*args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
-        return render_to_response('accounts/password_change.html',
-                                  {'form': PasswordChangeForm(user=request.user)},
-                                  context_instance=RequestContext(request))
+    def get_form_kwargs(self):
+        kwargs = super(PasswordChangeView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
-    def post(self, request, *args, **kwargs):
-        form = PasswordChangeForm(user=request.user, data=request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Password changed successfully")
-            return HttpResponseRedirect(reverse('new_count'))
-        else:
-            return render_to_response('accounts/password_change.html',
-                                      {'form': form},
-                                      context_instance=RequestContext(request))
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, "Password changed successfully")
+        return HttpResponseRedirect(reverse('new_count'))
 
 
 def password_reset_done(request):
