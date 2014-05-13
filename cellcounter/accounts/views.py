@@ -15,7 +15,7 @@ from django.utils.safestring import mark_safe
 from django.contrib import messages
 
 from .forms import EmailUserCreationForm, PasswordResetForm
-from .decorators import registration_ratelimit
+from .decorators import post_ratelimit
 
 
 class RegistrationView(View):
@@ -24,7 +24,7 @@ class RegistrationView(View):
                                   {'form': EmailUserCreationForm()},
                                   context_instance=RequestContext(request))
 
-    @method_decorator(registration_ratelimit(block=True, rate='1/h'))
+    @method_decorator(post_ratelimit(block=True, rate='1/h'))
     def post(self, request, *args, **kwargs):
         form = EmailUserCreationForm(request.POST)
         if form.is_valid():
@@ -124,12 +124,19 @@ class PasswordResetView(FormView):
     template_name = 'accounts/reset_form.html'
     form_class = PasswordResetForm
 
+    @method_decorator(post_ratelimit(block=True, rate='5/h'))
+    def post(self, request, *args, **kwargs):
+        return super(PasswordResetView, self).post(request, *args, **kwargs)
+
     def form_valid(self, form):
         form.save(request=self.request)
         messages.success(self.request, 'Reset email sent')
-        return HttpResponseRedirect(reverse('new_count'))
+        return HttpResponseRedirect(reverse('new_count')), True
+
+    def form_invalid(self, form):
+        return super(PasswordResetView, self).form_invalid(form), False
 
 
 def rate_limited(request, exception):
-    messages.error(request, 'You have been rate limited - please wait before registering an account')
+    messages.error(request, 'You have been rate limited')
     return HttpResponseRedirect(reverse('new_count'))
