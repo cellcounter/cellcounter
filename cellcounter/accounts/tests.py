@@ -1,3 +1,4 @@
+import re
 from django_webtest import WebTest
 from django.test import TestCase
 from django.test.client import Client
@@ -6,6 +7,7 @@ from django.core import mail
 from django.test.utils import override_settings
 from django.utils.translation import ugettext as _
 from django.test.client import RequestFactory
+from django.contrib.auth.models import User
 
 from cellcounter.cc_kapi.factories import UserFactory, KeyboardFactory
 from cellcounter.cc_kapi.models import Keyboard
@@ -189,11 +191,51 @@ class UserManagementTest(WebTest):
         )
         self.assertEquals(403, response.status_code)
 
+    def test_edit_own_user(self):
+        data = {'first_name': 'John', 'last_name': 'Bloggs',
+                'email': 'john@bloggs.com'}
+        response = self.app.post(
+            reverse('user-update', kwargs={'pk': self.user.id}),
+            data, user=self.user)
+        self.assertRedirects(response, reverse('user-detail', kwargs={'pk': self.user.id}))
+
+        user = User.objects.get(pk=self.user.pk)
+        self.assertEqual(data['first_name'], user.first_name)
+        self.assertEqual(data['last_name'], user.last_name)
+        self.assertEqual(data['email'], user.email)
+
+    def test_edit_own_user_invalid(self):
+        data = {'email': 'Invalid Email'}
+        response = self.app.post(
+            reverse('user-update', kwargs={'pk': self.user.id}),
+            data, user=self.user)
+        self.assertFormError(response, 'form', 'email',
+                             "Enter a valid email address.")
+
+    def test_edit_other_user(self):
+        data = {'first_name': 'John', 'last_name': 'Bloggs',
+                'email': 'john@bloggs.com'}
+        user2 = UserFactory()
+        response = self.app.post(
+            reverse('user-update', kwargs={'pk': user2.id}),
+            data, user=self.user, status=403)
+        self.assertEquals(403, response.status_code)
+
 
 class PasswordReset(TestCase):
     def setUp(self):
         self.user = UserFactory()
         self.factory = RequestFactory()
+
+    def _test_confirm_start(self, user):
+        self.client.post(reverse('password-reset'), {'email': user.email})
+        self.assertEqual(len(mail.outbox), 1)
+        return self._read_signup_email(mail.outbox[0])
+
+    def _read_signup_email(self, email):
+        url_match = re.search(r"https?://[^/]*(/.*reset/\S*)", email.body)
+        self.assertTrue(url_match is not None, "No URL found in sent email")
+        return url_match.group(), url_match.groups()[0]
 
     def test_invalid_email(self):
         data = {'email': 'not valid'}
@@ -274,3 +316,70 @@ class PasswordReset(TestCase):
             self.client.post(reverse('password-reset'), data={'email': 'Invalid Email'})
         response = self.client.post(reverse('password-reset'), data={'email': 'Invalid Email'})
         self.assertNotIn('You have been rate limited', response.content)
+
+    def test_confirm_valid(self):
+        url, path = self._test_confirm_start(self.user)
+        response = self.client.get(path)
+        self.assertContains(response, "Please enter your new password")
+
+    def test_confirm_invalid(self):
+        url, path = self._test_confirm_start(self.user)
+        # Let's munge the token in the path, but keep the same length,
+        # in case the URLconf will reject a different length.
+        path = path[:-5] + ("0" * 4) + path[-1]
+        response = self.client.get(path)
+        self.assertContains(response, "The password reset link was invalid")
+
+    def test_confirm_invalid_user(self):
+        # Ensure that we get a 200 response for a non-existent user, not a 404
+        response = self.client.get(reverse('password-reset-confirm', kwargs={'uidb64': 123456, 'token': '1-1'}))
+        self.assertContains(response, "The password reset link was invalid")
+
+    def test_confirm_invalid_post(self):
+        # Same as test_confirm_invalid, but trying
+        # to do a POST instead.
+        url, path = self._test_confirm_start(self.user)
+        path = path[:-5] + ("0" * 4) + path[-1]
+
+        self.client.post(path, {
+            'new_password1': 'anewpassword',
+            'new_password2': ' anewpassword',
+        })
+        # Check the password has not been changed
+        u = User.objects.get(email=self.user.email)
+        self.assertTrue(not u.check_password("anewpassword"))
+
+    def test_confirm_complete(self):
+        url, path = self._test_confirm_start(self.user)
+        response = self.client.post(path, {'new_password1': 'anewpassword',
+                                           'new_password2': 'anewpassword'})
+        # Check the password has been changed
+        u = User.objects.get(email=self.user.email)
+        self.assertTrue(u.check_password("anewpassword"))
+
+        # Check we can't use the link again
+        response = self.client.get(path)
+        self.assertContains(response, "The password reset link was invalid")
+
+    def test_confirm_different_passwords(self):
+        url, path = self._test_confirm_start(self.user)
+        response = self.client.post(path, {'new_password1': 'anewpassword',
+                                           'new_password2': 'x'})
+        self.assertFormError(response, 'form', 'new_password2',
+                             "The two password fields didn't match.")
+
+    def test_confirm_display_user_from_form(self):
+        url, path = self._test_confirm_start(self.user)
+        response = self.client.get(path)
+
+        # #16919 -- The ``password_reset_confirm`` view should pass the user
+        # object to the ``SetPasswordForm``, even on GET requests.
+        # For this test, we render ``{{ form.user }}`` in the template
+        # ``registration/password_reset_confirm.html`` so that we can test this.
+        self.assertContains(response, "Hello, %s." % self.user.username)
+
+        # However, the view should NOT pass any user object on a form if the
+        # password reset link was invalid.
+        response = self.client.get(reverse('password-reset-confirm',
+                                           kwargs={'uidb64': 123456, 'token': '1-1'}))
+        self.assertContains(response, 'The password reset link was invalid')
