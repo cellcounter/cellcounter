@@ -4,8 +4,7 @@ from django.template.response import SimpleTemplateResponse
 from django.template import RequestContext
 from django.core.exceptions import PermissionDenied
 from django.views.generic.base import View
-from django.views.generic.edit import UpdateView
-from django.views.generic import DetailView, DeleteView
+from django.views.generic import FormView, UpdateView, DetailView, DeleteView
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
@@ -15,7 +14,7 @@ from django.utils.decorators import method_decorator
 from django.utils.safestring import mark_safe
 from django.contrib import messages
 
-from .forms import EmailUserCreationForm
+from .forms import EmailUserCreationForm, PasswordResetForm
 from .decorators import registration_ratelimit
 
 
@@ -72,11 +71,6 @@ def password_reset_done(request):
     return SimpleTemplateResponse('accounts/reset_done.html')
 
 
-def password_reset_sent(request):
-    messages.success(request, "Reset email sent")
-    return SimpleTemplateResponse('accounts/reset_sent.html')
-
-
 class UserDetailView(DetailView):
     model = User
     context_object_name = 'user_detail'
@@ -124,6 +118,16 @@ class UserUpdateView(UpdateView):
     def get_success_url(self):
         messages.success(self.request, "User details updated")
         return reverse('user-detail', kwargs={'pk': self.kwargs['pk']})
+
+
+class PasswordResetView(FormView):
+    template_name = 'accounts/reset_form.html'
+    form_class = PasswordResetForm
+
+    def form_valid(self, form):
+        form.save(request=self.request)
+        messages.success(self.request, 'Reset email sent')
+        return HttpResponseRedirect(reverse('new_count'))
 
 
 def rate_limited(request, exception):

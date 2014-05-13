@@ -191,7 +191,7 @@ class UserManagementTest(WebTest):
 
 
 class PasswordReset(WebTest):
-    # csrf_checks = False
+    csrf_checks = False
 
     def setUp(self):
         self.user = UserFactory()
@@ -244,3 +244,24 @@ class PasswordReset(WebTest):
         form.save(request=request)
         self.assertEqual(form.cleaned_data['email'], self.user.email)
         self.assertEqual(len(mail.outbox), 1)
+
+    def test_integration_pwd_reset(self):
+        form = self.app.get(reverse('password-reset')).form
+        form['email'] = self.user.email
+        response = form.submit().follow()
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(len(mail.outbox), 1)
+
+    def test_integration_pwd_nonexistent_email(self):
+        """Ensures no email sent, but opaque to user"""
+        form = self.app.get(reverse('password-reset')).form
+        form['email'] = 'different@example.com'
+        response = form.submit().follow()
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_integration_pwd_invalid_email(self):
+        form = self.app.get(reverse('password-reset')).form
+        form['email'] = 'Invalid email'
+        response = form.submit()
+        self.assertFormError(response, 'form', 'email', 'Enter a valid email address.')
