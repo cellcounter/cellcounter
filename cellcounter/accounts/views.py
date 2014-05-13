@@ -1,11 +1,10 @@
 from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
-from django.views.generic import View, FormView, UpdateView, DetailView, DeleteView
+from django.views.generic import FormView, UpdateView, DetailView, DeleteView
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import PasswordChangeForm
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.tokens import default_token_generator
@@ -13,6 +12,7 @@ from django.contrib.auth.forms import SetPasswordForm
 from django.views.decorators.debug import sensitive_post_parameters
 from django.utils.safestring import mark_safe
 from django.contrib import messages
+from braces.views import LoginRequiredMixin
 
 from .forms import EmailUserCreationForm, PasswordResetForm
 from .decorators import post_ratelimit
@@ -41,13 +41,9 @@ class RegistrationView(FormView):
         return super(RegistrationView, self).form_invalid(form), False
 
 
-class PasswordChangeView(FormView):
+class PasswordChangeView(LoginRequiredMixin, FormView):
     template_name = 'accounts/password_change.html'
     form_class = PasswordChangeForm
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(PasswordChangeView, self).dispatch(*args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(PasswordChangeView, self).get_form_kwargs()
