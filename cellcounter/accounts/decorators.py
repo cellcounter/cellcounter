@@ -5,7 +5,7 @@ from ratelimit.helpers import is_ratelimited
 
 
 def post_ratelimit(ip=True, block=False, method=['POST'], field=None, rate='1/h',
-                           skip_if=None, keys=None):
+                   skip_if=None, keys=None):
     def decorator(fn):
         @wraps(fn)
         def _wrapped(request, *args, **kw):
