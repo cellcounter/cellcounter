@@ -190,7 +190,7 @@ class UserManagementTest(WebTest):
         self.assertEquals(403, response.status_code)
 
 
-class PasswordReset(WebTest):
+class PasswordReset(TestCase):
     csrf_checks = False
 
     def setUp(self):
@@ -246,22 +246,33 @@ class PasswordReset(WebTest):
         self.assertEqual(len(mail.outbox), 1)
 
     def test_integration_pwd_reset(self):
-        form = self.app.get(reverse('password-reset')).form
-        form['email'] = self.user.email
-        response = form.submit().follow()
-        self.assertEqual(200, response.status_code)
+        response = self.client.post(reverse('password-reset'), data={'email': self.user.email})
+        self.assertEqual(302, response.status_code)
         self.assertEqual(len(mail.outbox), 1)
 
     def test_integration_pwd_nonexistent_email(self):
         """Ensures no email sent, but opaque to user"""
-        form = self.app.get(reverse('password-reset')).form
-        form['email'] = 'different@example.com'
-        response = form.submit().follow()
-        self.assertEqual(200, response.status_code)
+        response = self.client.post(reverse('password-reset'), data={'email': 'different@example.com'})
+        self.assertEqual(302, response.status_code)
         self.assertEqual(len(mail.outbox), 0)
 
     def test_integration_pwd_invalid_email(self):
-        form = self.app.get(reverse('password-reset')).form
-        form['email'] = 'Invalid email'
-        response = form.submit()
+        response = self.client.post(reverse('password-reset'), data={'email': 'Invalid Email'})
         self.assertFormError(response, 'form', 'email', 'Enter a valid email address.')
+        self.assertEqual(len(mail.outbox), 0)
+
+    @override_settings(RATELIMIT_ENABLE=True)
+    def test_integration_valid_reset_ratelimit(self):
+        for n in range(0, 5):
+            self.client.post(reverse('password-reset'), data={'email': self.user.email}, follow=True)
+        response = self.client.post(reverse('password-reset'), data={'email': self.user.email}, follow=True)
+        for message in response.context['messages']:
+            self.assertEqual('error', message.tags)
+            self.assertEqual('You have been rate limited', message.message)
+
+    @override_settings(RATELIMIT_ENABLE=True)
+    def test_integration_invalid_reset_ratelimit(self):
+        for n in range(0, 5):
+            self.client.post(reverse('password-reset'), data={'email': 'Invalid Email'})
+        response = self.client.post(reverse('password-reset'), data={'email': 'Invalid Email'})
+        self.assertNotIn('You have been rate limited', response.content)
