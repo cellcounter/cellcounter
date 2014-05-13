@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url
-from django.views.generic import TemplateView
 
 from cellcounter.accounts import views
+from cellcounter.accounts.forms import PasswordResetForm
 
 urlpatterns = patterns('',
     url('^new/$', views.RegistrationView.as_view(), name='register'),
@@ -11,9 +11,9 @@ urlpatterns = patterns('',
     url('^password/reset/$', 'django.contrib.auth.views.password_reset', {
         'template_name': 'accounts/reset_form.html',
         'email_template_name': 'accounts/reset_email.txt',
-        'subject_template_name': 'accounts/reset_subject.txt',
         'current_app': 'cellcounter.accounts',
         'post_reset_redirect': 'password-reset-sent',
+        'password_reset_form': PasswordResetForm,
         },
         name='password-reset'),
     url('^password/reset/sent/$', views.password_reset_sent, name='password-reset-sent'),
