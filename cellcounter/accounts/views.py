@@ -18,6 +18,7 @@ from django.contrib import messages
 from .forms import EmailUserCreationForm
 from .decorators import registration_ratelimit
 
+
 class RegistrationView(View):
     def get(self, request, *args, **kwargs):
         return render_to_response('accounts/register.html',
@@ -39,8 +40,8 @@ class RegistrationView(View):
             return HttpResponseRedirect(reverse('new_count')), True
         else:
             return (render_to_response('accounts/register.html',
-                                      {'form': form},
-                                      context_instance=RequestContext(request)),
+                                       {'form': form},
+                                       context_instance=RequestContext(request)),
                     False)
 
 
