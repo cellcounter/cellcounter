@@ -71,11 +71,6 @@ def password_reset_done(request):
     return SimpleTemplateResponse('accounts/reset_done.html')
 
 
-def password_reset_sent(request):
-    messages.success(request, "Reset email sent")
-    return SimpleTemplateResponse('accounts/reset_sent.html')
-
-
 class UserDetailView(DetailView):
     model = User
     context_object_name = 'user_detail'
