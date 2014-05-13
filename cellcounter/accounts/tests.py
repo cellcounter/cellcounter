@@ -6,6 +6,7 @@ from django.core import mail
 from django.test.utils import override_settings
 from django.utils.translation import ugettext as _
 from django.test.client import RequestFactory
+from django.contrib.auth.models import User
 
 from cellcounter.cc_kapi.factories import UserFactory, KeyboardFactory
 from cellcounter.cc_kapi.models import Keyboard
@@ -187,6 +188,36 @@ class UserManagementTest(WebTest):
             reverse('user-delete', kwargs={'pk': user2.id}),
             user=self.user, status=403
         )
+        self.assertEquals(403, response.status_code)
+
+    def test_edit_own_user(self):
+        data = {'first_name': 'John', 'last_name': 'Bloggs',
+                'email': 'john@bloggs.com'}
+        response = self.app.post(
+            reverse('user-update', kwargs={'pk': self.user.id}),
+            data, user=self.user)
+        self.assertRedirects(response, reverse('user-detail', kwargs={'pk': self.user.id}))
+
+        user = User.objects.get(pk=self.user.pk)
+        self.assertEqual(data['first_name'], user.first_name)
+        self.assertEqual(data['last_name'], user.last_name)
+        self.assertEqual(data['email'], user.email)
+
+    def test_edit_own_user_invalid(self):
+        data = {'email': 'Invalid Email'}
+        response = self.app.post(
+            reverse('user-update', kwargs={'pk': self.user.id}),
+            data, user=self.user)
+        self.assertFormError(response, 'form', 'email',
+                             "Enter a valid email address.")
+
+    def test_edit_other_user(self):
+        data = {'first_name': 'John', 'last_name': 'Bloggs',
+                'email': 'john@bloggs.com'}
+        user2 = UserFactory()
+        response = self.app.post(
+            reverse('user-update', kwargs={'pk': user2.id}),
+            data, user=self.user, status=403)
         self.assertEquals(403, response.status_code)
 
 
