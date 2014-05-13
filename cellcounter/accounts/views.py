@@ -1,13 +1,16 @@
 from django.http import HttpResponseRedirect
-from django.template.response import SimpleTemplateResponse
 from django.core.exceptions import PermissionDenied
-from django.views.generic import FormView, UpdateView, DetailView, DeleteView
+from django.views.generic import View, FormView, UpdateView, DetailView, DeleteView
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import PasswordChangeForm
+from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.forms import SetPasswordForm
+from django.views.decorators.debug import sensitive_post_parameters
 from django.utils.safestring import mark_safe
 from django.contrib import messages
 
@@ -55,11 +58,6 @@ class PasswordChangeView(FormView):
         form.save()
         messages.success(self.request, "Password changed successfully")
         return HttpResponseRedirect(reverse('new_count'))
-
-
-def password_reset_done(request):
-    messages.success(request, "Successfully reset password")
-    return SimpleTemplateResponse('accounts/reset_done.html')
 
 
 class UserDetailView(DetailView):
@@ -126,6 +124,43 @@ class PasswordResetView(FormView):
 
     def form_invalid(self, form):
         return super(PasswordResetView, self).form_invalid(form), False
+
+
+class PasswordResetConfirmView(FormView):
+    template_name = 'accounts/reset_confirm.html'
+    form_class = SetPasswordForm
+
+    @method_decorator(sensitive_post_parameters())
+    def dispatch(self, request, *args, **kwargs):
+        return super(PasswordResetConfirmView, self).dispatch(request, *args, **kwargs)
+
+    def get_user(self, uidb64):
+        try:
+            uid = urlsafe_base64_decode(uidb64)
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        return user
+
+    def get(self, request, *args, **kwargs):
+        assert self.kwargs['uidb64'] is not None and self.kwargs['token'] is not None
+        user = self.get_user(self.kwargs['uidb64'])
+
+        if user is not None and default_token_generator.check_token(user, self.kwargs['token']):
+            form = self.get_form(self.get_form_class())
+            return self.render_to_response(self.get_context_data(form=form, validlink=True))
+        else:
+            return self.render_to_response(self.get_context_data(validlink=False))
+
+    def get_form_kwargs(self):
+        kwargs = super(PasswordResetConfirmView, self).get_form_kwargs()
+        kwargs['user'] = self.get_user(self.kwargs['uidb64'])
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Password reset successfully')
+        return HttpResponseRedirect(reverse('new_count'))
 
 
 def rate_limited(request, exception):
