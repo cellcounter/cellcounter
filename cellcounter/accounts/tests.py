@@ -2,11 +2,14 @@ from django_webtest import WebTest
 from django.test import TestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
-from django.conf import settings
+from django.core import mail
 from django.test.utils import override_settings
+from django.utils.translation import ugettext as _
+from django.test.client import RequestFactory
 
 from cellcounter.cc_kapi.factories import UserFactory, KeyboardFactory
 from cellcounter.cc_kapi.models import Keyboard
+from cellcounter.accounts.forms import PasswordResetForm
 
 
 class RegistrationViewTest(TestCase):
@@ -185,3 +188,59 @@ class UserManagementTest(WebTest):
             user=self.user, status=403
         )
         self.assertEquals(403, response.status_code)
+
+
+class PasswordReset(WebTest):
+    # csrf_checks = False
+
+    def setUp(self):
+        self.user = UserFactory()
+        self.factory = RequestFactory()
+
+    def test_invalid_email(self):
+        data = {'email': 'not valid'}
+        form = PasswordResetForm(data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form['email'].errors, [_('Enter a valid email address.')])
+
+    def test_nonexistant_email(self):
+        """
+        Test nonexistent email address. This should not fail because it would
+        expose information about registered users.
+        """
+        data = {'email': 'foo@bar.com'}
+        form = PasswordResetForm(data)
+        self.assertTrue(form.is_valid())
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_inactive_user(self):
+        """
+        Test that inactive user cannot receive password reset email.
+        """
+        user = UserFactory(is_active=False)
+        form = PasswordResetForm({'email': user.email})
+        self.assertTrue(form.is_valid())
+        form.save()
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_unusable_password(self):
+        user = UserFactory()
+        data = {"email": user.email}
+        form = PasswordResetForm(data)
+        self.assertTrue(form.is_valid())
+        user.set_unusable_password()
+        user.save()
+        form = PasswordResetForm(data)
+        # The form itself is valid, but no email is sent
+        self.assertTrue(form.is_valid())
+        form.save()
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_password_reset_form(self):
+        form_data = {'email': self.user.email}
+        form = PasswordResetForm(data=form_data)
+        self.assertEqual(form.is_valid(), True)
+        request = self.factory.post(reverse('password-reset'), data={'email': self.user.email})
+        form.save(request=request)
+        self.assertEqual(form.cleaned_data['email'], self.user.email)
+        self.assertEqual(len(mail.outbox), 1)
