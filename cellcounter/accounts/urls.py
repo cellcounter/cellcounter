@@ -9,12 +9,8 @@ urlpatterns = patterns('',
     url('^(?P<pk>[0-9]+)/edit/$', views.UserUpdateView.as_view(), name='user-update'),
     url('^password/reset/$', views.PasswordResetView.as_view(),
         name='password-reset'),
-    url('^password/reset/done/$', views.password_reset_done, name='password-reset-done'),
     url('^password/reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[\d\w\-]+)/$',
-        'django.contrib.auth.views.password_reset_confirm', {
-            'template_name': 'accounts/reset_confirm.html',
-            'post_reset_redirect': 'password-reset-done',
-            },
+        views.PasswordResetConfirmView.as_view(),
         name='password-reset-confirm'),
     url('^password/change/$', views.PasswordChangeView.as_view(), name='change-password'),
 )
