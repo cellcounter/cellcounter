@@ -191,8 +191,6 @@ class UserManagementTest(WebTest):
 
 
 class PasswordReset(TestCase):
-    csrf_checks = False
-
     def setUp(self):
         self.user = UserFactory()
         self.factory = RequestFactory()
