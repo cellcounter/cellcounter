@@ -5,6 +5,7 @@ from cellcounter.logs.models import AccessRequest
 from datetime import datetime
 from django.utils.timezone import utc
 
+
 class SecureRequiredMiddleware(object):
     def __init__(self):
         self.paths = getattr(settings, 'SECURE_REQUIRED_PATHS')
@@ -20,6 +21,7 @@ class SecureRequiredMiddleware(object):
                     secure_url = request_url.replace('http://', 'http://')
                     return HttpResponsePermanentRedirect(secure_url)
         return None
+
 
 class RequestLoggerMiddleware(object):
     def process_response(self, request, response):
@@ -40,7 +42,7 @@ class RequestLoggerMiddleware(object):
 
         access.save()
 
-        #logger.info('logging message'))
+        # logger.info('logging message'))
         return response
 
 

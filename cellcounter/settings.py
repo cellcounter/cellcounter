@@ -69,14 +69,14 @@ STATIC_ROOT = os.path.join(PROJECT_DIR, '../static/')
 STATIC_URL = '/static/'
 
 # Additional locations of static files
-#STATICFILES_DIRS = (os.path.join(PROJECT_DIR, 'static'),)
+# STATICFILES_DIRS = (os.path.join(PROJECT_DIR, 'static'),)
 
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -91,7 +91,7 @@ LOGOUT_URL = '/logout/'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    # 'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -111,10 +111,10 @@ MIDDLEWARE_CLASSES = (
 HTTPS_SUPPORT = False
 
 SECURE_REQUIRED_PATHS = (
-#    '/admin/',
-#    '/count/',
-#    '/login/',
-#    '/accounts/',
+    # '/admin/',
+    # '/count/',
+    # '/login/',
+    # '/accounts/',
 )
 
 ALLOWED_HOSTS = ['.cellcountr.com']
@@ -207,7 +207,7 @@ if 'ENABLE_DJANGO_LOGGING' in os.environ:
             # Your own app - this assumes all logger names start with "cellcountr."
             'cellcountr': {
                 'handlers': ['logfile'],
-                'level': 'WARNING', # Or maybe INFO or DEBUG
+                'level': 'WARNING',  # Or maybe INFO or DEBUG
                 'propagate': False
             },
         }
