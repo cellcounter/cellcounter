@@ -1,4 +1,0 @@
-doc-warnings: yes
-uses:
-    - django
-autodetect: yes
