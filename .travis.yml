@@ -11,7 +11,7 @@ install:
 env: TEST=True
 
 # command to run tests
-script: coverage run manage.py test cellcounter.main cellcounter.cc_kapi cellcounter.accounts
+script: coverage run --source=cellcounter manage.py test
 
 after_success:
     coveralls
