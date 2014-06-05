@@ -30,7 +30,7 @@ $(document).ready(function() {
         }
     });
     
-    $.getJSON("api/cell_types/", function(data) {
+    $.getJSON("/api/cell_types/", function(data) {
         cell_types = {};
         $.each(data, function(key, cell) {
             cell.count = 0;
