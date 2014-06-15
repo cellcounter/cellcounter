@@ -328,10 +328,17 @@ $(document).ready(function() {
                     var span_field = "span." + c_type;
                     if (span_field === "span.count"){
                         span_field += "val";
-                    }
-                    for (i=0; i<cell_types[c_id].box.length; i++){
-                        $(cell_types[c_id].box[i]).find(span_field).text("("+cell_types[c_id][c_type]+")");
-                    }
+                    	for (i=0; i<cell_types[c_id].box.length; i++){
+                        	$(cell_types[c_id].box[i]).find(span_field).text(cell_types[c_id][c_type]);
+                    	}
+                    
+		    }
+                    if (span_field === "span.abnormal"){
+                    	for (i=0; i<cell_types[c_id].box.length; i++){
+                        	$(cell_types[c_id].box[i]).find(span_field).text("("+cell_types[c_id][c_type]+")");
+                    	}
+                    
+		    }
                     /* Re-initiate visualisation if key_history has been deleted completely */
                     if (key_history.length === 0) {
                         init_visualisation("#doughnut");
