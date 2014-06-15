@@ -330,7 +330,7 @@ $(document).ready(function() {
                         span_field += "val";
                     }
                     for (i=0; i<cell_types[c_id].box.length; i++){
-                        $(cell_types[c_id].box[i]).find(span_field).text(cell_types[c_id][c_type]);
+                        $(cell_types[c_id].box[i]).find(span_field).text("("+cell_types[c_id][c_type]+")");
                     }
                     /* Re-initiate visualisation if key_history has been deleted completely */
                     if (key_history.length === 0) {
