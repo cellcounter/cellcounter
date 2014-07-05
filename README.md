@@ -2,7 +2,7 @@
 
 [![Build Status](https://secure.travis-ci.org/cellcounter/cellcounter.png)](http://travis-ci.org/cellcounter/cellcounter) [![Coverage Status](https://coveralls.io/repos/cellcounter/cellcounter/badge.png)](https://coveralls.io/r/cellcounter/cellcounter)
 
-Code developed at NHSHackDay2 to count cells for haematological blood film analysis.
+Code developed at NHSHackDay2 to count cells for haematological blood film analysis. Cellcounter is deployed at [cellcountr.com](http://www.cellcountr.com).
 
 
 ## Running Locally
