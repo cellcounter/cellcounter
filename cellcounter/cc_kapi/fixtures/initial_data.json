@@ -16,8 +16,8 @@
         "fields": {
             "comment": "",
             "readable_name": "Metamyelocytes",
-            "machine_name": "metas",
-            "abbr_name": "metas",
+            "machine_name": "meta",
+            "abbr_name": "meta",
             "visualisation_colour": "#77933c"
         }
     },
@@ -115,7 +115,7 @@
         "fields": {
             "comment": "",
             "readable_name": "Plasma cells",
-            "machine_name": "plasma-cells",
+            "machine_name": "plasma_cells",
             "abbr_name": "plasma",
             "visualisation_colour": "#0000ff"
         }
