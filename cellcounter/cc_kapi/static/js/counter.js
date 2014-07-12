@@ -34,7 +34,7 @@ $(document).ready(function() {
         save_new_keyboard($('#keyboard-name-input').val());
     });
     // Re-enable keyboard when dialog is closed
-    $('#keyboard_name').on('hidden', function () {
+    $('#keyboard_name').on('hide', function () {
         editing_keyboard = true;
         keyboard_active = true;
     });
@@ -703,6 +703,12 @@ function save_new_keyboard(keyboard_name) {
     keyboard_name = keyboard_name || 'NewKeyboard';
     keyboard_map.label = keyboard_name;
     save_keyboard();
+
+    $("#keyboard_name").modal("hide");
+    // This is required to override default modal hide behaviour (above)
+    // as when a keyboard is successfully saved, user should return to
+    // count.
+    editing_keyboard = false;
 }
 
 function save_keyboard(keyboard) {
