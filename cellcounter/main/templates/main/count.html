@@ -54,6 +54,18 @@ var notloggedin=true;
 
 <p>At present this site is optimised for Firefox or Chromium-based web browsers, and display sizes of at least 1024x768. See the <a href="/about/">About</a> section for more information.</p>
 
+<div class="modal hide fade" id="keyboard_name">
+<div class="modal-header">
+    <h3>Name new Keyboard</h3>
+</div>
+<div class="modal-body">
+    <form class="form-inline">
+        <input id="keyboard-name-input" type="text" placeholder="Keyboard name here ...">
+        <input id="save_new_name" class="submit btn btn-success" value="Create">
+    </form>
+</div>
+</div>
+
 {% endblock %}
 
 {% block additional_scripts %}
