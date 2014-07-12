@@ -29,7 +29,17 @@ $(document).ready(function() {
             save_keyboard(keyboard);
         }
     });
-    
+
+    $('#save_new_name').click(function() {
+        save_new_keyboard($('#keyboard-name-input').val());
+    });
+    // Re-enable keyboard when dialog is closed
+    $('#keyboard_name').on('hidden', function () {
+        editing_keyboard = true;
+        keyboard_active = true;
+    });
+
+
     $.getJSON("/api/cell_types/", function(data) {
         cell_types = {};
         $.each(data, function(key, cell) {
@@ -68,7 +78,7 @@ $(document).ready(function() {
             }
 
             for (cell in cell_types) {
-                if (cell_types.hasOwnProperty(cell)) { 
+                if (cell_types.hasOwnProperty(cell)) {
                     // or if (Object.prototype.hasOwnProperty.call(obj,prop)) for safety...
                     percent[cell] = (cell_types[cell].count + cell_types[cell].abnormal) / total * 100;
                     if(cell_types[cell].count + cell_types[cell].abnormal !== 0) {
@@ -528,7 +538,7 @@ function update_keyboard() {
     for (i = 0; i < keyboard_keys.length; i++) {
         var item = $(keyboard_keys[i]);
         var key = item.attr("id");
-            
+
         item.empty();
         item.append("<p>"+key+"</p>");
 
@@ -589,7 +599,7 @@ function edit_keyboard() {
     $("#clearkeyboard").click(function() {
         clear_keyboard();
     });
-    
+
     editing_keyboard = true;
 
     var save_text = "Save";
@@ -625,8 +635,7 @@ function edit_keyboard() {
                     {text: 'Save as New',
                      click: function() {
                          if (save_keys) {
-                             delete(keyboard_map['id']);
-                             save_keyboard();
+                             keyboard_name_input();
                          } else {
                              end_keyboard_edit();
                          }
@@ -676,6 +685,25 @@ function deselect_element(el) {
     "use strict";
 
     $(el).removeClass("selected");
+}
+
+function keyboard_name_input() {
+    "use strict";
+    // Disable keyboard capture for edit/input
+    editing_keyboard = false;
+    keyboard_active = false;
+    // Show us the keyboard modal
+    $("#keyboard_name").modal("show");
+}
+
+function save_new_keyboard(keyboard_name) {
+    "use strict";
+    // Takes keyboard_name from dialog and creates keyboard
+    // Scraps any pre-existing keyboard_id
+    delete(keyboard_map.id);
+    keyboard_name = keyboard_name || 'NewKeyboard';
+    keyboard_map.label = keyboard_name;
+    save_keyboard();
 }
 
 function save_keyboard(keyboard) {
