@@ -47,13 +47,5 @@
 {% endblock %}
 
 {% block additional_scripts %}
-<script>
-    $('.keyboard-label').editable({
-        url: function(params) {
-            var keyboard = load_specific_keyboard(params.pk);
-            keyboard.label = params.value;
-            save_keyboard(keyboard);
-        }
-    });
-</script>
+<script src="{% static "js/counter.js" %}"></script>
 {% endblock %}

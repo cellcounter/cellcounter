@@ -22,6 +22,14 @@ $(document).ready(function() {
     var count_total;
     $("#myCounts").tablesorter();
 
+    $('.keyboard-label').editable({
+        url: function(params) {
+            var keyboard = load_specific_keyboard(params.pk);
+            keyboard.label = params.value;
+            save_keyboard(keyboard);
+        }
+    });
+
     $('#save_new_name').click(function() {
         save_new_keyboard($('#keyboard-name-input').val());
     });
