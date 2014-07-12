@@ -21,14 +21,6 @@ $(document).ready(function() {
     "use strict";
     var count_total;
     $("#myCounts").tablesorter();
-
-    $('.keyboard-label').editable({
-        url: function(params) {
-            var keyboard = load_specific_keyboard(params.pk);
-            keyboard.label = params.value;
-            save_keyboard(keyboard);
-        }
-    });
     
     $.getJSON("/api/cell_types/", function(data) {
         cell_types = {};
