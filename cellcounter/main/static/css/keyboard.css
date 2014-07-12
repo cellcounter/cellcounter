@@ -142,12 +142,13 @@ div#visualisation.largekeyboard {
 .largekeyboard #reset_button {
     position: absolute;
     top: 300px;
-    left: 20px;
+    right: 20px;
+    left: auto;
 }
 
 .largekeyboard #close_button {
     position: absolute;
-    top: 340px;
+    top: 300px;
     left: 20px;
 }
 
@@ -256,7 +257,7 @@ div#celllist li.selected div.element {
 #edit_button {
     position: absolute;
     margin-top: 8px;
-    right: 8px;
+    right: 20px;
 }
 
 #reset_button {
