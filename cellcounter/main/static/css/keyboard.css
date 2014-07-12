@@ -257,7 +257,7 @@ div#celllist li.selected div.element {
 #edit_button {
     position: absolute;
     margin-top: 8px;
-    right: 8px;
+    right: 20px;
 }
 
 #reset_button {
