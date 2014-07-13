@@ -4,14 +4,6 @@
 
 {% block content %}
 
-{% comment %} 
-<div id="notloggedin">
-<img src="{% static "images/alert.png" %}" style="float:left; margin-right: 20px" alt="Alert" />
-<h3>Not logged in</h3>
-<p>You may use the cell counter without logging in, but you will be unable to save any changes to your keyboard map.</p>
-<p><a href="/login/?next=/count/new/">Click here to log in.</a></p>
-</div>
- {% endcomment %}
 {% if not logged_in %}
 <script type="text/javascript">
 var notloggedin=true;
@@ -77,6 +69,29 @@ var notloggedin=true;
         <input type="button" id="cancel-reset" class="btn" value="Cancel">
     </form>
     </div>
+</div>
+
+<div class="modal hide fade" id="select-keyboard">
+<div class="modal-header">
+    <h3>Select from saved keyboards</h3>
+</div>
+<div class="modal-body">
+    {% if user.is_authenticated %}
+    <div id="keyboard_list">
+    <table class="table">
+        <thead>
+        <tr><th>Label</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <ul>
+    </ul>
+    </div>
+    {% else %}
+    <p>Only logged-in users can save keyboards</p>
+    {% endif %}
+</div>
 </div>
 
 {% endblock %}

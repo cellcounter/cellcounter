@@ -109,6 +109,9 @@
     <div id="editkeymapbox" title="Edit key map">
         {% if not logged_in %}<p>You may edit the keyboard map, however it will not be saved.{% endif %}<p>Select a cell type then press the key you want assigned to it. Press 'enter' to select next cell type.</p>
         <button class="btn btn-primary" id="clearkeyboard">Clear key map</button>
+        {% if user.is_authenticated %}
+        <button class="btn btn-primary" id="select_button">Select Keyboard</button>
+        {% endif %}
         <div id="celllist">
         </div>
         <div style="padding-top: 10px; clear: both;"><input type="checkbox" id="multi_key" checked="checked" /> Only allow one key per cell type</div>
