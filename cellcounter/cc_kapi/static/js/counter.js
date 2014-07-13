@@ -48,7 +48,7 @@ $(document).ready(function() {
             $('#keyboard_list tbody > tr').remove();
             $.each(data, function(i, data) {
                 $('#keyboard_list table tbody').append(
-                    '<tr><td>'+data.label+'</td><td><span class="btn btn-success load_keyboard" data-id="' + data.id + '"><i class="icon-ok icon-white"></i></span></td></tr>');
+                    '<tr><td>'+data.label+'</td><td><span class="btn btn-success load_keyboard" title="Select keyboard" data-id="' + data.id + '"><i class="icon-ok icon-white"></i></span></td></tr>');
             });
             $('.load_keyboard').on('click', function() {
                 var id = ($(this).attr('data-id'));
