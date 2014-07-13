@@ -423,19 +423,14 @@ function resize_keyboard(width) {
 function register_resets() {
     "use strict";
     $('.reset_button').on('click', function() {
-        $( "#dialog-confirm" ).dialog({
-            resizable: false,
-            modal: true,
-            buttons: {
-            "Reset all counters": function() {
-                reset_counters();
-                $( this ).dialog( "close" );
-            },
-            Cancel: function() {
-                $( this ).dialog( "close" );
-            }
-            }
-        });
+        $("#confirm-reset").modal("show");
+    });
+    $('#reset-count').on('click', function() {
+        reset_counters();
+        $("#confirm-reset").modal("hide");
+    });
+    $('#cancel-reset').on('click', function() {
+        $("#confirm-reset").modal("hide");
     });
 }
 

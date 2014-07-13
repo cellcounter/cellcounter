@@ -66,6 +66,19 @@ var notloggedin=true;
 </div>
 </div>
 
+<div class="modal hide fade" id="confirm-reset">
+    <div class="modal-header">
+        <h3>Confirm reset count?</h3>
+    </div>
+    <div class="modal-body">
+        <p>Once reset, counters are zeroed, and this cannot be undone.</p>
+    <form class="form-inline">
+        <input type="button" id="reset-count" class="btn btn-danger" value="Reset">
+        <input type="button" id="cancel-reset" class="btn" value="Cancel">
+    </form>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block additional_scripts %}
