@@ -39,6 +39,26 @@ $(document).ready(function() {
         keyboard_active = true;
     });
 
+    $('#select_button').on('click', function() {
+        $("#select-keyboard").modal("show");
+    });
+
+    $('#select-keyboard').on('show', function() {
+        $.getJSON("/api/keyboards/", function(data) {
+            $('#keyboard_list tbody > tr').remove();
+            $.each(data, function(i, data) {
+                $('#keyboard_list table tbody').append(
+                    '<tr><td>'+data.label+'</td><td><span class="btn btn-success load_keyboard" data-id="' + data.id + '"><i class="icon-ok icon-white"></i></span></td></tr>');
+            });
+            $('.load_keyboard').on('click', function() {
+                var id = ($(this).attr('data-id'));
+                set_keyboard(load_specific_keyboard(id));
+                $('#select-keyboard').modal("hide");
+                $("div#editkeymapbox").dialog("close");
+            });
+        });
+    });
+
     $.getJSON("/api/cell_types/", function(data) {
         cell_types = {};
         $.each(data, function(key, cell) {
@@ -472,6 +492,14 @@ function open_keyboard() {
     update_visualisation();
 }
 
+function set_keyboard(mapping) {
+    "use strict";
+    keyboard_map = mapping;
+    update_keyboard();
+    init_visualisation("#doughnut");
+    update_visualisation();
+}
+
 function load_keyboard() {
     "use strict";
     $.getJSON("/api/keyboards/default/", function(data) {
@@ -597,19 +625,14 @@ function edit_keyboard() {
     editing_keyboard = true;
 
     var save_text = "Save";
-    var cancel_text = "Cancel";
     var save_keys = true;
     if(typeof notloggedin !== 'undefined') {
         save_text = "Close";
-        cancel_text = "Revert";
         save_keys = false;
     }
 
     var d = $("div#editkeymapbox").dialog({
         close: function() {
-            if (save_keys) {
-                load_keyboard();
-            }
             end_keyboard_edit();
         },
         open: function() {
@@ -635,11 +658,9 @@ function edit_keyboard() {
                          }
                      }
                     },
-                    {text: cancel_text,
+                    {text: "Revert",
                      click: function() {
-                         if (!save_keys) {
-                             load_keyboard();
-                         }
+                         load_keyboard();
                          $("div#editkeymapbox").dialog("close");
                      }
                     }
