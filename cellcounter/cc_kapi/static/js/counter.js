@@ -145,9 +145,10 @@ $(document).ready(function() {
             });
 
             if (first_count === true) {
-                $("#keyboard-buttons").append("<div id='openkeyboard' class='btn btn-success btn-large'>Continue counting</div>");
+                var keyboard_selector = $("keyboard-buttons");
+                keyboard_selector.append("<div id='openkeyboard' class='btn btn-success btn-large'>Continue counting</div>");
                 $('#openkeyboard').on('click', open_keyboard);
-                $("#keyboard-buttons").append("<div class='btn btn-large btn-danger reset_button restart_button' style='margin-left: 5px'>Reset counters</div>");
+                keyboard_selector.append("<div class='btn btn-large btn-danger reset_button restart_button' style='margin-left: 5px'>Reset counters</div>");
                 register_resets();
                 first_count = false;
             }
@@ -356,15 +357,15 @@ $(document).ready(function() {
                     var span_field = "span." + c_type;
                     if (span_field === "span.count"){
                         span_field += "val";
-                    	for (i=0; i<cell_types[c_id].box.length; i++){
-                        	$(cell_types[c_id].box[i]).find(span_field).text(cell_types[c_id][c_type]);
-                    	}
-		    }
+                        for (i=0; i<cell_types[c_id].box.length; i++){
+                            $(cell_types[c_id].box[i]).find(span_field).text(cell_types[c_id][c_type]);
+                        }
+            }
                     if (span_field === "span.abnormal"){
-                    	for (i=0; i<cell_types[c_id].box.length; i++){
-                        	$(cell_types[c_id].box[i]).find(span_field).text("("+cell_types[c_id][c_type]+")");
-                    	}
-		    }
+                        for (i=0; i<cell_types[c_id].box.length; i++){
+                            $(cell_types[c_id].box[i]).find(span_field).text("("+cell_types[c_id][c_type]+")");
+                        }
+            }
                     /* Re-initiate visualisation if key_history has been deleted completely */
                     if (key_history.length === 0) {
                         init_visualisation("#doughnut");
@@ -469,6 +470,7 @@ function reset_counters() {
 }
 
 function open_keyboard() {
+    "use strict";
     $('#fuzz').fadeIn('slow', function () {
         resize_keyboard($("div#content").width());
         $('#counterbox').slideDown('slow', function () {
@@ -596,9 +598,11 @@ function edit_keyboard() {
         }
     }
     list += "</ul>";
+    
+    var cell_list_div = $("div#celllist");
 
-    $("div#celllist").empty();
-    $("div#celllist").append(list);
+    cell_list_div.empty();
+    cell_list_div.append(list);
 
     for (cell in cell_types) {
         if (cell_types.hasOwnProperty(cell)) {
@@ -606,7 +610,7 @@ function edit_keyboard() {
         }
     }
 
-    $("div#celllist").find("div.element").click(function() {
+    cell_list_div.find("div.element").click(function() {
         edit_cell_id = $(this).find("div.cellid").text();
         $("div#celllist").find("li").css("background", "");
         deselect_element(selected_element);
@@ -614,7 +618,7 @@ function edit_keyboard() {
         select_element($(this).parent());
     });
 
-    var el = $("div#celllist").find("li").first();
+    var el = cell_list_div.find("li").first();
     select_element(el);
 
     $("#clearkeyboard").click(function() {
@@ -740,7 +744,7 @@ function save_keyboard(keyboard) {
             data: JSON.stringify(keyboard),
             contentType: "application/json; charset=utf-8",
             async: false,
-            success: function(msg) {
+            success: function() {
                 end_keyboard_edit();
             }
         });
@@ -751,7 +755,7 @@ function save_keyboard(keyboard) {
             data: JSON.stringify(keyboard),
             contentType: "application/json; charset=utf-8",
             async: false,
-            success: function(msg) {
+            success: function() {
                 end_keyboard_edit();
             }
         });
