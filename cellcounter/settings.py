@@ -76,6 +76,7 @@ STATIC_URL = '/static/'
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
     # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
@@ -150,6 +151,7 @@ INSTALLED_APPS = (
     'colorful',
     'south',
     'rest_framework',
+    'compressor',
     'cellcounter.main',
     'cellcounter.logs',
     'cellcounter.cc_kapi',
@@ -218,3 +220,5 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     )
 }
+
+COMPRESS_ENABLED = True

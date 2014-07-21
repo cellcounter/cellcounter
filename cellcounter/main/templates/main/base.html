@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load compress %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,12 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="An online platform for performing manual cell differentials on peripheral blood cells or bone marrow aspirates with live visualisations.">
     <title>CellCountr</title>
+    {% compress css %}
     <link href="{% static "icons/favicon.png" %}" rel="icon" sizes="32x32" type="icon/png">
     <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
     <link href="{% static "css/cellcounter.css" %}" rel="stylesheet">
     <link href="{% static "css/keyboard.css" %}" rel="stylesheet">
     <link href="{% static "css/ui-lightness/jquery-ui-1.10.0.custom.min.css" %}" rel="stylesheet">
     <link href="{% static "css/bootstrap-editable.min.css" %}" rel="stylesheet"/>
+    {% endcompress %}
     <!--[if IE 7]>
     <link rel="stylesheet" href="{% static "css/style_ie_hacks.css" %}" type="text/css" media="screen" />
     <![endif]-->
@@ -98,10 +101,9 @@
 </div>
 
 <!--[if lte IE 8]><!--><script src="{% static "js/toisostringshim.js" %}"></script><!--<![endif]-->
+{% compress js %}
 <script src="{% static "js/jquery-1.10.2.min.js" %}"></script>
 <script src="{% static "js/jquery-ui-1.10.0.custom.min.js" %}"></script>
-<!--[if lte IE 8]><script src="{% static "js/r2d3.min.js" %}" charset="utf-8"></script><![endif]-->
-<!--[if gte IE 9]><!--><script src="{% static "js/d3.v3.min.js" %}"></script><!--<![endif]-->
 <script src="{% static "js/bootstrap.min.js" %}"></script>
 <script src="{% static "js/bootstrap-editable.min.js" %}"></script>
 <script src="{% static "js/images.js" %}"></script>
@@ -111,6 +113,10 @@
 <script type="text/javascript" src="{% static "js/download.js" %}"></script>
 <script type="text/javascript" src="{% static "js/csv.js" %}"></script>
 <script type="text/javascript" src="{% static "js/jquery.cookie.js" %}"></script>
+{% endcompress %}
+
+<!--[if lte IE 8]><script src="{% static "js/r2d3.min.js" %}" charset="utf-8"></script><![endif]-->
+<!--[if gte IE 9]><!--><script src="{% static "js/d3.v3.min.js" %}"></script><!--<![endif]-->
 
 {% block additional_scripts %}{% endblock %}
 

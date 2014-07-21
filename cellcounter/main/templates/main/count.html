@@ -1,7 +1,7 @@
 {% extends 'main/base.html' %}
 
 {% load staticfiles %}
-
+{% load compress %}
 {% block content %}
 
 {% if not logged_in %}
@@ -97,6 +97,7 @@ var notloggedin=true;
 {% endblock %}
 
 {% block additional_scripts %}
+{% compress js %}
 <script src="{% static "js/visualise.js" %}"></script>
 <script src="{% static "js/counter.js" %}"></script>
 <script>
@@ -104,4 +105,5 @@ var notloggedin=true;
         open_keyboard();
     });
 </script>
+{% endcompress %}
 {% endblock %}
