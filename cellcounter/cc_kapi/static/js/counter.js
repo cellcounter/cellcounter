@@ -145,7 +145,7 @@ $(document).ready(function() {
             });
 
             if (first_count === true) {
-                var keyboard_selector = $("keyboard-buttons");
+                var keyboard_selector = $("#keyboard-buttons");
                 keyboard_selector.append("<div id='openkeyboard' class='btn btn-success btn-large'>Continue counting</div>");
                 $('#openkeyboard').on('click', open_keyboard);
                 keyboard_selector.append("<div class='btn btn-large btn-danger reset_button restart_button' style='margin-left: 5px'>Reset counters</div>");
