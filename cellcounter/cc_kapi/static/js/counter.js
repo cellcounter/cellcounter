@@ -20,7 +20,6 @@ var key_history = [];
 $(document).ready(function() {
     "use strict";
     var count_total;
-    $("#myCounts").tablesorter();
 
     $('.keyboard-label').editable({
         url: function(params) {
