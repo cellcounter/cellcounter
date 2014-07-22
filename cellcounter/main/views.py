@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from django.core.cache import cache
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.generic import TemplateView, ListView, DetailView
@@ -12,9 +13,13 @@ from .serializers import CellTypeSerializer
 
 class CellTypesListView(APIView):
     def get(self, request):
-        cell_types = CellType.objects.all()
-        serializer = CellTypeSerializer(cell_types, many=True)
-        return Response(serializer.data)
+        data = cache.get('cell_types')
+        if not data:
+            cell_types = CellType.objects.all()
+            serializer = CellTypeSerializer(cell_types, many=True)
+            data = serializer.data
+            cache.set('cell_types', data, 7200)
+        return Response(data)
 
 
 class NewCountTemplateView(TemplateView):
