@@ -16,8 +16,6 @@ from .serializers import KeyboardSerializer, KeyMapSerializer, KeyboardOnlySeria
 
 
 class KeyboardTestCase(TestCase):
-    fixtures = ['initial_data.json']
-
     def test_unicode(self):
         keyboard = KeyboardFactory.build(user__username='alpha', label='alpha')
         self.assertEqual(keyboard.__unicode__(), 'Keyboard alpha for alpha')
@@ -65,7 +63,6 @@ class KeyboardTestCase(TestCase):
 
 
 class DefaultKeyboardAPITest(WebTest):
-    fixtures = ['initial_data.json']
     csrf_checks = False
 
     def setUp(self):
@@ -88,7 +85,6 @@ class DefaultKeyboardAPITest(WebTest):
 
 
 class KeyboardsListCreateAPITest(WebTest):
-    fixtures = ['initial_data.json']
     csrf_checks = False
 
     def setUp(self):
@@ -140,7 +136,6 @@ class KeyboardsListCreateAPITest(WebTest):
 
 
 class KeyboardAPITest(WebTest):
-    fixtures = ['initial_data.json']
     csrf_checks = False
 
     def setUp(self):
@@ -269,8 +264,6 @@ class KeyboardAPITest(WebTest):
 
 
 class TestKeyMapSerializer(TestCase):
-    fixtures = ['initial_data.json']
-
     def get_cell(self, id):
         return CellType.objects.get(id=id)
 
