@@ -21,6 +21,7 @@ $(document).ready(function() {
     "use strict";
     var count_total;
 
+
     $('.keyboard-label').editable({
         url: function(params) {
             var keyboard = load_specific_keyboard(params.pk);
@@ -745,6 +746,7 @@ function save_keyboard(keyboard) {
             contentType: "application/json; charset=utf-8",
             async: false,
             success: function() {
+                add_alert('INFO', 'Keyboard saved');
                 end_keyboard_edit();
             }
         });
@@ -756,6 +758,7 @@ function save_keyboard(keyboard) {
             contentType: "application/json; charset=utf-8",
             async: false,
             success: function() {
+                add_alert('INFO', 'Keyboard saved');
                 end_keyboard_edit();
             }
         });
@@ -789,6 +792,17 @@ function clear_keyboard() {
         keyboard_map.id = id;
     }
     update_keyboard();
+}
+
+function add_alert(alert_class, message) {
+    "use strict";
+    /* Adds alert messages in bootstrap style to page */
+    var css_class = "";
+    if (alert_class === 'ERROR') {
+        css_class = 'alert-error';
+    }
+    var el = "<div class=\"alert " + css_class + "\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button><strong>" + alert_class + ":</strong> " + message + "</div>";
+    $('#alerts').append(el);
 }
 
 function csrfSafeMethod(method) {

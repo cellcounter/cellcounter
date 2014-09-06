@@ -135,7 +135,7 @@ class KeyboardGetUpdateDestroyView(GenericAPIView, UpdateModelMixin, DestroyMode
         try:
             keyboard = self.get_object(self.kwargs.get('keyboard_id'))
         except Keyboard.DoesNotExist:
-            return Response('No keyboard found', status=status.HTTP_404_NOT_FOUND)
+            return Response('Keyboard does not exist', status=status.HTTP_404_NOT_FOUND)
         except PermissionDenied:
             raise PermissionDenied
         serializer = KeyboardSerializer(keyboard)
@@ -148,7 +148,7 @@ class KeyboardGetUpdateDestroyView(GenericAPIView, UpdateModelMixin, DestroyMode
         try:
             keyboard = self.get_object(self.kwargs.get('keyboard_id'))
         except Keyboard.DoesNotExist:
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response('Keyboard does not exist', status=status.HTTP_404_NOT_FOUND)
         except PermissionDenied:
             raise PermissionDenied
         keyboard.delete()

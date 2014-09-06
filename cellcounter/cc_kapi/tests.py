@@ -242,8 +242,8 @@ class KeyboardAPITest(WebTest):
         response = self.app.delete(reverse('keyboard-detail',
                                            kwargs={'keyboard_id': 99}),
                                    user=self.user.username,
-                                   status=204)
-        self.assertEqual(response.status_code, 204)
+                                   status=404)
+        self.assertEqual(response.status_code, 404)
 
     def test_delete_anothers_keyboard(self):
         user = UserFactory()
