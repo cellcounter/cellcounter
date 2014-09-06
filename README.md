@@ -20,11 +20,7 @@ Create a virtual environment:
 (if you don't have `virtualenv`, then `sudo pip install virtualenv`)
 (if you don't have `pip`, then `sudo easy_install pip`)
 
-Build the database:
-
-    python manage.py syncdb
-
-Apply database migrations:
+Update your database:
 
     python manage.py migrate
 
@@ -32,3 +28,7 @@ Run the Django webserver, setting the DEBUG environment variable:
 
     export DEBUG=True
     python manage.py runserver
+
+To run the test suite locally, you also need the test requirements in your virtualenv:
+
+    pip install -r test-requirements.txt
