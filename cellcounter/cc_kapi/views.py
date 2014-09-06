@@ -4,7 +4,6 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.mixins import CreateModelMixin, UpdateModelMixin, DestroyModelMixin, ListModelMixin
-from django.contrib import messages
 
 from .models import Keyboard
 from .serializers import KeyboardSerializer, KeyboardOnlySerializer, KeyMapSerializer
@@ -153,5 +152,4 @@ class KeyboardGetUpdateDestroyView(GenericAPIView, UpdateModelMixin, DestroyMode
         except PermissionDenied:
             raise PermissionDenied
         keyboard.delete()
-        messages.info(request, 'Keyboard deleted successfully')
         return Response(status=status.HTTP_204_NO_CONTENT)

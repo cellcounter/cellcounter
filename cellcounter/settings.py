@@ -149,7 +149,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'colorful',
-    'south',
     'rest_framework',
     'compressor',
     'cellcounter.main',
@@ -220,3 +219,5 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     )
 }
+
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
