@@ -791,6 +791,17 @@ function clear_keyboard() {
     update_keyboard();
 }
 
+function add_alert(alert_class, message) {
+    "use strict";
+    /* Adds alert messages in bootstrap style to page */
+    var css_class = "";
+    if (alert_class === 'ERROR') {
+        css_class = 'alert-error';
+    }
+    var el = "<div class=\"alert " + css_class + "\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button><strong>" + alert_class + ":</strong> " + message + "</div>";
+    $('#alerts').append(el);
+}
+
 function csrfSafeMethod(method) {
     "use strict";
     // these HTTP methods do not require CSRF protection
