@@ -21,6 +21,7 @@ $(document).ready(function() {
     "use strict";
     var count_total;
 
+
     $('.keyboard-label').editable({
         url: function(params) {
             var keyboard = load_specific_keyboard(params.pk);
@@ -745,6 +746,7 @@ function save_keyboard(keyboard) {
             contentType: "application/json; charset=utf-8",
             async: false,
             success: function() {
+                add_alert('INFO', 'Keyboard saved');
                 end_keyboard_edit();
             }
         });
@@ -756,6 +758,7 @@ function save_keyboard(keyboard) {
             contentType: "application/json; charset=utf-8",
             async: false,
             success: function() {
+                add_alert('INFO', 'Keyboard saved');
                 end_keyboard_edit();
             }
         });
