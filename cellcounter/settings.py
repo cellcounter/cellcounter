@@ -220,3 +220,5 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     )
 }
+
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
