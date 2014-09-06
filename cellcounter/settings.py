@@ -149,7 +149,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'colorful',
-    'south',
     'rest_framework',
     'compressor',
     'cellcounter.main',
