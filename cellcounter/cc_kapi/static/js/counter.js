@@ -24,7 +24,7 @@ $(document).ready(function() {
 
     $('.keyboard-label').editable({
         url: function(params) {
-            var keyboard = load_specific_keyboard(params.pk);
+            var keyboard = load_keyboard(params.pk);
             keyboard.label = params.value;
             save_keyboard(keyboard);
         }
@@ -52,7 +52,7 @@ $(document).ready(function() {
             });
             $('.load_keyboard').on('click', function() {
                 var id = ($(this).attr('data-id'));
-                set_keyboard(load_specific_keyboard(id));
+                set_keyboard(load_keyboard(id));
                 $('#select-keyboard').modal("hide");
                 $("div#editkeymapbox").dialog("close");
             });
@@ -502,35 +502,34 @@ function set_keyboard(mapping) {
     update_visualisation();
 }
 
-function load_keyboard() {
+function load_keyboard(keyboard_id) {
     "use strict";
-    $.getJSON("/api/keyboards/default/", function(data) {
-        keyboard_map = data;
-        update_keyboard();
-        init_visualisation("#doughnut");
-        update_visualisation();
-    });
-}
-
-function load_specific_keyboard(keyboard_id) {
-    "use strict";
-    var keyboard = {};
-    $.ajax({
-        url: '/api/keyboards/' + keyboard_id + '/',
-        type: 'GET',
-        dataType: 'json',
-        contentType: "application/json; charset=utf-8",
-        async: false,
-        success: function(data) {
-            keyboard = data;
-        }
-    });
-    return keyboard;
+    if (keyboard_id === undefined) {
+        $.getJSON("/api/keyboards/default/", function(data) {
+            keyboard_map = data;
+            update_keyboard();
+            init_visualisation("#doughnut");
+            update_visualisation();
+        });
+    } else {
+        var keyboard = {};
+        $.ajax({
+            url: '/api/keyboards/' + keyboard_id + '/',
+            type: 'GET',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            async: false,
+            success: function(data) {
+                keyboard = data;
+            }
+        });
+        return keyboard;
+    }
 }
 
 function set_keyboard_primary(keyboard_id) {
     "use strict";
-    var keyboard = load_specific_keyboard(keyboard_id);
+    var keyboard = load_keyboard(keyboard_id);
     keyboard.is_primary = true;
     save_keyboard(keyboard);
     return false;
@@ -538,7 +537,7 @@ function set_keyboard_primary(keyboard_id) {
 
 function delete_specific_keyboard(keyboard_id) {
     "use strict";
-    var keyboard = load_specific_keyboard(keyboard_id);
+    var keyboard = load_keyboard(keyboard_id);
     $.ajax({
         url: '/api/keyboards/' + keyboard.id + '/',
         type: 'DELETE',
