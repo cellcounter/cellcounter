@@ -106,7 +106,7 @@ $(document).ready(function() {
                     } else {
                         abnormal[cell] = "N/A";
                     }
-                    per += '<tr><td class="celltypes">' + cell_types[cell].readable_name + '</td><td class="ignore" style="width: 20px; background-color:'+ cell_types[cell].visualisation_colour +'"></td><td>' + parseFloat(percent[cell]).toFixed(0) + "%</td><td>"+abnormal[cell]+'</td><td>'+cell_types[cell].count+'</td><td class="abnormal_count">'+cell_types[cell].abnormal+'</td></tr>';
+                    per += '<tr><td class="celltypes">' + cell_types[cell].readable_name + '</td><td class="ignore" style="background-color:'+ cell_types[cell].visualisation_colour +'"></td><td>' + parseFloat(percent[cell]).toFixed(0) + "%</td><td>"+abnormal[cell]+'</td><td>'+cell_types[cell].count+'</td><td class="abnormal_count">'+cell_types[cell].abnormal+'</td></tr>';
                 }
             }
 
@@ -120,14 +120,14 @@ $(document).ready(function() {
                     myeloid += cell_types[myeloid_cells[i]].abnormal;
                 }
                 var meratio = parseFloat(myeloid / erythroid).toFixed(2);
-                var stats_text = '<h3>Count statistics</h3><table class="statistics">';
-                stats_text += '<tr><td colspan="2" class="celltypes">Total cells</td><td>' + total + '</td><td class="noborder" colspan="2"></td></tr>';
-                stats_text += '<tr><td colspan="2" class="celltypes">ME ratio *</td><td>' + meratio + '</td><td class="noborder" colspan="2"></td></tr>';
+                var stats_text = '<h3>Count statistics</h3><table class="table table-bordered table-striped">';
+                stats_text += '<tr><td colspan="2" class="celltypes">Total cells</td><td>' + total + '</td><td colspan="3"></td></tr>';
+                stats_text += '<tr><td colspan="2" class="celltypes">ME ratio *</td><td>' + meratio + '</td><td colspan="3"></td></tr>';
                 stats_text += '<tr><th colspan="2" style="width: 30%"></th>';
-                stats_text += '<th style="width: 16%">% Total</th>';
-                stats_text += '<th style="width: 22%">% of CellType Abnormal</th>';
-                stats_text += '<th style="width: 16%">Normal</th>';
-                stats_text += '<th style="width: 16%">Abnormal</th></tr>';
+                stats_text += '<th>% Total</th>';
+                stats_text += '<th>% of CellType Abnormal</th>';
+                stats_text += '<th>Normal</th>';
+                stats_text += '<th>Abnormal</th></tr>';
                 stats_text += per;
                 stats_text += '</table>';
                 stats_text += '<p>* Note: Myeloid/erythroid ratio does not include blast count.</p>';
