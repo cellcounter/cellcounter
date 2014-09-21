@@ -37,29 +37,6 @@ font4 { text-decoration: none; font-weight: bold; color: #AAA; font-size: 11px }
     color: red;
 }
 
-table.statistics {
-    text-align: center;
-    width: 100%;
-    border-collapse: collapse;
-}
-
-table.statistics th, table.statistics td {
-    border: 1px solid black;
-    padding: 1px 10px;
-}
-
-table.statistics td.noborder {
-    border: none;
-}
-
-table.statistics td {
-    text-align: right;
-}
-
-table.statistics td.celltypes {
-    text-align: left;
-}
-
 div#visualise2 {
     float: left;
     /*height: 100%;*/
