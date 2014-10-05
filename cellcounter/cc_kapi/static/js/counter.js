@@ -16,11 +16,43 @@ var date_now = new Date(Date.now()).toISOString();
 var keyboard_map = {"label": "Default", "is_primary": true, "created": date_now,
                     "last_modified": date_now, "mappings": []};
 var key_history = [];
+var count_data = [];
+var chart, chart2;
+
+var celltypes_loading = $.getJSON("/api/cell_types/", function(data) {
+    /* Load cell_types object, and create and load new count_data object
+     * provides error message should loading of data fail. */
+    "use strict";
+    cell_types = {};
+    $.each(data, function(key, cell) {
+        cell.count = 0;
+        cell.abnormal = 0;
+        cell.box = [];
+        cell_types[cell.id] = cell;
+    });})
+    .done(function() {
+        "use strict";
+        /* Loads an empty count_data array */
+        for (var cell in cell_types) {
+            if (cell_types.hasOwnProperty(cell)) {
+                count_data.push({id: cell_types[cell].id,
+                count: 0,
+                abnormal: 0,
+                visualisation_colour: cell_types[cell].visualisation_colour,
+                readable_name: cell_types[cell].readable_name,
+                machine_name: cell_types[cell].machine_name});}
+            }
+        })
+    .fail(function() {
+        "use strict";
+        add_alert('ERROR', 'Cellcountr failed to load cell data. Please refresh page');
+    });
 
 $(document).ready(function() {
     "use strict";
-    var count_total;
-
+    var count_total, i, j, k;
+    chart = doughnutChart('#doughnut').data(count_data);
+    chart2 = doughnutChart('#doughnut2').data(count_data);
 
     $('.keyboard-label').editable({
         url: function(params) {
@@ -59,14 +91,8 @@ $(document).ready(function() {
         });
     });
 
-    $.getJSON("/api/cell_types/", function(data) {
-        cell_types = {};
-        $.each(data, function(key, cell) {
-            cell.count = 0;
-            cell.abnormal = 0;
-            cell.box = [];
-            cell_types[cell.id] = cell;
-        });
+    $.when(celltypes_loading).done(function() {
+        /* Once cell_types has been populated successfully, load keyboard */
         load_keyboard();
     });
 
@@ -75,9 +101,8 @@ $(document).ready(function() {
 
     $('#fuzz, #close_button').click(function () {
         var total, cell;
-        var percent = {};
-        var abnormal = {};
         var per = "";
+        var cell_total, cell_percent, cell_percent_abnormal;
 
         if (editing_keyboard) {
             return;
@@ -87,54 +112,53 @@ $(document).ready(function() {
             keyboard_active = false;
             total = 0;
 
-            for (cell in cell_types) {
-                if (cell_types.hasOwnProperty(cell)) {
-                    $("#id_"+cell+"-normal_count").prop("value", cell_types[cell].count);
-                    $("#id_"+cell+"-abnormal_count").prop("value", cell_types[cell].abnormal);
-                    total += cell_types[cell].count;
-                    total += cell_types[cell].abnormal;
-                }
+            for (i=0; i < count_data.length; i++) {
+                $("#id_"+i+"-normal_count").prop("value", count_data[i].count);
+                $("#id_"+i+"-abnormal_count").prop("value", count_data[i].abnormal);
+                total += count_data[i].count;
+                total += count_data[i].abnormal;
             }
 
-            for (cell in cell_types) {
-                if (cell_types.hasOwnProperty(cell)) {
-                    // or if (Object.prototype.hasOwnProperty.call(obj,prop)) for safety...
-                    percent[cell] = (cell_types[cell].count + cell_types[cell].abnormal) / total * 100;
-                    if(cell_types[cell].count + cell_types[cell].abnormal !== 0) {
-                        abnormal[cell] = cell_types[cell].abnormal / (cell_types[cell].count + cell_types[cell].abnormal) * 100;
-                        abnormal[cell] = parseFloat(abnormal[cell]).toFixed(0) + "%";
-                    } else {
-                        abnormal[cell] = "N/A";
+            for (i=0; i < count_data.length; i++) {
+                cell_total = count_data[i].count + count_data[i].abnormal;
+                cell_percent = parseFloat(cell_total / total * 100).toFixed(0);
+                if (cell_total !== 0) {
+                    cell_percent_abnormal = parseFloat(count_data[i].abnormal / cell_total * 100).toFixed(0) + "%";
+                } else {
+                    cell_percent_abnormal = "N/A";
+                }
+                per += '<tr><td class="celltypes">' + count_data[i].readable_name + '</td><td class="ignore" style="background-color:'+ count_data[i].visualisation_colour +'"></td><td>' + cell_percent + "%</td><td>" + cell_percent_abnormal + '</td><td>' + count_data[i].count + '</td><td class="abnormal_count">' + count_data[i].abnormal + '</td></tr>';
+            }
+
+            if (total > 0) {
+                var erythroid;
+                /* N.B. Hacky erythroid/myeloid counting */
+                for (i=0; i < count_data.length; i++) {
+                    if (count_data[i].machine_name === 'erythroid') {
+                        erythroid = count_data[i].count + count_data[i].abnormal;
                     }
-                    per += '<tr><td class="celltypes">' + cell_types[cell].readable_name + '</td><td class="ignore" style="background-color:'+ cell_types[cell].visualisation_colour +'"></td><td>' + parseFloat(percent[cell]).toFixed(0) + "%</td><td>"+abnormal[cell]+'</td><td>'+cell_types[cell].count+'</td><td class="abnormal_count">'+cell_types[cell].abnormal+'</td></tr>';
                 }
-            }
-
-            if(total > 0) {
-                //XXX: hack! The cell ids might change
-                var erythroid = cell_types[8].count + cell_types[8].abnormal;
                 var myeloid = 0;
-                var myeloid_cells = [1, 2, 3, 4, 6, 7, 10];
-                for (var i = 0; i < myeloid_cells.length; i++) {
-                    myeloid += cell_types[myeloid_cells[i]].count;
-                    myeloid += cell_types[myeloid_cells[i]].abnormal;
+                var myeloid_cells = ['neutrophils', 'meta', 'myelocytes', 'promyelocytes',
+                    'basophils', 'eosinophils', 'monocytes'];
+                for (i=0; i < myeloid_cells.length; i++) {
+                    for (j=0; j < count_data.length; j++) {
+                        if (count_data[j].machine_name === myeloid_cells[i]) {
+                            myeloid += (count_data[j].count + count_data[j].abnormal);
+                        }
+                    }
                 }
-                var meratio = parseFloat(myeloid / erythroid).toFixed(2);
+                var me_ratio = parseFloat(myeloid / erythroid).toFixed(2);
                 var stats_text = '<h3>Count statistics</h3><table class="table table-bordered table-striped">';
                 stats_text += '<tr><td colspan="2" class="celltypes">Total cells</td><td>' + total + '</td><td colspan="3"></td></tr>';
-                stats_text += '<tr><td colspan="2" class="celltypes">ME ratio *</td><td>' + meratio + '</td><td colspan="3"></td></tr>';
-                stats_text += '<tr><th colspan="2" style="width: 30%"></th>';
-                stats_text += '<th>% Total</th>';
-                stats_text += '<th>% of CellType Abnormal</th>';
-                stats_text += '<th>Normal</th>';
-                stats_text += '<th>Abnormal</th></tr>';
+                stats_text += '<tr><td colspan="2" class="celltypes">ME ratio *</td><td>' + me_ratio + '</td><td colspan="3"></td></tr>';
+                stats_text += '<tr><th colspan="2" style="width: 30%"></th><th>% Total</th><th>% of CellType Abnormal</th><th>Normal</th><th>Abnormal</th></tr>';
                 stats_text += per;
                 stats_text += '</table>';
                 stats_text += '<p>* Note: Myeloid/erythroid ratio does not include blast count.</p>';
                 $('div#statistics').empty().append(stats_text);
                 $("#visualise2").css("display", "block");
-                init_visualisation("#doughnut2");
-                update_visualisation();
+                chart2.render();
                 $("#total2").text(total);
                 $("#savefilebutton").css("display", "block");
                 add_save_file_button();
@@ -168,7 +192,7 @@ $(document).ready(function() {
     });
 
     jQuery(document).bind('keydown', function (e) {
-        var key, code, shift_pressed, el, i, enter=false;
+        var key, code, shift_pressed, el, enter=false;
         var alpha = false, up = false, down = false;
 
         if (keyboard_active) {
@@ -351,25 +375,25 @@ $(document).ready(function() {
                 if (typeof last_key !== "undefined") {
                     var c_id = last_key.c_id;
                     var c_type = last_key.c_type;
-                    if (cell_types[c_id][c_type] > 0) {
-                        cell_types[c_id][c_type]--;
-                    }
-                    /* Generate the appropriate span name to find */
-                    var span_field = "span." + c_type;
-                    if (span_field === "span.count"){
-                        span_field += "val";
-                        for (i=0; i<cell_types[c_id].box.length; i++){
-                            $(cell_types[c_id].box[i]).find(span_field).text(cell_types[c_id][c_type]);
+
+                    for (i=0; i < count_data.length; i++) {
+                        if (count_data[i].id === c_id) {
+                            if (count_data[i][c_type] > 0 ) {
+                                count_data[i][c_type]--;
+                            }
+                            var span_field = "span." + c_type;
+                            if (span_field === "span.count") {
+                                span_field += "val";
+                                for (j=0; j<cell_types[c_id].box.length; j++){
+                                    $(cell_types[c_id].box[j]).find(span_field).text(count_data[i][c_type]);
+                                }
+                            }
+                            if (span_field === "span.abnormal") {
+                                for (j=0; j<cell_types[c_id].box.length; j++){
+                                    $(cell_types[c_id].box[j]).find(span_field).text("("+count_data[i][c_type]+")");
+                                }
+                            }
                         }
-            }
-                    if (span_field === "span.abnormal"){
-                        for (i=0; i<cell_types[c_id].box.length; i++){
-                            $(cell_types[c_id].box[i]).find(span_field).text("("+cell_types[c_id][c_type]+")");
-                        }
-            }
-                    /* Re-initiate visualisation if key_history has been deleted completely */
-                    if (key_history.length === 0) {
-                        init_visualisation("#doughnut");
                     }
                 } else {
                     /* Nothing to delete */
@@ -382,23 +406,31 @@ $(document).ready(function() {
 
                         // Add highlighting to keyboard
                         // Remove all currently active highlights (stops a queue developing)
-                        for (i=0; i<cell_types[id].box.length; i++){
-                            $(cell_types[id].box[i]).stop(true, true).css("background-color", '#ffffff');
+                        for (j=0; j<cell_types[id].box.length; j++){
+                            $(cell_types[id].box[j]).stop(true, true).css("background-color", '#ffffff');
                         }
 
                         // Add highlight to typed key
                         $(cell_types[id].box).effect("highlight", {}, 200);
 
                         if (abnormal === true) {
-                            cell_types[id].abnormal++;
-                            for(i = 0; i < cell_types[id].box.length; i++){
-                                $(cell_types[id].box[i]).find("span.abnormal").text("("+cell_types[id].abnormal+")");
+                            for (j = 0; j < count_data.length; j++) {
+                                if (count_data[j].id === id) {
+                                    count_data[j].abnormal++;
+                                    for (k = 0; k< cell_types[id].box.length; k++) {
+                                        $(cell_types[id].box[k]).find("span.abnormal").text("("+count_data[j].abnormal+")");
+                                    }
+                                }
                             }
                             key_history.push({c_id: id, c_type: 'abnormal'});
                         } else {
-                            cell_types[id].count++;
-                            for (i=0; i<cell_types[id].box.length; i++){
-                                $(cell_types[id].box[i]).find("span.countval").text(cell_types[id].count);
+                            for (j = 0; j < count_data.length; j++) {
+                                if (count_data[j].id === id) {
+                                    count_data[j].count++;
+                                    for (k = 0; k < cell_types[id].box.length; k++) {
+                                        $(cell_types[id].box[k]).find("span.countval").text(count_data[j].count);
+                                    }
+                                }
                             }
                             key_history.push({c_id: id, c_type: 'count'});
                         }
@@ -407,7 +439,7 @@ $(document).ready(function() {
                     }
                 }
             }
-            update_visualisation();
+            chart.render();
         }
     });
 
@@ -426,9 +458,15 @@ $(document).ready(function() {
             if (e.which === 35 || e.which === 51) {
                 for (var cell in cell_types) {
                     if (cell_types.hasOwnProperty(cell)) {
-                        for (var i=0; i < cell_types[cell].box.length; i++) {
-                            $(cell_types[cell].box[i]).find("span.abnormal").text("("+cell_types[cell].abnormal+")");
-                            $(cell_types[cell].box[i]).find("span.countval").text(cell_types[cell].count);
+                        for (i=0; i < cell_types[cell].box.length; i++) {
+                            /* Iterates through all keys attached to this cell_type */
+                            for (j=0; j < count_data.length; j++) {
+                                /* Iterate count_data array for given cell count */
+                                if (count_data[j].id === cell.id) {
+                                    $(cell_types[cell].box[i]).find("span.abnormal").text("("+count_data[j].abnormal+")");
+                                    $(cell_types[cell].box[i]).find("span.countval").text(count_data[j].count);
+                                }
+                            }
                         }
                     }
                 }
@@ -463,10 +501,13 @@ function reset_counters() {
             cell_types[cell].abnormal = 0;
         }
     }
+    for (var i = 0; i < count_data.length; i++) {
+        count_data[i].count = 0;
+        count_data[i].abnormal = 0;
+    }
     key_history = [];
     update_keyboard();
-    init_visualisation("#doughnut");
-    update_visualisation();
+    chart.render();
     open_keyboard();
 }
 
@@ -490,16 +531,14 @@ function open_keyboard() {
     $('div#statistics').empty();
     $("#visualise2").css("display", "none");
     $("#savefilebutton").css("display", "none");
-    init_visualisation("#doughnut");
-    update_visualisation();
+    chart.render();
 }
 
 function set_keyboard(mapping) {
     "use strict";
     keyboard_map = mapping;
     update_keyboard();
-    init_visualisation("#doughnut");
-    update_visualisation();
+    chart.render();
 }
 
 function load_keyboard(keyboard_id) {
@@ -508,8 +547,7 @@ function load_keyboard(keyboard_id) {
         $.getJSON("/api/keyboards/default/", function(data) {
             keyboard_map = data;
             update_keyboard();
-            init_visualisation("#doughnut");
-            update_visualisation();
+            chart.render();
         });
     } else {
         var keyboard = {};
