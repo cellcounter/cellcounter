@@ -159,7 +159,6 @@ $(document).ready(function() {
                 $('div#statistics').empty().append(stats_text);
                 $("#visualise2").css("display", "block");
                 chart2.render();
-                $("#total2").text(total);
                 $("#savefilebutton").css("display", "block");
                 add_save_file_button();
             }
@@ -527,7 +526,6 @@ function open_keyboard() {
             count_total += counters[prop].count;
         }
     }
-    $("#total").text(count_total);
     $('div#statistics').empty();
     $("#visualise2").css("display", "none");
     $("#savefilebutton").css("display", "none");
