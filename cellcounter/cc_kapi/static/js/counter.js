@@ -36,8 +36,6 @@ var celltypes_loading = $.getJSON("/api/cell_types/", function(data) {
         for (var cell in cell_types) {
             if (cell_types.hasOwnProperty(cell)) {
                 count_data.push({id: cell_types[cell].id,
-                count: 0,
-                abnormal: 0,
                 visualisation_colour: cell_types[cell].visualisation_colour,
                 readable_name: cell_types[cell].readable_name,
                 machine_name: cell_types[cell].machine_name});}
