@@ -26,8 +26,6 @@ var celltypes_loading = $.getJSON("/api/cell_types/", function(data) {
     cell_types = {};
     $.each(data, function(key, cell) {
         cell.box = [];
-        cell.count = 0;
-        cell.abnormal = 0;
         cell_types[cell.id] = cell;
     });})
     .done(function() {
