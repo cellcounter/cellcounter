@@ -1,98 +1,105 @@
-var display_data = {};
-//$(document).ready(function() {
-function init_visualisation(div_id) {
+function doughnutChart(selector_id) {
     "use strict";
+    var _chart = {};
 
-    // Size of doughnut.
-    //var size = 200;
+    var _width = 200, _height = 200,
+        _data = [],
+        _svg, _bodyG, _pieG,
+        _radius = 100,
+        _inner_radius = 50;
 
-    /* Don't try and display the visualisation if it isn't loaded (i.e. in IE7) */
-    try {
-        d3;
-    }
-    catch(e) {
-        return;
-    }
+    _chart.render = function(data) {
+        if (!_svg) {
+            _svg = d3.select(selector_id).append("svg")
+                .attr("height", _height)
+                .attr("width", _width);
+        }
+        renderBody(_svg);
+    };
 
-    // Set up a function used to calculate the angles of the doughnut.
-    pie = d3.layout.pie()
-        // This ensures the segments remain ordered.
-        .sort(null) 
-        .value(function(d) { return d.count+d.abnormal; });
-
-    // Set up a function used to calculate the width of the doughnut.
-    arc = d3.svg.arc()
-        .outerRadius(size / 2)
-        .innerRadius(size / 4);
-
-    // Set up the SVG element for the doughnut on the page.
-    $(div_id).empty();
-    doughnut = d3.select(div_id).append('svg')
-        .attr('width', size)
-        .attr('height', size)
-      .append('g')
-        // This ensures the doughnut is centred in the SVG element.
-        .attr('transform', 'translate(' + size / 2 + ',' + size / 2 + ')');
-
-    display_data = [];
-
-    for(var x in cell_types) {
-        display_data.push(cell_types[x]);
+    function renderBody(svg) {
+        if (!_bodyG) {
+            _bodyG = svg.append("g")
+                .attr("class", "body");
+        }
+        renderDoughnut();
     }
 
-    // Bind the data to the doughnut and create a grouping element ('g') for
-    // each item of data.
-    doughnut.selectAll('g')
-        .data(pie(display_data))
-      .enter().append('g');
+    function renderDoughnut() {
+        var pie = d3.layout.pie()
+            .sort(function (d) {
+                return d.id;
+            })
+            .value(function (d) {
+                return d.count + d.abnormal;
+            });
 
-    // Add the paths to grouping elements and set the colour.
-    doughnut.selectAll('g').append('path')
-        .style("fill", function(d) { return d.data.visualisation_colour });
+        var arc = d3.svg.arc()
+            .outerRadius(_radius)
+            .innerRadius(_inner_radius);
 
-    // Add the text to grouping elements.
-    doughnut.selectAll('g').append('text')
-        .attr('dy', '.35em')
-        .style('text-anchor', 'middle');
- 
+        if (!_pieG) {
+            _pieG = _bodyG.append("g")
+                .attr("class", "pie")
+                .attr("transform", "translate("
+                    + _radius
+                    + ","
+                    + _radius + ")");
+        }
+        renderSlices(pie, arc);
+        renderLabels(pie, arc);
+    }
+
+    function renderSlices(pie, arc) {
+        var slices;
+
+        if (pie(_data).filter(function(d) {return d.value > 0;}).length > 0 ) {
+            slices = _pieG.selectAll("path.arc")
+                .data(pie(_data));
+
+            slices.enter()
+                .append("path")
+                .attr("class", "arc")
+                .attr("fill", function (d) {
+                    return d.data.visualisation_colour;
+                });
+
+            slices.transition()
+                .attrTween("d", function (d) {
+                    var currentArc = this.__current__;
+                    if (!currentArc) {
+                        currentArc = {startAngle: 0, endAngle: 0};
+                    }
+                    var interpolate = d3.interpolate(currentArc, d);
+                    this.__current__ = interpolate(1);
+                    return function (t) {
+                        return arc(interpolate(t));
+                    };
+                });
+        } else {
+            /* This handles the case when you have an empty (i.e. Zero'd graph) */
+            slices = _pieG.selectAll("path.arc")
+                .data(pie(_data));
+            slices.remove();
+        }
+    }
+
+    function renderLabels() {
+
+        var total = 0;
+        for (var j=0; j < _data.length; j++) {
+            total += (_data[j].count + _data[j].abnormal);
+        }
+        $("div.total").text(total);
+    }
+
+    _chart.data = function(d) {
+        if (!arguments.length) {
+            return _data;
+        }
+        _data = d;
+        return _chart;
+    };
+
+    return _chart;
 }
-
-function update_visualisation() {
-    "use strict";
-
-    display_data = [];
-    
-    var count_total = 0;
-    for(var x in cell_types) {
-        display_data.push(cell_types[x]);
-        count_total += cell_types[x].count + cell_types[x].abnormal;
-    }
-
-    $("#total").text(count_total);
-    if(count_total == 0) {
-        return;
-    }
-
-    /* Don't try and display the visualisation if it isn't loaded (i.e. in IE7) */
-    try {
-        d3;
-    }
-    catch(e) {
-        return;
-    }
-
-    // Update the doughnut's data.
-    doughnut.selectAll('g')
-        .data(pie(display_data));
-
-    // Redraw the paths.
-    doughnut.selectAll('g').select('path')
-        .attr('d', arc);
-
-    // Display the text and put it in the right location.
-    doughnut.selectAll('g').select('text')
-        .attr('transform', function(d) { return 'translate(' + arc.centroid(d) + ')'; })
-        .text(function(d) { return d.value > 0 ? d.data.key : ''; });
-
-}
-

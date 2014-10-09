@@ -30,13 +30,18 @@ var notloggedin=true;
 
 {% include "main/keyboard_snippet.html" %}
 
-<div style="width: 100%">
-    <div id="statistics" style="float: left; margin-bottom: 20px;"></div>
-    <div id="visualise2" style="display: none; position: relative;">
+<div class="row">
+<div class="span7">
+    <div id="statistics"></div>
+</div>
+<div class="span5">
+    <div id="visualise2" class="visualisation" style="display: none; position: relative;">
         <div id="doughnut2"></div>
-        <div id="total2" style="width: 100%; height: 100%; text-align: center; position: absolute; left: 0px; top: 0px; line-height: 200px">0</div>
+        <div class="total"></div>
     </div>
 </div>
+</div>
+
 <div style="clear: both; position: relative; display: none;" id="savefilebutton">
     <div id="downloadify" style="position: absolute; top:0px; left:0px;">
     <p>You must have Flash 10 installed to download this file.</p>

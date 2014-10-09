@@ -9,7 +9,7 @@ nav {
     height: 2em;
 }
 
-div#visualisation {
+div.visualisation {
     float: right;
     z-index: 100;
     position: absolute;
@@ -222,8 +222,6 @@ div#visualisation {
     top: 60px;
     right: 20px;
 }
-
-
 
 div#celllist ul {
     list-style: none;
