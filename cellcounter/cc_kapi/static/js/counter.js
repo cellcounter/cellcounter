@@ -342,23 +342,18 @@ $(document).ready(function() {
             }
 
             if (e.which === 35 || e.which === 51) {
-                /* Show percentage view */
+                /* Show percentage view, note e.which is not working due to keypress issues */
                 var show_total = 0;
 
-                for (var cell in cell_types) {
-                    if (cell_types.hasOwnProperty(cell)) {
-                        show_total += cell_types[cell].count;
-                        show_total += cell_types[cell].abnormal;
-                    }
+                for (i=0; i < count_data.length; i++) {
+                    show_total += (count_data[i].count + count_data[i].abnormal);
                 }
 
-                for (var cell in cell_types) {
-                    if (cell_types.hasOwnProperty(cell)) {
-                        for (i=0; i < cell_types[cell].box.length; i++) {
-                            $(cell_types[cell].box[i]).find("span.countval").text(
-                                Math.floor((cell_types[cell].count+cell_types[cell].abnormal) / show_total * 100) + "%");
-                            $(cell_types[cell].box[i]).find("span.abnormal").text("");
-                        }
+                for (i=0; i< count_data.length; i++) {
+                    for (j=0; j< cell_types[i].box.length; j++) {
+                        $(cell_types[count_data[i].id].box[j]).find("span.countval").text(
+                            Math.floor((count_data[i].count + count_data[i].abnormal)/show_total * 100) + "%");
+                        $(cell_types[count_data[i].id].box[j]).find("span.abnormal").text("");
                     }
                 }
             }
