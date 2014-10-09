@@ -26,6 +26,8 @@ var celltypes_loading = $.getJSON("/api/cell_types/", function(data) {
     cell_types = {};
     $.each(data, function(key, cell) {
         cell.box = [];
+        cell.count = 0;
+        cell.abnormal = 0;
         cell_types[cell.id] = cell;
     });})
     .done(function() {
@@ -583,7 +585,7 @@ function delete_specific_keyboard(keyboard_id) {
 
 function update_keyboard() {
     "use strict";
-    var i, j;
+    var i, j, k;
     var keyboard_keys = $("#keysbox").find("div.box1");
 
     for (var cell in cell_types) {
@@ -604,11 +606,19 @@ function update_keyboard() {
             if (keyboard_map.mappings[j].key === key) {
                 var cell_id = keyboard_map.mappings[j].cellid;
                 var cell_data = cell_types[cell_id];
+                /* Adds keyboard key div to list of attached keys */
                 cell_data.box.push(item);
                 var name = cell_data.abbr_name;
 
+                var cell_count, cell_abnormal;
+                for (k=0; k < count_data.length; k++) {
+                    if (count_data[k].id === cell_id) {
+                        cell_count = count_data[k].count;
+                        cell_abnormal = count_data[k].abnormal;
+                    }
+                }
                 item.append("<div class=\"name\">"+name+"</div>");
-                item.append("<div class=\"count\"><span class=\"countval\">"+cell_types[cell_id].count+"</span> <span class=\"abnormal abnormal_count\">("+cell_types[cell_id].abnormal+")</span></div>");
+                item.append("<div class=\"count\"><span class=\"countval\">"+cell_count+"</span> <span class=\"abnormal abnormal_count\">("+cell_abnormal+")</span></div>");
 
                 // Attach cell visualisation_colour to key
                 item.find("p").css("background-color", cell_data.visualisation_colour);
