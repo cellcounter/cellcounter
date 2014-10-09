@@ -342,23 +342,18 @@ $(document).ready(function() {
             }
 
             if (e.which === 35 || e.which === 51) {
-                /* Show percentage view */
+                /* Show percentage view, note e.which is not working due to keypress issues */
                 var show_total = 0;
 
-                for (var cell in cell_types) {
-                    if (cell_types.hasOwnProperty(cell)) {
-                        show_total += cell_types[cell].count;
-                        show_total += cell_types[cell].abnormal;
-                    }
+                for (i=0; i < count_data.length; i++) {
+                    show_total += (count_data[i].count + count_data[i].abnormal);
                 }
 
-                for (var cell in cell_types) {
-                    if (cell_types.hasOwnProperty(cell)) {
-                        for (i=0; i < cell_types[cell].box.length; i++) {
-                            $(cell_types[cell].box[i]).find("span.countval").text(
-                                Math.floor((cell_types[cell].count+cell_types[cell].abnormal) / show_total * 100) + "%");
-                            $(cell_types[cell].box[i]).find("span.abnormal").text("");
-                        }
+                for (i=0; i< count_data.length; i++) {
+                    for (j=0; j< cell_types[i].box.length; j++) {
+                        $(cell_types[count_data[i].id].box[j]).find("span.countval").text(
+                            Math.floor((count_data[i].count + count_data[i].abnormal)/show_total * 100) + "%");
+                        $(cell_types[count_data[i].id].box[j]).find("span.abnormal").text("");
                     }
                 }
             }
@@ -583,7 +578,7 @@ function delete_specific_keyboard(keyboard_id) {
 
 function update_keyboard() {
     "use strict";
-    var i, j;
+    var i, j, k;
     var keyboard_keys = $("#keysbox").find("div.box1");
 
     for (var cell in cell_types) {
@@ -604,11 +599,19 @@ function update_keyboard() {
             if (keyboard_map.mappings[j].key === key) {
                 var cell_id = keyboard_map.mappings[j].cellid;
                 var cell_data = cell_types[cell_id];
+                /* Adds keyboard key div to list of attached keys */
                 cell_data.box.push(item);
                 var name = cell_data.abbr_name;
 
+                var cell_count, cell_abnormal;
+                for (k=0; k < count_data.length; k++) {
+                    if (count_data[k].id === cell_id) {
+                        cell_count = count_data[k].count;
+                        cell_abnormal = count_data[k].abnormal;
+                    }
+                }
                 item.append("<div class=\"name\">"+name+"</div>");
-                item.append("<div class=\"count\"><span class=\"countval\">"+cell_types[cell_id].count+"</span> <span class=\"abnormal abnormal_count\">("+cell_types[cell_id].abnormal+")</span></div>");
+                item.append("<div class=\"count\"><span class=\"countval\">"+cell_count+"</span> <span class=\"abnormal abnormal_count\">("+cell_abnormal+")</span></div>");
 
                 // Attach cell visualisation_colour to key
                 item.find("p").css("background-color", cell_data.visualisation_colour);
