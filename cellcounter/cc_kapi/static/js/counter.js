@@ -341,7 +341,7 @@ $(document).ready(function() {
                 return;
             }
 
-            if (e.which === 35 || e.which === 51) {
+            if (key === '1') {
                 /* Show percentage view, note e.which is not working due to keypress issues */
                 var show_total = 0;
 
@@ -350,7 +350,7 @@ $(document).ready(function() {
                 }
 
                 for (i=0; i< count_data.length; i++) {
-                    for (j=0; j< cell_types[i].box.length; j++) {
+                    for (j=0; j< cell_types[count_data[i].id].box.length; j++) {
                         $(cell_types[count_data[i].id].box[j]).find("span.countval").text(
                             Math.floor((count_data[i].count + count_data[i].abnormal)/show_total * 100) + "%");
                         $(cell_types[count_data[i].id].box[j]).find("span.abnormal").text("");
@@ -447,21 +447,9 @@ $(document).ready(function() {
                 abnormal = false;
             }
 
-            if (e.which === 35 || e.which === 51) {
-                for (var cell in cell_types) {
-                    if (cell_types.hasOwnProperty(cell)) {
-                        for (i=0; i < cell_types[cell].box.length; i++) {
-                            /* Iterates through all keys attached to this cell_type */
-                            for (j=0; j < count_data.length; j++) {
-                                /* Iterate count_data array for given cell count */
-                                if (count_data[j].id === cell.id) {
-                                    $(cell_types[cell].box[i]).find("span.abnormal").text("("+count_data[j].abnormal+")");
-                                    $(cell_types[cell].box[i]).find("span.countval").text(count_data[j].count);
-                                }
-                            }
-                        }
-                    }
-                }
+            if (key === "1") {
+                /* Exit view percentages mode */
+                update_keyboard();
             }
         }
     });
