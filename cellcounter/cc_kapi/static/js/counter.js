@@ -1,5 +1,4 @@
 /*global $:false, jQuery:false */
-var counters = {};
 var abnormal = false;
 var keyboard_active = false;
 var img_displayed = false;
@@ -48,7 +47,7 @@ var celltypes_loading = $.getJSON("/api/cell_types/", function(data) {
 
 $(document).ready(function() {
     "use strict";
-    var count_total, i, j, k;
+    var i, j, k;
     chart = doughnutChart('#doughnut').data(count_data);
     chart2 = doughnutChart('#doughnut2').data(count_data);
 
@@ -475,12 +474,6 @@ function register_resets() {
 
 function reset_counters() {
     "use strict";
-    for (var cell in cell_types) {
-        if (cell_types.hasOwnProperty(cell)) {
-            cell_types[cell].count = 0;
-            cell_types[cell].abnormal = 0;
-        }
-    }
     for (var i = 0; i < count_data.length; i++) {
         count_data[i].count = 0;
         count_data[i].abnormal = 0;
@@ -500,13 +493,6 @@ function open_keyboard() {
             keyboard_active = true;
         });
     });
-    var count_total = 0;
-    for (var prop in counters) {
-        if (counters.hasOwnProperty(prop)) {
-            count_total += counters[prop].abnormal;
-            count_total += counters[prop].count;
-        }
-    }
     $('div#statistics').empty();
     $("#visualise2").css("display", "none");
     $("#savefilebutton").css("display", "none");
