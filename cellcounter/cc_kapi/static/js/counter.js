@@ -247,7 +247,7 @@ $(document).ready(function() {
                              * issues with the length of the array and correct iteration position.
                              */
                             for (i = 0; i < keyboard_map.mappings.length; i++) {
-                                if (keyboard_map.mappings[i].cellid == edit_cell_id) {
+                                if (keyboard_map.mappings[i].cellid.toString() === edit_cell_id) {
                                     keyboard_map.mappings.splice(i, 1);
                                     i--;
                                 }
@@ -256,7 +256,7 @@ $(document).ready(function() {
                              * two celltypes to a given key.
                              */
                             for (i = 0; i < keyboard_map.mappings.length; i++) {
-                                if (keyboard_map.mappings[i].key == key.toLowerCase()) {
+                                if (keyboard_map.mappings[i].key === key.toLowerCase()) {
                                     keyboard_map.mappings.splice(i, 1);
                                     i--;
                                 }
@@ -275,7 +275,7 @@ $(document).ready(function() {
                              * previously mapped, and if so, we remove any mappings for that key.
                              */
                             for (i = 0; i < keyboard_map.mappings.length; i++) {
-                                if (keyboard_map.mappings[i].key == key.toLowerCase()) {
+                                if (keyboard_map.mappings[i].key === key.toLowerCase()) {
                                     keyboard_map.mappings.splice(i, 1);
                                     i--;
                                 }
@@ -290,8 +290,8 @@ $(document).ready(function() {
                              */
                             var is_mapped = false;
                             for (i = 0; i < keyboard_map.mappings.length; i++) {
-                                if (keyboard_map.mappings[i].key == key.toLowerCase() &&
-                                    keyboard_map.mappings[i].cellid == edit_cell_id) {
+                                if (keyboard_map.mappings[i].key === key.toLowerCase() &&
+                                    keyboard_map.mappings[i].cellid.toString() === edit_cell_id) {
                                     is_mapped = true;
                                 }
                             }
@@ -313,7 +313,7 @@ $(document).ready(function() {
             if (shift_pressed) {
                 /* We now show the image overlay to the user with the selected celltype images */
                 for (i = 0; i < keyboard_map.mappings.length; i++) {
-                    if (keyboard_map.mappings[i].key.toUpperCase() == key) {
+                    if (keyboard_map.mappings[i].key.toUpperCase() === key) {
                         var cell_id = keyboard_map.mappings[i].cellid;
                         var slug = cell_types[cell_id].machine_name;
                         var fullname = cell_types[cell_id].readable_name;
@@ -392,7 +392,7 @@ $(document).ready(function() {
                 }
             } else {
                 for (i = 0; i < keyboard_map.mappings.length; i++) {
-                    if (keyboard_map.mappings[i].key.toUpperCase() == key && !(shift_pressed)) {
+                    if (keyboard_map.mappings[i].key.toUpperCase() === key && !(shift_pressed)) {
                         var id = keyboard_map.mappings[i].cellid;
 
                         // Add highlighting to keyboard
