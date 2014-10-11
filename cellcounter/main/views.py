@@ -15,7 +15,7 @@ class CellTypesListView(APIView):
     def get(self, request):
         data = cache.get('cell_types')
         if not data:
-            cell_types = CellType.objects.all()
+            cell_types = CellType.objects.all().order_by('id')
             serializer = CellTypeSerializer(cell_types, many=True)
             data = serializer.data
             cache.set('cell_types', data, 7200)
