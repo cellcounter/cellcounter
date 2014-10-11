@@ -47,7 +47,7 @@ var celltypes_loading = $.getJSON("/api/cell_types/", function(data) {
                 }
             }
         }
-        console.log(count_data);})
+    })
     .fail(function() {
         "use strict";
         add_alert('ERROR', 'Cellcountr failed to load cell data. Please refresh page');
@@ -132,11 +132,12 @@ $(document).ready(function() {
                 } else {
                     cell_percent_abnormal = "N/A";
                 }
-                per += '<tr><td class="celltypes">' + count_data[i].readable_name + '</td><td class="ignore" style="background-color:'+ count_data[i].visualisation_colour +'"></td><td>' + cell_percent + "%</td><td>" + cell_percent_abnormal + '</td><td>' + count_data[i].count + '</td><td class="abnormal_count">' + count_data[i].abnormal + '</td></tr>';
+                per += '<tr><td class="celltypes">' + count_data[i].readable_name + '</td><td class="ignore" style="background-color:'+ count_data[i].visualisation_colour +'"></td><td>' + cell_percent + "%</td><td class=\"abnormal_stats\">" + cell_percent_abnormal + '</td><td>' + count_data[i].count + '</td><td class="abnormal_count abnormal_stats">' + count_data[i].abnormal + '</td></tr>';
             }
 
             if (total > 0) {
                 var erythroid;
+                var abnormal_total=0;
                 /* N.B. Hacky erythroid/myeloid counting */
                 for (i=0; i < count_data.length; i++) {
                     if (count_data[i].machine_name === 'erythroid') {
@@ -155,14 +156,22 @@ $(document).ready(function() {
                 }
                 var me_ratio = parseFloat(myeloid / erythroid).toFixed(2);
                 var stats_text = '<h3>Count statistics</h3><table class="table table-bordered table-striped">';
-                stats_text += '<tr><td colspan="2" class="celltypes">Total cells</td><td>' + total + '</td><td colspan="3"></td></tr>';
-                stats_text += '<tr><td colspan="2" class="celltypes">ME ratio *</td><td>' + me_ratio + '</td><td colspan="3"></td></tr>';
-                stats_text += '<tr><th colspan="2" style="width: 30%"></th><th>% Total</th><th>% of CellType Abnormal</th><th>Normal</th><th>Abnormal</th></tr>';
+                stats_text += '<tr><td colspan="2" class="celltypes">Total cells</td><td>' + total + '</td><td class="tablespacer" colspan="3"></td></tr>';
+                stats_text += '<tr><td colspan="2" class="celltypes">ME ratio *</td><td>' + me_ratio + '</td><td class="tablespacer" colspan="3"></td></tr>';
+                stats_text += '<tr><th colspan="2" style="width: 30%"></th><th>% Total</th><th class="abnormal_stats">% of CellType Abnormal</th><th>Normal</th><th class="abnormal_stats">Abnormal</th></tr>';
                 stats_text += per;
                 stats_text += '</table>';
                 stats_text += '<p>* Note: Myeloid/erythroid ratio does not include blast count.</p>';
                 $('div#statistics').empty().append(stats_text);
                 $("#visualise2").css("display", "block");
+                for (i=0; i < count_data.length; i++) {
+                    abnormal_total += count_data[i].abnormal;
+                }
+                if (abnormal_total === 0) {
+                    /* If we don't have abnormal cells, don't show the columns */
+                    $('.abnormal_stats').hide();
+                    $('.tablespacer').attr('colspan', 1);
+                }
                 chart2.render();
                 $("#savefilebutton").css("display", "block");
                 add_save_file_button();
