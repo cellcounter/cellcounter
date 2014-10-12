@@ -105,9 +105,7 @@ $(document).ready(function() {
     register_resets();
 
     $('#fuzz, #close_button').click(function () {
-        var total, cell;
-        var per = "";
-        var cell_total, cell_percent, cell_percent_abnormal;
+        var total;
 
         if (editing_keyboard) {
             return;
@@ -124,57 +122,8 @@ $(document).ready(function() {
                 total += count_data[i].abnormal;
             }
 
-            for (i=0; i < count_data.length; i++) {
-                cell_total = count_data[i].count + count_data[i].abnormal;
-                cell_percent = parseFloat(cell_total / total * 100).toFixed(0);
-                if (cell_total !== 0) {
-                    cell_percent_abnormal = parseFloat(count_data[i].abnormal / cell_total * 100).toFixed(0) + "%";
-                } else {
-                    cell_percent_abnormal = "N/A";
-                }
-                per += '<tr><td class="celltypes">' + count_data[i].readable_name + '</td><td class="ignore" style="background-color:'+ count_data[i].visualisation_colour +'"></td><td>' + cell_percent + "%</td><td class=\"abnormal_stats\">" + cell_percent_abnormal + '</td><td>' + count_data[i].count + '</td><td class="abnormal_count abnormal_stats">' + count_data[i].abnormal + '</td></tr>';
-            }
-
             if (total > 0) {
-                var erythroid;
-                var abnormal_total=0;
-                /* N.B. Hacky erythroid/myeloid counting */
-                for (i=0; i < count_data.length; i++) {
-                    if (count_data[i].machine_name === 'erythroid') {
-                        erythroid = count_data[i].count + count_data[i].abnormal;
-                    }
-                }
-                var myeloid = 0;
-                var myeloid_cells = ['neutrophils', 'meta', 'myelocytes', 'promyelocytes',
-                    'basophils', 'eosinophils', 'monocytes'];
-                for (i=0; i < myeloid_cells.length; i++) {
-                    for (j=0; j < count_data.length; j++) {
-                        if (count_data[j].machine_name === myeloid_cells[i]) {
-                            myeloid += (count_data[j].count + count_data[j].abnormal);
-                        }
-                    }
-                }
-                var me_ratio = parseFloat(myeloid / erythroid).toFixed(2);
-                var stats_text = '<h3>Count statistics</h3><table class="table table-bordered table-striped">';
-                stats_text += '<tr><td colspan="2" class="celltypes">Total cells</td><td>' + total + '</td><td class="tablespacer" colspan="3"></td></tr>';
-                stats_text += '<tr><td colspan="2" class="celltypes">ME ratio *</td><td>' + me_ratio + '</td><td class="tablespacer" colspan="3"></td></tr>';
-                stats_text += '<tr><th colspan="2" style="width: 30%"></th><th>% Total</th><th class="abnormal_stats">% of CellType Abnormal</th><th>Normal</th><th class="abnormal_stats">Abnormal</th></tr>';
-                stats_text += per;
-                stats_text += '</table>';
-                stats_text += '<p>* Note: Myeloid/erythroid ratio does not include blast count.</p>';
-                $('div#statistics').empty().append(stats_text);
-                $("#visualise2").css("display", "block");
-                for (i=0; i < count_data.length; i++) {
-                    abnormal_total += count_data[i].abnormal;
-                }
-                if (abnormal_total === 0) {
-                    /* If we don't have abnormal cells, don't show the columns */
-                    $('.abnormal_stats').hide();
-                    $('.tablespacer').attr('colspan', 1);
-                }
-                chart2.render();
-                $("#savefilebutton").css("display", "block");
-                add_save_file_button();
+                display_stats(total);
             }
 
             $('#counterbox').slideUp('slow', function () {
@@ -514,6 +463,99 @@ function open_keyboard() {
     $("#visualise2").css("display", "none");
     $("#savefilebutton").css("display", "none");
     chart.render();
+}
+
+function display_stats(total, format) {
+    "use strict";
+    var erythroid, i, j, cell_total, cell_percent, cell_percent_abnormal;
+    var per="";
+    var abnormal_total=0;
+    var stats_div = $('div#statistics');
+    format = typeof format !== 'undefined' ? format: 'HTML';
+
+    for (i=0; i < count_data.length; i++) {
+        abnormal_total += count_data[i].abnormal;
+    }
+
+    for (i=0; i < count_data.length; i++) {
+        cell_total = count_data[i].count + count_data[i].abnormal;
+        cell_percent = parseFloat(cell_total / total * 100).toFixed(0);
+        if (cell_total !== 0) {
+            cell_percent_abnormal = parseFloat(count_data[i].abnormal / cell_total * 100).toFixed(0) + "%";
+        } else {
+            cell_percent_abnormal = "N/A";
+        }
+        if (format === 'HTML') {
+            per += '<tr><td class="celltypes">' + count_data[i].readable_name + '</td><td class="ignore" style="background-color:' + count_data[i].visualisation_colour + '"></td><td>' + cell_percent + "%</td><td class=\"abnormal_stats\">" + cell_percent_abnormal + '</td><td>' + count_data[i].count + '</td><td class="abnormal_count abnormal_stats">' + count_data[i].abnormal + '</td></tr>';
+        } else {
+            per += count_data[i].readable_name + ' ' + cell_percent + '%';
+            if (abnormal_total > 0) {
+                per += ', abnormal ' + cell_percent_abnormal + '\n';
+            } else {
+                per += '\n';
+            }
+        }
+    }
+
+    /* N.B. Hacky erythroid/myeloid counting */
+    for (i=0; i < count_data.length; i++) {
+        if (count_data[i].machine_name === 'erythroid') {
+            erythroid = count_data[i].count + count_data[i].abnormal;
+        }
+    }
+
+    var myeloid = 0;
+    var myeloid_cells = ['neutrophils', 'meta', 'myelocytes', 'promyelocytes',
+        'basophils', 'eosinophils', 'monocytes'];
+
+    for (i=0; i < myeloid_cells.length; i++) {
+        for (j=0; j < count_data.length; j++) {
+            if (count_data[j].machine_name === myeloid_cells[i]) {
+                myeloid += (count_data[j].count + count_data[j].abnormal);
+            }
+        }
+    }
+
+    var me_ratio = parseFloat(myeloid / erythroid).toFixed(2);
+    if (me_ratio === 'Infinity') {
+        me_ratio = 'Incalculable';
+    }
+    stats_div.empty().append('<div id="output_style">Format output: <button id="htmlview" class="btn">HTML</button><button id="textview" class="btn">Text</button></div>');
+    $('#htmlview').click(function() {
+        display_stats(total, 'HTML');
+    });
+    $('#textview').click(function() {
+        display_stats(total, 'TEXT');
+    });
+
+    if (format === 'HTML') {
+        var stats_text = '<h3>Count statistics</h3><table class="table table-bordered table-striped">';
+        stats_text += '<tr><td colspan="2" class="celltypes">Total cells</td><td>' + total + '</td><td class="table_spacer" colspan="3"></td></tr>';
+        stats_text += '<tr><td colspan="2" class="celltypes">ME ratio *</td><td>' + me_ratio + '</td><td class="table_spacer" colspan="3"></td></tr>';
+        stats_text += '<tr><th colspan="2" style="width: 30%"></th><th>% Total</th><th class="abnormal_stats">% of CellType Abnormal</th><th>Normal</th><th class="abnormal_stats">Abnormal</th></tr>';
+        stats_text += per;
+        stats_text += '</table>';
+        stats_text += '<p>* Note: Myeloid/erythroid ratio does not include blast count.</p>';
+        stats_div.append(stats_text);
+        $("#visualise2").css("display", "block");
+    } else {
+        var stats_text = '<pre class="stats"><code>';
+        stats_text += 'Total cells: ' + total + '\n';
+        stats_text += 'M:E Ratio: ' + me_ratio + '\n';
+        stats_text += per;
+        stats_text += '</code></pre>';
+        stats_div.append(stats_text);
+    }
+
+    if (abnormal_total === 0 && format === 'HTML') {
+        /* If we don't have abnormal cells, don't show the columns */
+        $('.abnormal_stats').hide();
+        $('.table_spacer').attr('colspan', 1);
+    }
+
+    chart2.render();
+    $("#savefilebutton").css("display", "block");
+    add_save_file_button();
 }
 
 function set_keyboard(mapping) {
