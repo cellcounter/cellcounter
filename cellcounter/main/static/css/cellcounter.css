@@ -114,3 +114,14 @@ div.indextitle {
     font-size: 18px;
 }
 
+pre.stats {
+    margin-top: 10px;
+}
+
+button#htmlview {
+    margin-right: 5px;
+}
+
+#output_style {
+    margin-top: 5px;
+}
