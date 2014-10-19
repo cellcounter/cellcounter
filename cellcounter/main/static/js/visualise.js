@@ -27,9 +27,7 @@ function doughnutChart(selector_id) {
 
     function renderDoughnut() {
         var pie = d3.layout.pie()
-            .sort(function (d) {
-                return d.id;
-            })
+            .sort(null)
             .value(function (d) {
                 return d.count + d.abnormal;
             });
