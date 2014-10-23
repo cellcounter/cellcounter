@@ -104,7 +104,6 @@ MIDDLEWARE_CLASSES = (
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'cellcounter.middleware.SecureRequiredMiddleware',
-    'cellcounter.middleware.RequestLoggerMiddleware',
     'ratelimit.middleware.RatelimitMiddleware',
 )
 
@@ -152,7 +151,6 @@ INSTALLED_APPS = (
     'rest_framework',
     'compressor',
     'cellcounter.main',
-    'cellcounter.logs',
     'cellcounter.cc_kapi',
     'cellcounter.accounts',
 )

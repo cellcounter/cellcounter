@@ -8,8 +8,6 @@ from django.contrib.auth.views import login, logout
 
 from cellcounter.main.views import NewCountTemplateView, CellImageListView, CellTypesListView, CellImageDetailView, similar_images, thumbnail
 
-from cellcounter.logs.views import index, host_access, page_access, referrer_access, date_access
-
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -45,16 +43,7 @@ urlpatterns = patterns('',
                            name="terms"),
                        url(r'^privacy$', TemplateView.as_view(
                            template_name="main/privacy.html"),
-                           name="privacy"),
-                       url(r'^logs/$', index, name="logs"),
-                       url(r'^logs/hosts/$', host_access,
-                           name="log_hosts"),
-                       url(r'^logs/pages/$', page_access,
-                           name="log_pages"),
-                       url(r'^logs/referrers/$', referrer_access,
-                           name="log_referrers"),
-                       url(r'^logs/dates/$', date_access,
-                           name="log_dates"),
+                           name="privacy")
                        )
 
 urlpatterns += staticfiles_urlpatterns()
