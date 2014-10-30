@@ -554,8 +554,6 @@ function display_stats(total, format) {
     }
 
     chart2.render();
-    $("#savefilebutton").css("display", "block");
-    add_save_file_button();
 }
 
 function set_keyboard(mapping) {
