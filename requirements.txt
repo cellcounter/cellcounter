@@ -9,6 +9,6 @@ django-compressor==1.4
 pylibmc==1.4.1
 pytz==2014.10
 psycopg2==2.5.4
-uWSGI==2.0.8
+uWSGI==2.0.9
 wsgiref==0.1.2
 -e git+https://github.com/jsocol/django-ratelimit.git@fab72f90dd88149c39d2fe84df2a1b6c3439a442#egg=django-ratelimit
