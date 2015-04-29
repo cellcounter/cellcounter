@@ -4,20 +4,18 @@ from django_webtest import WebTest
 from django.test import TestCase
 
 from django.core.urlresolvers import reverse
-from django.core.exceptions import PermissionDenied
 from rest_framework.renderers import JSONRenderer
 
 from cellcounter.main.models import CellType
 from .defaults import MOCK_KEYBOARD, DEFAULT_KEYBOARD_STRING
 from .factories import UserFactory, KeyboardFactory, KeyMapFactory
-from .models import KeyMap, Keyboard
-from .views import KeyboardGetUpdateDestroyView
-from .serializers import KeyboardSerializer, KeyMapSerializer, KeyboardOnlySerializer
+from .models import Keyboard
+from .serializers import KeyboardSerializer
 
 
 class KeyboardTestCase(TestCase):
     def test_unicode(self):
-        keyboard = KeyboardFactory.build(user__username='alpha', label='alpha')
+        keyboard = KeyboardFactory(user__username='alpha', label='alpha')
         self.assertEqual(keyboard.__unicode__(), 'Keyboard alpha for alpha')
 
     def test_set_primary_self(self):
@@ -92,13 +90,13 @@ class KeyboardsListCreateAPITest(WebTest):
         self.keyboard = KeyboardFactory(is_primary=True, user=self.user)
 
     def test_get_anon_empty(self):
-        response = self.app.get(reverse('keyboards'))
-        self.assertEqual(JSONRenderer().render([]), response.body)
+        response = self.app.get(reverse('keyboards'), status=403)
+        self.assertEqual(response.status_code, 403)
 
     def test_get_user_kb_list(self):
         response = self.app.get(reverse('keyboards'), user=self.user)
         queryset = Keyboard.objects.filter(user=self.user)
-        serializer = KeyboardOnlySerializer(queryset, many=True)
+        serializer = KeyboardSerializer(queryset, many=True)
         self.assertEqual(JSONRenderer().render(serializer.data), response.body)
 
     def test_post_keyboard_logged_out(self):
@@ -121,7 +119,7 @@ class KeyboardsListCreateAPITest(WebTest):
                                  headers={'Content-Type': 'application/json'},
                                  user=self.user.username,
                                  status=400)
-        self.assertEqual(response.body, '{"label": ["This field is required."]}')
+        self.assertEqual(response.body, '{"label":["This field is required."]}')
         self.assertEqual(response.status_code, 400)
 
     def test_post_keyboard_missing_mappings(self):
@@ -131,7 +129,7 @@ class KeyboardsListCreateAPITest(WebTest):
                                  headers={'Content-Type': 'application/json'},
                                  user=self.user.username,
                                  status=400)
-        self.assertEqual('{"non_field_errors": ["Expected a list of items."]}', response.body)
+        self.assertEqual('{"mappings":["This field is required."]}', response.body)
         self.assertEqual(response.status_code, 400)
 
 
@@ -152,8 +150,8 @@ class KeyboardAPITest(WebTest):
         user = UserFactory()
         response = self.app.get(reverse('keyboard-detail',
                                         kwargs={'keyboard_id': self.keyboard.id}),
-                                user=user.username, status=403)
-        self.assertEqual(response.status_code, 403)
+                                user=user.username, status=404)
+        self.assertEqual(response.status_code, 404)
 
     def get_own_keyboard_detail(self):
         response = self.app.get(reverse('keyboard-detail',
@@ -184,8 +182,8 @@ class KeyboardAPITest(WebTest):
                                 json.dumps(MOCK_KEYBOARD),
                                 headers={'Content-Type': 'application/json'},
                                 user=self.user.username,
-                                status=204)
-        self.assertEqual(response.status_code, 204)
+                                status=200)
+        self.assertEqual(response.status_code, 200)
 
     def test_put_anothers_keyboard_logged_in(self):
         user = UserFactory()
@@ -194,8 +192,8 @@ class KeyboardAPITest(WebTest):
                                 json.dumps(MOCK_KEYBOARD),
                                 headers={'Content-Type': 'application/json'},
                                 user=user.username,
-                                status=403)
-        self.assertEqual(response.status_code, 403)
+                                status=404)
+        self.assertEqual(response.status_code, 404)
 
     def test_put_nonexistent_keyboard_logged_in(self):
         response = self.app.put(reverse('keyboard-detail', kwargs={'keyboard_id': 99}),
@@ -212,7 +210,7 @@ class KeyboardAPITest(WebTest):
                                 headers={'Content-Type': 'application/json'},
                                 user=self.user.username,
                                 status=400)
-        self.assertEqual('{"non_field_errors": ["Expected a list of items."]}', response.body)
+        self.assertEqual('{"mappings":["This field is required."]}', response.body)
         self.assertEqual(response.status_code, 400)
 
     def test_put_keyboard_missing_fields(self):
@@ -222,7 +220,7 @@ class KeyboardAPITest(WebTest):
                                 headers={'Content-Type': 'application/json'},
                                 user=self.user.username,
                                 status=400)
-        self.assertEqual(response.body, '{"label": ["This field is required."]}')
+        self.assertEqual(response.body, '{"label":["This field is required."]}')
         self.assertEqual(response.status_code, 400)
 
     def test_put_keyboard_logged_out(self):
@@ -250,8 +248,8 @@ class KeyboardAPITest(WebTest):
         response = self.app.delete(reverse('keyboard-detail',
                                            kwargs={'keyboard_id': self.keyboard.id}),
                                    user=user.username,
-                                   status=403)
-        self.assertEqual(response.status_code, 403)
+                                   status=404)
+        self.assertEqual(response.status_code, 404)
 
     def test_delete_keyboard_exists(self):
         response = self.app.delete(reverse('keyboard-detail',
@@ -261,52 +259,3 @@ class KeyboardAPITest(WebTest):
         self.assertEqual(response.status_code, 204)
         with self.assertRaises(Keyboard.DoesNotExist):
             Keyboard.objects.get(id=self.keyboard.id)
-
-
-class TestKeyMapSerializer(TestCase):
-    def get_cell(self, id):
-        return CellType.objects.get(id=id)
-
-    def setUp(self):
-        self.single_keymap = {'cellid': 1, 'key': 'a'}
-        self.keymap_list = [{'cellid': 1, 'key': 'a'},
-                            {'cellid': 2, 'key': 'b'},
-                            {'cellid': 3, 'key': 'c'},
-                            {'cellid': 4, 'key': 'd'}]
-
-    def test_save_one(self):
-        old_maps = len(KeyMap.objects.all())
-        serializer = KeyMapSerializer(data=self.single_keymap)
-        self.assertTrue(serializer.is_valid())
-        serializer.save()
-        self.assertEqual(len(KeyMap.objects.all()), old_maps+1)
-
-    def test_save_many(self):
-        old_maps = len(KeyMap.objects.all())
-        serializer = KeyMapSerializer(data=self.keymap_list, many=True)
-        self.assertTrue(serializer.is_valid())
-        serializer.save()
-        self.assertEqual(len(KeyMap.objects.all()), old_maps+4)
-
-    def test_save_one_exists(self):
-        keymap = KeyMapFactory(cellid=self.get_cell(1), key='a')
-        old_maps = len(KeyMap.objects.all())
-        serializer = KeyMapSerializer(data=self.single_keymap)
-        self.assertTrue(serializer.is_valid())
-        serializer.save()
-        self.assertEqual(keymap, serializer.object)
-        self.assertEqual(old_maps, len(KeyMap.objects.all()))
-
-    def test_save_many_some_exist(self):
-        keymap1 = KeyMapFactory(cellid=self.get_cell(1), key='a')
-        keymap2 = KeyMapFactory(cellid=self.get_cell(2), key='b')
-        old_maps = len(KeyMap.objects.all())
-        serializer = KeyMapSerializer(data=self.keymap_list, many=True)
-        self.assertTrue(serializer.is_valid())
-        serializer.save()
-        self.assertEqual(len(KeyMap.objects.all()), old_maps+2)
-        map_list = []
-        for mapping in serializer.object:
-            map_list.append(mapping)
-        self.assertIn(keymap1, map_list)
-        self.assertIn(keymap2, map_list)
