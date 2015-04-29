@@ -49,8 +49,3 @@ class KeyboardGetUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Keyboard.objects.filter(user=self.request.user)
-
-    def perform_destroy(self, instance):
-        if self.request.user != instance.user:
-            return self.permission_denied(self.request)
-        instance.delete()
