@@ -62,7 +62,6 @@ class Keyboard(models.Model):
             self.set_primary()
 
 
-
 class KeyMap(models.Model):
     cellid = models.ForeignKey(CellType)
     key = models.CharField(max_length=1)

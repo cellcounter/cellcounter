@@ -4,32 +4,12 @@ from .models import KeyMap, Keyboard
 
 
 class KeyMapSerializer(serializers.ModelSerializer):
-    cellid = serializers.PrimaryKeyRelatedField()
-
     class Meta:
         model = KeyMap
-        fields = ('id', 'cellid', 'key')
-
-    def save(self, **kwargs):
-        """
-        Unintelligent save via get_or_create(). This does not handle logic
-        for creating/removing maps from parent models. It merely puts new
-        maps into the database.
-        """
-        # Clear cached _data, which may be invalidated by `save()`
-        self._data = None
-        if isinstance(self.object, list):
-            saved_mappings = [KeyMap.objects.get_or_create(cellid=item.cellid, key=item.key)[0] for item in self.object]
-        else:
-            saved_mappings = KeyMap.objects.get_or_create(cellid=self.object.cellid, key=self.object.key)[0]
-        self.object = saved_mappings
-        return self.object
+        fields = ('cellid', 'key')
 
 
 class KeyboardOnlySerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(required=False)
-    user = serializers.Field(source='user.username')
-
     class Meta:
         model = Keyboard
         fields = ('id', 'user', 'label', 'is_primary', 'created',
@@ -38,10 +18,29 @@ class KeyboardOnlySerializer(serializers.ModelSerializer):
 
 class KeyboardSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
-    user = serializers.Field(source='user.username')
-    mappings = KeyMapSerializer(many=True, read_only=True)
+    user = serializers.CharField(source='user.username', allow_null=True)
+    mappings = KeyMapSerializer(many=True)
 
     class Meta:
         model = Keyboard
         fields = ('id', 'user', 'label', 'is_primary', 'created',
                   'last_modified', 'mappings')
+
+    def create(self, validated_data):
+        mappings_data = validated_data.pop('mappings')
+        keyboard = Keyboard.objects.create(**validated_data)
+        mapping_objects = [KeyMap.objects.get_or_create(cellid=mapping['cellid'], key=mapping['key'])[0] for
+                           mapping in mappings_data]
+        keyboard.set_keymaps(mapping_objects)
+        return keyboard
+
+    def update(self, instance, validated_data):
+        mappings_data = validated_data.pop('mappings')
+        instance.label = validated_data.get('label', instance.label)
+        instance.is_primary = validated_data.get('is_primary', instance.is_primary)
+        instance.save()
+
+        mapping_objects = [KeyMap.objects.get_or_create(cellid=mapping['cellid'], key=mapping['key'])[0] for
+                           mapping in mappings_data]
+        instance.set_keymaps(mapping_objects)
+        return instance
