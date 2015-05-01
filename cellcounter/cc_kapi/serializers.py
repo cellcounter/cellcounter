@@ -9,13 +9,6 @@ class KeyMapSerializer(serializers.ModelSerializer):
         fields = ('cellid', 'key')
 
 
-class KeyboardOnlySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Keyboard
-        fields = ('id', 'user', 'label', 'is_primary', 'created',
-                  'last_modified')
-
-
 class KeyboardSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     user = serializers.CharField(source='user.username', allow_null=True)
