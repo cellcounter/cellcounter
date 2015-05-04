@@ -1,8 +1,8 @@
-sudo: false
-
 language: python
 python:
   - "2.7"
+
+services: postgresql
 
 # command to install dependencies
 install:
@@ -10,7 +10,11 @@ install:
     - pip install --allow-all-external -r test-requirements.txt
     - pip install coveralls
 
-env: TEST=True
+env: 
+    - TEST=True DATABASE_URL=postgres://postgres@localhost/cellcountr_test
+
+before_script:
+    - psql -c 'create database cellcountr_test;' -U postgres
 
 # command to run tests
 script: coverage run --source=cellcounter --omit='*migrations*' manage.py test
