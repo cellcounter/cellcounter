@@ -17,7 +17,8 @@ DEFAULT_DATABASE_URL = "sqlite:///%s" % os.path.join(PROJECT_DIR, 'db.sqlite3')
 
 if TEST:
     # Need to disable rate limiting for test purposes
-    DEFAULT_DATABASE_URL = 'sqlite://:memory:'
+    if not bool(os.environ.get('TRAVIS', False)):
+        DEFAULT_DATABASE_URL = 'sqlite://:memory:'
     RATELIMIT_ENABLE = False
 
 # Change default address if env-var is set
