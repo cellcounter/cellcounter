@@ -1,25 +1,17 @@
 from django.http import HttpResponse
-from django.core.cache import cache
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.generic import TemplateView, ListView, DetailView
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from rest_framework.generics import ListAPIView
 from PIL import Image
 
 from .models import CellType, CellImage
 from .serializers import CellTypeSerializer
 
 
-class CellTypesListView(APIView):
-    def get(self, request):
-        data = cache.get('cell_types')
-        if not data:
-            cell_types = CellType.objects.all().order_by('id')
-            serializer = CellTypeSerializer(cell_types, many=True)
-            data = serializer.data
-            cache.set('cell_types', data, 7200)
-        return Response(data)
+class CellTypesListView(ListAPIView):
+    queryset = CellType.objects.all().order_by('id')
+    serializer_class = CellTypeSerializer
 
 
 class NewCountTemplateView(TemplateView):
