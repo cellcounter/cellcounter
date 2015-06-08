@@ -3,10 +3,10 @@ Pillow==2.8.1
 dj-database-url==0.3.0
 django-colorful==1.0.1
 django-braces==1.8.0
-djangorestframework==3.1.1
+djangorestframework==3.1.2
 django-compressor==1.5
 django-pylibmc==0.6.0
-pylibmc==1.4.2
+pylibmc==1.4.3
 pytz==2015.2
 psycopg2==2.6
 uWSGI==2.0.10
