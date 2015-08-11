@@ -1,3 +1,4 @@
+import sys
 from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
 from django.views.generic import FormView, UpdateView, DetailView, DeleteView
@@ -13,30 +14,39 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.utils.safestring import mark_safe
 from django.contrib import messages
 from braces.views import LoginRequiredMixin
-from ratelimit import UNSAFE
 from ratelimit.utils import is_ratelimited
 from ratelimit.mixins import RatelimitMixin
+from ratelimit.exceptions import Ratelimited
 
 from .forms import EmailUserCreationForm, PasswordResetForm
 
 
-class RateLimitedFormView(RatelimitMixin, FormView):
+class RateLimitedFormView(FormView):
     ratelimit_key = 'ip'
     ratelimit_block = True
     ratelimit_rate = '1/h'
-    ratelimit_method = UNSAFE
+    ratelimit_group = None
 
-    def form_valid(self, form):
-        is_ratelimited(request=self.request, increment=True, **self.get_ratelimit_config())
-        return super(RateLimitedFormView, self).form_valid(form)
+    def dispatch(self, *args, **kwargs):
+        print "Request dispatch"
+        ratelimited = is_ratelimited(request=self.request,
+                                     group=self.ratelimit_group,
+                                     key=self.ratelimit_key,
+                                     rate=self.ratelimit_rate,
+                                     increment=False)
+        print ratelimited
+        print self.ratelimit_block
+        print self.ratelimit_group
+        print self.ratelimit_rate
+        if ratelimited and self.ratelimit_block:
+            raise Ratelimited()
+        return super(RateLimitedFormView, self).dispatch(*args, **kwargs)
 
 
 class RegistrationView(RateLimitedFormView):
     template_name = 'accounts/register.html'
     form_class = EmailUserCreationForm
-
-    def post(self, request, *args, **kwargs):
-        return super(RegistrationView, self).post(request, *args, **kwargs)
+    ratelimit_group = 'registration'
 
     def form_valid(self, form):
         user = form.save()
@@ -47,10 +57,12 @@ class RegistrationView(RateLimitedFormView):
         user = authenticate(username=form.cleaned_data['username'],
                             password=form.cleaned_data['password1'])
         login(self.request, user)
-        return HttpResponseRedirect(reverse('new_count'))
+        is_ratelimited(request=self.request, group=self.ratelimit_group, key=self.ratelimit_key,
+                       rate=self.ratelimit_rate, increment=True)
+        return super(RegistrationView, self).form_valid(form)
 
-    def form_invalid(self, form):
-        return super(RegistrationView, self).form_invalid(form)
+    def get_success_url(self):
+        return reverse('new_count')
 
 
 class PasswordChangeView(LoginRequiredMixin, FormView):
@@ -117,10 +129,13 @@ class UserUpdateView(UpdateView):
         return reverse('user-detail', kwargs={'pk': self.kwargs['pk']})
 
 
-class PasswordResetView(RateLimitedFormView):
+class PasswordResetView(RatelimitMixin, FormView):
     template_name = 'accounts/reset_form.html'
     form_class = PasswordResetForm
     ratelimit_rate = '5/h'
+    ratelimit_group = 'pwdreset'
+    ratelimit_key = 'ip'
+    ratelimit_block = True
 
     def post(self, request, *args, **kwargs):
         return super(PasswordResetView, self).post(request, *args, **kwargs)
@@ -128,10 +143,10 @@ class PasswordResetView(RateLimitedFormView):
     def form_valid(self, form):
         form.save(request=self.request)
         messages.success(self.request, 'Reset email sent')
-        return HttpResponseRedirect(reverse('new_count'))
+        return super(PasswordResetView, self).form_valid(form)
 
-    def form_invalid(self, form):
-        return super(PasswordResetView, self).form_invalid(form)
+    def get_success_url(self):
+        return reverse('new_count')
 
 
 class PasswordResetConfirmView(FormView):
