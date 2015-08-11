@@ -1,4 +1,3 @@
-import sys
 from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
 from django.views.generic import FormView, UpdateView, DetailView, DeleteView
