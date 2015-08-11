@@ -123,6 +123,15 @@ $(document).ready(function() {
             }
 
             if (total > 0) {
+                if (total > 75) {
+                    $.ajax({
+                        url: '/api/stats/',
+                        type: 'POST',
+                        data: JSON.stringify({"count_total": total}),
+                        contentType: "application/json; charset=utf-8",
+                        async: true
+                    });
+                }
                 display_stats(total);
             }
 
@@ -430,19 +439,6 @@ function register_resets() {
         $("#confirm-reset").modal("show");
     });
     $('#reset-count').on('click', function() {
-        var count_total = 0;
-        for (var i=0; i < count_data.length; i++) {
-            count_total += count_data[i].abnormal;
-            count_total += count_data[i].count;
-        }
-
-        $.ajax({
-            url: '/api/stats/',
-            type: 'POST',
-            data: JSON.stringify({"count_total": count_total}),
-            contentType: "application/json; charset=utf-8",
-            async: true
-        });
         reset_counters();
         $("#confirm-reset").modal("hide");
     });
