@@ -4,7 +4,8 @@ python:
 
 sudo: False
 
-services: postgresql
+addons:
+    postgresql: "9.3"
 
 # command to install dependencies
 install:
