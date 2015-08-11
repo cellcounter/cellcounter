@@ -8,6 +8,7 @@ from django.test.utils import override_settings
 from django.utils.translation import ugettext as _
 from django.test.client import RequestFactory
 from django.contrib.auth.models import User
+from django.core.cache import cache
 
 from cellcounter.cc_kapi.factories import UserFactory, KeyboardFactory
 from cellcounter.cc_kapi.models import Keyboard
@@ -64,14 +65,26 @@ class RegistrationViewTest(TestCase):
         self.assertEqual(response.context['user'].username, 'Example')
 
     @override_settings(RATELIMIT_ENABLE=True)
-    def test_ratelimit(self):
+    def test_ratelimit_registration(self):
+        cache.clear()
         self.client.post(reverse('register'), self.full_form)
         self.client.logout()
         form_data = self.full_form
         form_data['username'] = 'Another'
+        self.client.post(reverse('register'), form_data, follow=True)
+        self.client.logout()
+        form_data = self.full_form
+        form_data['username'] = 'Another2'
         response = self.client.post(reverse('register'), form_data, follow=True)
         self.assertNotIn('Successfully registered', response.content)
         self.assertIn('You have been rate limited', response.content)
+
+    @override_settings(RATELIMIT_ENABLE=True)
+    def test_ratelimit_invalid_form(self):
+        cache.clear()
+        self.client.post(reverse('register'), self.invalid_email)
+        response = self.client.post(reverse('register'), self.invalid_email, follow=True)
+        self.assertNotIn('You have been rate limited', response.content)
 
 
 class PasswordChangeViewTest(WebTest):
@@ -306,16 +319,8 @@ class PasswordReset(TestCase):
         for n in range(0, 5):
             self.client.post(reverse('password-reset'), data={'email': self.user.email}, follow=True)
         response = self.client.post(reverse('password-reset'), data={'email': self.user.email}, follow=True)
-        for message in response.context['messages']:
-            self.assertEqual('error', message.tags)
-            self.assertEqual('You have been rate limited', message.message)
-
-    @override_settings(RATELIMIT_ENABLE=True)
-    def test_integration_invalid_reset_ratelimit(self):
-        for n in range(0, 5):
-            self.client.post(reverse('password-reset'), data={'email': 'Invalid Email'})
-        response = self.client.post(reverse('password-reset'), data={'email': 'Invalid Email'})
-        self.assertNotIn('You have been rate limited', response.content)
+        self.assertIn('You have been rate limited', response.content)
+        cache.clear()
 
     def test_confirm_valid(self):
         url, path = self._test_confirm_start(self.user)
