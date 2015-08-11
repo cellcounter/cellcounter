@@ -153,6 +153,7 @@ INSTALLED_APPS = (
     'cellcounter.main',
     'cellcounter.cc_kapi',
     'cellcounter.accounts',
+    'cellcounter.statistics'
 )
 
 CACHES = {'default': {}}
