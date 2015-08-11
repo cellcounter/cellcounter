@@ -2,12 +2,15 @@ language: python
 python:
   - "2.7"
 
-services: postgresql
+sudo: False
+
+addons:
+    postgresql: "9.1"
 
 # command to install dependencies
 install:
-    - pip install --allow-all-external -r requirements.txt
-    - pip install --allow-all-external -r test-requirements.txt
+    - pip install -r requirements.txt
+    - pip install -r test-requirements.txt
     - pip install coveralls
 
 env: 
