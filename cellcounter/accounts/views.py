@@ -1,4 +1,3 @@
-import sys
 from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
 from django.views.generic import FormView, UpdateView, DetailView, DeleteView
@@ -28,16 +27,11 @@ class RateLimitedFormView(FormView):
     ratelimit_group = None
 
     def dispatch(self, *args, **kwargs):
-        print "Request dispatch"
         ratelimited = is_ratelimited(request=self.request,
                                      group=self.ratelimit_group,
                                      key=self.ratelimit_key,
                                      rate=self.ratelimit_rate,
                                      increment=False)
-        print ratelimited
-        print self.ratelimit_block
-        print self.ratelimit_group
-        print self.ratelimit_rate
         if ratelimited and self.ratelimit_block:
             raise Ratelimited()
         return super(RateLimitedFormView, self).dispatch(*args, **kwargs)
