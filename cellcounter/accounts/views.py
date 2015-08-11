@@ -13,16 +13,28 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.utils.safestring import mark_safe
 from django.contrib import messages
 from braces.views import LoginRequiredMixin
+from ratelimit import UNSAFE
+from ratelimit.utils import is_ratelimited
+from ratelimit.mixins import RatelimitMixin
 
 from .forms import EmailUserCreationForm, PasswordResetForm
-from .decorators import post_ratelimit
 
 
-class RegistrationView(FormView):
+class RateLimitedFormView(RatelimitMixin, FormView):
+    ratelimit_key = 'ip'
+    ratelimit_block = True
+    ratelimit_rate = '1/h'
+    ratelimit_method = UNSAFE
+
+    def form_valid(self, form):
+        is_ratelimited(request=self.request, increment=True, **self.get_ratelimit_config())
+        return super(RateLimitedFormView, self).form_valid(form)
+
+
+class RegistrationView(RateLimitedFormView):
     template_name = 'accounts/register.html'
     form_class = EmailUserCreationForm
 
-    @method_decorator(post_ratelimit(block=True, rate='1/h'))
     def post(self, request, *args, **kwargs):
         return super(RegistrationView, self).post(request, *args, **kwargs)
 
@@ -35,10 +47,10 @@ class RegistrationView(FormView):
         user = authenticate(username=form.cleaned_data['username'],
                             password=form.cleaned_data['password1'])
         login(self.request, user)
-        return HttpResponseRedirect(reverse('new_count')), True
+        return HttpResponseRedirect(reverse('new_count'))
 
     def form_invalid(self, form):
-        return super(RegistrationView, self).form_invalid(form), False
+        return super(RegistrationView, self).form_invalid(form)
 
 
 class PasswordChangeView(LoginRequiredMixin, FormView):
@@ -105,21 +117,21 @@ class UserUpdateView(UpdateView):
         return reverse('user-detail', kwargs={'pk': self.kwargs['pk']})
 
 
-class PasswordResetView(FormView):
+class PasswordResetView(RateLimitedFormView):
     template_name = 'accounts/reset_form.html'
     form_class = PasswordResetForm
+    ratelimit_rate = '5/h'
 
-    @method_decorator(post_ratelimit(block=True, rate='5/h'))
     def post(self, request, *args, **kwargs):
         return super(PasswordResetView, self).post(request, *args, **kwargs)
 
     def form_valid(self, form):
         form.save(request=self.request)
         messages.success(self.request, 'Reset email sent')
-        return HttpResponseRedirect(reverse('new_count')), True
+        return HttpResponseRedirect(reverse('new_count'))
 
     def form_invalid(self, form):
-        return super(PasswordResetView, self).form_invalid(form), False
+        return super(PasswordResetView, self).form_invalid(form)
 
 
 class PasswordResetConfirmView(FormView):
