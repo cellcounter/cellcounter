@@ -535,8 +535,10 @@ function display_stats(total, format) {
         display_stats(total, 'TEXT');
     });
 
+    var stats_text = '';
+
     if (format === 'HTML') {
-        var stats_text = '<h3>Count statistics</h3><table class="table table-bordered table-striped">';
+        stats_text = '<h3>Count statistics</h3><table class="table table-bordered table-striped">';
         stats_text += '<tr><td colspan="2" class="celltypes">Cells Counted</td><td>' + total + '</td><td class="table_spacer" colspan="3"></td></tr>';
         stats_text += '<tr><td colspan="2" class="celltypes">ME ratio *</td><td>' + me_ratio + '</td><td class="table_spacer" colspan="3"></td></tr>';
         stats_text += '<tr><th colspan="2" style="width: 30%"></th><th>% Total</th><th class="abnormal_stats">% of CellType Abnormal</th><th>Normal</th><th class="abnormal_stats">Abnormal</th></tr>';
@@ -546,7 +548,7 @@ function display_stats(total, format) {
         stats_div.append(stats_text);
         $("#visualise2").css("display", "block");
     } else {
-        var stats_text = '<pre class="stats"><code>';
+        stats_text = '<pre class="stats"><code>';
         stats_text += 'Cells Counted: ' + total + '\n';
         stats_text += 'M:E Ratio: ' + me_ratio + '\n';
         stats_text += per;
@@ -564,7 +566,7 @@ function display_stats(total, format) {
 }
 
 function log_stats(total) {
-    use strict;
+    "use strict";
     if (total > 75) {
         $.ajax({
             url: '/api/stats/',
