@@ -5,3 +5,4 @@ from .models import CountInstance
 class CountInstanceSerializer(ModelSerializer):
     class Meta:
         model = CountInstance
+        fields = ('count_total',)
