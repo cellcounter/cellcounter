@@ -221,3 +221,6 @@ REST_FRAMEWORK = {
 }
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
+# Store session cookies for 1 week only
+SESSION_COOKIE_AGE = 604800
