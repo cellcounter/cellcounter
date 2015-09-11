@@ -4,7 +4,7 @@ from rest_framework.permissions import BasePermission
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.response import Response
 
-from .serializers import CountInstanceSerializer
+from .serializers import CountInstanceCreateSerializer, CountInstanceModelSerializer
 from .models import CountInstance
 
 SAFE_METHODS = ['GET', 'HEAD', 'OPTIONS']
@@ -29,12 +29,12 @@ class CountInstanceAnonThrottle(AnonRateThrottle):
 
 class ListCreateCountInstanceAPI(ListCreateAPIView):
     permission_classes = (OpenPostStaffGet,)
-    serializer_class = CountInstanceSerializer
+    serializer_class = CountInstanceModelSerializer
     queryset = CountInstance.objects.all()
     throttle_classes = (CountInstanceAnonThrottle,)
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = CountInstanceCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         if self.request.user.is_authenticated():
             user = self.request.user

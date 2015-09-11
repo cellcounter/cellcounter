@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.test import TestCase, RequestFactory
+from django.shortcuts import render
 
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
@@ -100,6 +101,19 @@ class TestCountInstanceAPI(APITestCase):
         request = factory.options('/')
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_authenticated_get(self):
+        instance = CountInstance.objects.create(user=self.user,
+                                                session_id='a',
+                                                count_total=100,
+                                                ip_address="127.0.0.1")
+        request = factory.get('/')
+        force_authenticate(request, user=self.staff_user)
+        response = view(request)
+        response.render()
+        self.assertEqual(response.data[0]['session_id'], instance.session_id)
+        self.assertEqual(response.data[0]['count_total'], instance.count_total)
+        self.assertEqual(response.data[0]['ip_address'], instance.ip_address)
 
     def test_ratelimit_exceeded(self):
         request = factory.post('/', {'count_total': 100}, format='json')
