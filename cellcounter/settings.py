@@ -98,7 +98,8 @@ TEMPLATE_LOADERS = (
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    'cellcounter.statistics.middleware.StatsSessionMiddleware',
+    # 'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -153,6 +154,7 @@ INSTALLED_APPS = (
     'cellcounter.main',
     'cellcounter.cc_kapi',
     'cellcounter.accounts',
+    'cellcounter.statistics'
 )
 
 CACHES = {'default': {}}
@@ -219,3 +221,8 @@ REST_FRAMEWORK = {
 }
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
+# Store session cookies for 1 week only
+SESSION_COOKIE_AGE = 604800
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
