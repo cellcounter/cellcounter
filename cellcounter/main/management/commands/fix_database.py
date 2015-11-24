@@ -72,7 +72,7 @@ class Command(BaseCommand):
                     old_keymap_key = old_keymap_tuple['key']
                     cell = CellType.objects.get(id=old_keymap_tuple['cellid_id'])
 
-                    new_keymap = KeyMap.objects.get_or_create(key=old_keymap_key, cellid=cell)
+                    new_keymap = KeyMap.objects.get_or_create(key=old_keymap_key, cellid=cell)[0]
                     new_maps.append(new_keymap)
 
                 new_keyboard.set_keymaps(new_maps)
