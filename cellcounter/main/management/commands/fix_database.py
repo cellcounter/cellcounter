@@ -99,8 +99,8 @@ class Command(BaseCommand):
             new_user = User.objects.get(username=old_username)
             new_copyrightholder = CopyrightHolder.objects.create(name=old_copyrightholder_tuple['name'],
                                                                  link_title=old_copyrightholder_tuple['link_title'],
-                                                                 link_url=old_copyrightholder_tuple['link_url'],
-                                                                 user=new_user)
+                                                                 link_url=old_copyrightholder_tuple['link_url'])
+            new_copyrightholder.user.add(new_user)
 
         # Migrate over CellImages
 
