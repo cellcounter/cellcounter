@@ -73,3 +73,5 @@ class Command(BaseCommand):
                     new_maps.append(new_keymap)
 
                 new_keyboard.set_keymaps(new_maps)
+
+        conn.close()
