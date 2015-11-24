@@ -1,13 +1,13 @@
-Django==1.8.5
+Django==1.8.6
 Pillow==3.0.0
 dj-database-url==0.3.0
 django-colorful==1.1.0
 django-braces==1.8.1
-djangorestframework==3.2.4
-django-compressor==1.5
+djangorestframework==3.3.1
+django-compressor==1.6
 django-pylibmc==0.6.0
 pylibmc==1.5.0
-pytz==2015.6
+pytz==2015.7
 psycopg2==2.6.1
 uWSGI==2.0.11.2
 wsgiref==0.1.2
