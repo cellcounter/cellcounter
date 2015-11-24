@@ -41,7 +41,8 @@ class Command(BaseCommand):
             is_superuser = user_tuple['is_superuser']
 
             new_user = User.objects.create_user(username=username, email=email, password=password,
-                                                first_name=first_name, last_name=last_name, date_joined=date_joined)
+                                                first_name=first_name, last_name=last_name)
+            new_user.date_joined = date_joined
             new_user.is_staff = is_staff
             new_user.is_superuser = is_superuser
             new_user.save()
