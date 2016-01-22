@@ -32,10 +32,11 @@ class TestRegistrationView(TestCase):
         data = {'username': '123', 'email': 'joe@example.org', 'password1': 'test', 'password2': 'test', 'tos': True}
         response = self.client.post(reverse('register'), data=data, follow=True)
         self.assertRedirects(response, reverse('new_count'))
-        messages = list(response.context['messages'])
-        self.assertEqual("Successfully registered, you are now logged in! <a href='/accounts/1/'>View your profile</a>",
-                         messages[0].message)
         user = User.objects.get(username='123')
+        messages = list(response.context['messages'])
+        self.assertEqual("Successfully registered, you are now logged in! <a href='/accounts/%s/'>View your profile</a>"
+                         % user.id,
+                         messages[0].message)
         self.assertEqual(user, response.context['user'])
 
     def test_invalid(self):
