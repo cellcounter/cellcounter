@@ -1,21 +1,21 @@
-from django.http import HttpResponseRedirect
-from django.core.exceptions import PermissionDenied
-from django.views.generic import FormView, UpdateView, DetailView, DeleteView
+from braces.views import LoginRequiredMixin
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import PasswordChangeForm
-from django.utils.http import urlsafe_base64_decode
-from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
-from django.utils.decorators import method_decorator
-from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.forms import SetPasswordForm
-from django.views.decorators.debug import sensitive_post_parameters
+from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
+from django.core.exceptions import PermissionDenied
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
+from django.utils.decorators import method_decorator
+from django.utils.http import urlsafe_base64_decode
 from django.utils.safestring import mark_safe
-from django.contrib import messages
-from braces.views import LoginRequiredMixin
-from ratelimit.utils import is_ratelimited
-from ratelimit.mixins import RatelimitMixin
+from django.views.decorators.debug import sensitive_post_parameters
+from django.views.generic import FormView, UpdateView, DetailView, DeleteView
 from ratelimit.exceptions import Ratelimited
+from ratelimit.mixins import RatelimitMixin
+from ratelimit.utils import is_ratelimited
 
 from .forms import EmailUserCreationForm, PasswordResetForm
 
@@ -74,7 +74,7 @@ class PasswordChangeView(LoginRequiredMixin, FormView):
         return HttpResponseRedirect(reverse('new_count'))
 
 
-class UserDetailView(DetailView):
+class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
     context_object_name = 'user_detail'
     template_name = 'accounts/user_detail.html'
@@ -91,7 +91,7 @@ class UserDetailView(DetailView):
         return context
 
 
-class UserDeleteView(DeleteView):
+class UserDeleteView(LoginRequiredMixin, DeleteView):
     model = User
     context_object_name = 'user_object'
     template_name = 'accounts/user_check_delete.html'
@@ -107,7 +107,7 @@ class UserDeleteView(DeleteView):
         return reverse('new_count')
 
 
-class UserUpdateView(UpdateView):
+class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = User
     fields = ['first_name', 'last_name', 'email', ]
     template_name = 'accounts/user_update.html'
@@ -131,13 +131,14 @@ class PasswordResetView(RatelimitMixin, FormView):
     ratelimit_key = 'ip'
     ratelimit_block = True
 
-    def post(self, request, *args, **kwargs):
-        return super(PasswordResetView, self).post(request, *args, **kwargs)
-
     def form_valid(self, form):
         form.save(request=self.request)
         messages.success(self.request, 'Reset email sent')
         return super(PasswordResetView, self).form_valid(form)
+
+    def form_invalid(self, form):
+        """Don't expose form errors to the user"""
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse('new_count')
@@ -151,27 +152,42 @@ class PasswordResetConfirmView(FormView):
     def dispatch(self, request, *args, **kwargs):
         return super(PasswordResetConfirmView, self).dispatch(request, *args, **kwargs)
 
-    def get_user(self, uidb64):
+    @staticmethod
+    def valid_user(uidb64):
         try:
             uid = urlsafe_base64_decode(uidb64)
             user = User.objects.get(pk=uid)
         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-            user = None
+            return None
         return user
 
-    def get(self, request, *args, **kwargs):
-        assert self.kwargs['uidb64'] is not None and self.kwargs['token'] is not None
-        user = self.get_user(self.kwargs['uidb64'])
+    @staticmethod
+    def valid_token(user, token):
+        if user is not None:
+            return default_token_generator.check_token(user, token)
+        else:
+            return False
 
-        if user is not None and default_token_generator.check_token(user, self.kwargs['token']):
+    def _valid_inputs(self, uidb64, token):
+        self.user_object = self.valid_user(uidb64)
+        return self.valid_token(self.user_object, token)
+
+    def get(self, request, *args, **kwargs):
+        if self._valid_inputs(self.kwargs['uidb64'], self.kwargs['token']):
             form = self.get_form(self.get_form_class())
             return self.render_to_response(self.get_context_data(form=form, validlink=True))
         else:
             return self.render_to_response(self.get_context_data(validlink=False))
 
+    def post(self, request, *args, **kwargs):
+        if self._valid_inputs(self.kwargs['uidb64'], self.kwargs['token']):
+            return super(PasswordResetConfirmView, self).post(request, *args, **kwargs)
+        else:
+            return self.render_to_response(self.get_context_data(validlink=False))
+
     def get_form_kwargs(self):
         kwargs = super(PasswordResetConfirmView, self).get_form_kwargs()
-        kwargs['user'] = self.get_user(self.kwargs['uidb64'])
+        kwargs['user'] = self.user_object
         return kwargs
 
     def form_valid(self, form):
