@@ -487,8 +487,19 @@ function display_stats(total, format) {
     for (i=0; i < count_data.length; i++) {
         cell_total = count_data[i].count + count_data[i].abnormal;
         cell_percent = parseFloat(cell_total / total * 100).toFixed(0);
+
+        if (cell_percent === "0" && cell_total > 0) {
+            cell_percent = "<1";
+        }
+
         if (cell_total !== 0) {
-            cell_percent_abnormal = parseFloat(count_data[i].abnormal / cell_total * 100).toFixed(0) + "%";
+            var cell_percent_abnormal_number = parseFloat(count_data[i].abnormal / cell_total * 100).toFixed(0);
+
+            if (cell_percent_abnormal_number === "0" && count_data[i].abnormal > 0) {
+                cell_percent_abnormal = "<1%";
+            } else {
+                cell_percent_abnormal = cell_percent_abnormal_number + "%";
+            }
         } else {
             cell_percent_abnormal = "N/A";
         }
