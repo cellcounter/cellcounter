@@ -472,11 +472,11 @@ function open_keyboard() {
     chart.render();
 }
 
-function display_stats(total, format) {
+function display_stats(count_total, format) {
     "use strict";
     var erythroid, i, j, cell_total, cell_percent, cell_percent_abnormal;
     var per="";
-    var abnormal_total=0;
+    var abnormal_total = 0;
     var stats_div = $('div#statistics');
     format = typeof format !== 'undefined' ? format: 'HTML';
 
@@ -486,18 +486,36 @@ function display_stats(total, format) {
 
     for (i=0; i < count_data.length; i++) {
         cell_total = count_data[i].count + count_data[i].abnormal;
-        cell_percent = parseFloat(cell_total / total * 100).toFixed(0);
+        cell_percent = Math.round(((cell_total / count_total) * 100));
+        cell_percent_abnormal = 0;
+
         if (cell_total !== 0) {
-            cell_percent_abnormal = parseFloat(count_data[i].abnormal / cell_total * 100).toFixed(0) + "%";
-        } else {
-            cell_percent_abnormal = "N/A";
+            cell_percent_abnormal = Math.round(((count_data[i].abnormal / cell_total) * 100));
         }
-        if (format === 'HTML') {
-            per += '<tr><td class="celltypes">' + count_data[i].readable_name + '</td><td class="ignore" style="background-color:' + count_data[i].visualisation_colour + '"></td><td>' + cell_percent + "%</td><td class=\"abnormal_stats\">" + cell_percent_abnormal + '</td><td>' + count_data[i].count + '</td><td class="abnormal_count abnormal_stats">' + count_data[i].abnormal + '</td></tr>';
+
+        var cell_percent_string = '';
+        var cell_percent_abnormal_string = '';
+
+        if (count_data[i].abnormal === 0) {
+            cell_percent_abnormal_string = 'N/A';
+        } else if (cell_percent_abnormal === 0 && count_data[i].abnormal > 0) {
+            cell_percent_abnormal_string = '<0.5%';
         } else {
-            per += count_data[i].readable_name + ' ' + cell_percent + '%';
+            cell_percent_abnormal_string = cell_percent_abnormal.toString() + '%';
+        }
+
+        if (cell_percent === 0 && cell_total > 0) {
+            cell_percent_string = '<0.5%';
+        } else {
+            cell_percent_string = cell_percent.toString() + '%';
+        }
+
+        if (format === 'HTML') {
+            per += '<tr><td class="celltypes">' + count_data[i].readable_name + '</td><td class="ignore" style="background-color:' + count_data[i].visualisation_colour + '"></td><td>' + cell_percent_string + "</td><td class=\"abnormal_stats\">" + cell_percent_abnormal_string + '</td><td>' + count_data[i].count + '</td><td class="abnormal_count abnormal_stats">' + count_data[i].abnormal + '</td></tr>';
+        } else {
+            per += count_data[i].readable_name + ' ' + cell_percent_string;
             if (abnormal_total > 0) {
-                per += ', abnormal ' + cell_percent_abnormal + '\n';
+                per += ', abnormal ' + cell_percent_abnormal_string + '\n';
             } else {
                 per += '\n';
             }
@@ -529,17 +547,17 @@ function display_stats(total, format) {
     }
     stats_div.empty().append('<div id="output_style">Format output: <button id="htmlview" class="btn">HTML</button><button id="textview" class="btn">Text</button></div>');
     $('#htmlview').click(function() {
-        display_stats(total, 'HTML');
+        display_stats(count_total, 'HTML');
     });
     $('#textview').click(function() {
-        display_stats(total, 'TEXT');
+        display_stats(count_total, 'TEXT');
     });
 
     var stats_text = '';
 
     if (format === 'HTML') {
         stats_text = '<h3>Count statistics</h3><table class="table table-bordered table-striped">';
-        stats_text += '<tr><td colspan="2" class="celltypes">Cells Counted</td><td>' + total + '</td><td class="table_spacer" colspan="3"></td></tr>';
+        stats_text += '<tr><td colspan="2" class="celltypes">Cells Counted</td><td>' + count_total + '</td><td class="table_spacer" colspan="3"></td></tr>';
         stats_text += '<tr><td colspan="2" class="celltypes">ME ratio *</td><td>' + me_ratio + '</td><td class="table_spacer" colspan="3"></td></tr>';
         stats_text += '<tr><th colspan="2" style="width: 30%"></th><th>% Total</th><th class="abnormal_stats">% of CellType Abnormal</th><th>Normal</th><th class="abnormal_stats">Abnormal</th></tr>';
         stats_text += per;
@@ -549,7 +567,7 @@ function display_stats(total, format) {
         $("#visualise2").css("display", "block");
     } else {
         stats_text = '<pre class="stats"><code>';
-        stats_text += 'Cells Counted: ' + total + '\n';
+        stats_text += 'Cells Counted: ' + count_total + '\n';
         stats_text += 'M:E Ratio: ' + me_ratio + '\n';
         stats_text += per;
         stats_text += '</code></pre>';
