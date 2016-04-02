@@ -1,13 +1,15 @@
-import factory
 import string
+
+import factory
 from django.contrib.auth.models import User
 
 from cellcounter.main.models import CellType
 from .models import Keyboard, KeyMap
 
 
-class UserFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = User
+class UserFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = User
 
     username = factory.Sequence(lambda n: "test%s" % n)
     first_name = factory.Sequence(lambda n: "test%s" % n)
@@ -21,7 +23,8 @@ class UserFactory(factory.DjangoModelFactory):
 
 
 class KeyboardFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = Keyboard
+    class Meta:
+        model = Keyboard
 
     user = factory.SubFactory(UserFactory)
     label = 'Test'
@@ -44,5 +47,7 @@ class KeyboardFactory(factory.DjangoModelFactory):
 
 
 class KeyMapFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = KeyMap
+    class Meta:
+        model = KeyMap
+
     key = 'a'

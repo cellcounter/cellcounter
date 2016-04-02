@@ -1,5 +1,5 @@
 Django==1.9.5
-Pillow==3.1.1
+Pillow==3.2.0
 dj-database-url==0.4.0
 django-colorful==1.1.0
 django-braces==1.8.1
