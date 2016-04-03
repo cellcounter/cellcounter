@@ -179,10 +179,16 @@ if 'ENABLE_DJANGO_LOGGING' in os.environ:
                 'format': '%(levelname)s %(asctime)s %(module)s %(funcName)s %(lineno)d %(message)s'
             }
         },
+        'filters': {
+            'require_debug_false': {
+                '()': 'django.utils.log.RequireDebugFalse'
+            }
+        },
         'handlers': {
             'mail_admins': {
                 'level': 'ERROR',
-                'class': 'django.utils.log.AdminEmailHandler'
+                'class': 'django.utils.log.AdminEmailHandler',
+                'filters': ['require_debug_false'],
             },
             'logfile': {
                 'class': 'logging.handlers.WatchedFileHandler',
