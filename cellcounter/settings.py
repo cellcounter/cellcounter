@@ -118,7 +118,7 @@ SECURE_REQUIRED_PATHS = (
     # '/accounts/',
 )
 
-ALLOWED_HOSTS = ['.cellcountr.com']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 ROOT_URLCONF = 'cellcounter.urls'
 
