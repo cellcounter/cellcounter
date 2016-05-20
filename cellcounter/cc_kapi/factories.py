@@ -25,7 +25,7 @@ class KeyboardFactory(factory.DjangoModelFactory):
 
     user = factory.SubFactory(UserFactory)
     label = 'Test'
-    is_primary = False
+    default = False
 
     @factory.post_generation
     def add_maps(self, create, extracted, **kwargs):

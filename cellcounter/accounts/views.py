@@ -87,7 +87,7 @@ class UserDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(UserDetailView, self).get_context_data(**kwargs)
-        context['keyboards'] = self.object.keyboard_set.all().order_by('-is_primary')
+        context['keyboards'] = self.object.keyboard_set.all().order_by('-default')
         return context
 
 
