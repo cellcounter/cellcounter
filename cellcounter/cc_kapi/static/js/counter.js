@@ -853,7 +853,7 @@ function load_keyboard (keyboard_id) {
 
 function set_keyboard_primary (keyboard_id) {
     var keyboard = load_keyboard(keyboard_id);
-    keyboard.is_primary = true;
+    keyboard.is_default = true;
     save_keyboard(keyboard);
     return false;
 }

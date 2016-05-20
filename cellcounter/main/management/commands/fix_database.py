@@ -54,7 +54,7 @@ class Command(BaseCommand):
             for keyboard_tuple in user_keyboards:
                 old_keyboard_id = keyboard_tuple['id']
                 old_label = keyboard_tuple['label']
-                default = keyboard_tuple['default']
+                is_default = keyboard_tuple['is_default']
                 created = keyboard_tuple['created']
 
                 new_keyboard = Keyboard.objects.create(user=new_user, label=old_label, is_primary=is_primary,

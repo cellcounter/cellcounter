@@ -21,19 +21,19 @@ class KeyboardTestCase(TestCase):
     def test_set_primary_self(self):
         keyboard = KeyboardFactory(add_maps=False)
         keyboard.set_primary()
-        self.assertTrue(Keyboard.objects.get(id=keyboard.id).default)
+        self.assertTrue(Keyboard.objects.get(id=keyboard.id).is_default)
 
     def test_set_primary_other(self):
         user = UserFactory()
-        keyboard1 = KeyboardFactory(user=user, default=True, add_maps=False)
+        keyboard1 = KeyboardFactory(user=user, is_default=True, add_maps=False)
         keyboard2 = KeyboardFactory(user=user, add_maps=False)
 
-        self.assertTrue(keyboard1.default)
-        self.assertFalse(Keyboard.objects.get(id=keyboard2.id).default)
+        self.assertTrue(keyboard1.is_default)
+        self.assertFalse(Keyboard.objects.get(id=keyboard2.id).is_default)
 
         keyboard2.set_primary()
-        self.assertTrue(Keyboard.objects.get(id=keyboard2.id).default)
-        self.assertFalse(Keyboard.objects.get(id=keyboard1.id).default)
+        self.assertTrue(Keyboard.objects.get(id=keyboard2.id).is_default)
+        self.assertFalse(Keyboard.objects.get(id=keyboard1.id).is_default)
 
     def test_delete_no_primary(self):
         keyboard = KeyboardFactory(add_maps=False)
@@ -42,16 +42,16 @@ class KeyboardTestCase(TestCase):
 
     def test_delete_change_primary(self):
         user = UserFactory()
-        keyboard1 = KeyboardFactory(user=user, default=True, add_maps=False)
+        keyboard1 = KeyboardFactory(user=user, is_default=True, add_maps=False)
         keyboard2 = KeyboardFactory(user=user, add_maps=False)
 
         keyboard1.delete()
         self.assertEqual(len(Keyboard.objects.all()), 1)
-        self.assertTrue(Keyboard.objects.get(id=keyboard2.id).default)
+        self.assertTrue(Keyboard.objects.get(id=keyboard2.id).is_default)
 
     def test_set_keymaps(self):
         user = UserFactory()
-        keyboard = KeyboardFactory(user=user, default=True)
+        keyboard = KeyboardFactory(user=user, is_default=True)
         number_old_maps = len(keyboard.mappings.all())
         new_maps = [KeyMapFactory(cellid=CellType.objects.get(id=1))]
         keyboard.set_keymaps(new_maps)
@@ -65,7 +65,7 @@ class DefaultKeyboardAPITest(WebTest):
 
     def setUp(self):
         self.user = UserFactory()
-        self.keyboard = KeyboardFactory(default=True, user=self.user)
+        self.keyboard = KeyboardFactory(is_default=True, user=self.user)
 
     def test_get_keyboard_anon(self):
         response = self.app.get(reverse('default-keyboard'))
@@ -92,7 +92,7 @@ class KeyboardsListCreateAPITest(WebTest):
 
     def setUp(self):
         self.user = UserFactory()
-        self.keyboard = KeyboardFactory(default=True, user=self.user)
+        self.keyboard = KeyboardFactory(is_default=True, user=self.user)
 
     def test_get_anon_empty(self):
         response = self.app.get(reverse('keyboards'), status=403)
@@ -143,7 +143,7 @@ class KeyboardAPITest(WebTest):
 
     def setUp(self):
         self.user = UserFactory()
-        self.keyboard = KeyboardFactory(default=True, user=self.user)
+        self.keyboard = KeyboardFactory(is_default=True, user=self.user)
 
     def test_get_keyboard_detail_anon(self):
         response = self.app.get(reverse('keyboard-detail',
@@ -182,7 +182,7 @@ class KeyboardAPITest(WebTest):
         self.assertEqual(response.status_code, 405)
 
     def test_put_own_keyboard_logged_in(self):
-        keyboard = KeyboardFactory(user=self.user, default=False)
+        keyboard = KeyboardFactory(user=self.user, is_default=False)
         response = self.app.put(reverse('keyboard-detail', kwargs={'keyboard_id': keyboard.id}),
                                 json.dumps(MOCK_KEYBOARD),
                                 headers={'Content-Type': 'application/json'},
@@ -192,7 +192,7 @@ class KeyboardAPITest(WebTest):
 
     def test_put_anothers_keyboard_logged_in(self):
         user = UserFactory()
-        keyboard = KeyboardFactory(user=self.user, default=False)
+        keyboard = KeyboardFactory(user=self.user, is_default=False)
         response = self.app.put(reverse('keyboard-detail', kwargs={'keyboard_id': keyboard.id}),
                                 json.dumps(MOCK_KEYBOARD),
                                 headers={'Content-Type': 'application/json'},
