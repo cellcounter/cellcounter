@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 
 from cellcounter.accounts import views
 
-urlpatterns = patterns('',
+urlpatterns = [
     url('^new/$', views.RegistrationView.as_view(), name='register'),
     url('^(?P<pk>[0-9]+)/$', views.UserDetailView.as_view(), name='user-detail'),
     url('^(?P<pk>[0-9]+)/delete/$', views.UserDeleteView.as_view(), name='user-delete'),
@@ -13,4 +13,4 @@ urlpatterns = patterns('',
         views.PasswordResetConfirmView.as_view(),
         name='password-reset-confirm'),
     url('^password/change/$', views.PasswordChangeView.as_view(), name='change-password'),
-)
+]

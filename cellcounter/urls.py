@@ -6,11 +6,13 @@ from django.views.generic import TemplateView
 from django.contrib import admin
 from django.contrib.auth.views import login, logout
 
+from django.conf.urls.static import static
+
 from cellcounter.main.views import NewCountTemplateView, CellImageListView, CellTypesListView, CellImageDetailView, similar_images, thumbnail
 
 admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = [
                        url(r'^$', NewCountTemplateView.as_view(),
                            name="new_count"),
                        url(r'^discover/$', TemplateView.as_view(
@@ -45,13 +47,11 @@ urlpatterns = patterns('',
                        url(r'^privacy$', TemplateView.as_view(
                            template_name="main/privacy.html"),
                            name="privacy")
-                       )
+]
 
 urlpatterns += staticfiles_urlpatterns()
-urlpatterns += url(r'^%s(?P<path>.*)$' % settings.MEDIA_URL.strip("/"),
-                   'django.views.static.serve',
-                   {'document_root': settings.MEDIA_ROOT}),
-urlpatterns += url(r'^%s(?P<path>.*)$' % settings.STATIC_URL.strip("/"),
-                   'django.views.static.serve',
-                   {'document_root': settings.STATIC_ROOT}),
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
