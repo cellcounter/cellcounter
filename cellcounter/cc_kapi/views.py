@@ -13,7 +13,7 @@ class DefaultKeyboardView(generics.RetrieveAPIView):
     serializer_class = KeyboardSerializer
 
     def get_object(self):
-        return Keyboard.objects.get(user=self.request.user, is_primary=True)
+        return Keyboard.objects.get(user=self.request.user, default=True)
 
     def retrieve(self, request, *args, **kwargs):
         if not self.request.user.is_authenticated:

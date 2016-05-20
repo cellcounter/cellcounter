@@ -39,7 +39,7 @@ MOCK_KEYBOARD = {"mappings": [{"cellid": 1, "key": "q"},
                               {"cellid": 6, "key": "x"},
                               {"cellid": 12, "key": "c"}],
                  "created": "2013-10-22T12:15:05.118Z",
-                 "is_primary": True,
+                 "default": True,
                  "label": "Default",
                  "last_modified": "2013-10-22T12:15:13.201Z",
                  "user": None}
