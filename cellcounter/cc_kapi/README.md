@@ -1,6 +1,6 @@
-#Cellcounter Keyboard API
+# Cellcounter Keyboard API v2 
 
-##Setup
+# Setup
 
 As part of the pain Cellcounter project, the below is already done, but as a note on functionality:
 
@@ -18,3 +18,9 @@ In urls.py we have a declaration to point the keyboard api related requests to t
 Finally, in deployment, we'll need to run ```collectstatic``` in order to pull the Javascript into the main static directory.
 
     python manage.py collectstatic
+
+
+# Usage
+
+Access through api/keyboards
+
