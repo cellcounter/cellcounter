@@ -8,7 +8,7 @@ class Keyboard(models.Model):
     """Represents a Keyboard mapping between users and keys"""
     user = models.ForeignKey(User)
     label = models.CharField(max_length=25)
-    default = models.BooleanField(default=False)
+    is_default = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
     mapping_type = models.CharField(max_length=25, default='desktop')
@@ -21,12 +21,12 @@ class Keyboard(models.Model):
         and all others to False"""
         for keyboard in self.user.keyboard_set.all():
             if keyboard == self:
-                if not keyboard.default:
-                    keyboard.default = True
+                if not keyboard.is_default:
+                    keyboard.is_default = True
                     keyboard.save()
             else:
-                if keyboard.default:
-                    keyboard.default = False
+                if keyboard.is_default:
+                    keyboard.is_default = False
                     keyboard.save()
 
     def _sync_keymaps(self, new_mapping_list):
@@ -47,7 +47,7 @@ class Keyboard(models.Model):
     def delete(self):
         """Custom delete method, covering setting primary flags"""
         user = self.user
-        primary = self.default
+        primary = self.is_default
 
         super(Keyboard, self).delete()
         if primary:
@@ -59,7 +59,7 @@ class Keyboard(models.Model):
              update_fields=None):
         super(Keyboard, self).save(force_insert=False, force_update=False, using=None,
                                    update_fields=None)
-        if self.default:
+        if self.is_default:
             self.set_primary()
 
 

@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.RenameField(
             model_name='keyboard',
             old_name='is_primary',
-            new_name='default',
+            new_name='is_default',
         ),
         migrations.AddField(
             model_name='keyboard',

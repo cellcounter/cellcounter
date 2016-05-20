@@ -12,7 +12,7 @@ var first_count = true;
 var edit_cell_id = -1;
 var selected_element = {};
 var date_now = new Date(Date.now()).toISOString();
-var keyboard_map = {"label": "Default", "is_primary": true, "created": date_now,
+var keyboard_map = {"label": "Default", "is_default": true, "created": date_now,
                     "last_modified": date_now, "mappings": []};
 var key_history = [];
 var count_data = [];
@@ -630,7 +630,7 @@ function load_keyboard(keyboard_id) {
 function set_keyboard_primary(keyboard_id) {
     "use strict";
     var keyboard = load_keyboard(keyboard_id);
-    keyboard.is_primary = true;
+    keyboard.is_default = true;
     save_keyboard(keyboard);
     return false;
 }
@@ -893,7 +893,7 @@ function clear_keyboard() {
         var id = keyboard_map.id;
     }
     var date = new Date(Date.now()).toISOString();
-    keyboard_map = {"label": "Default", "is_primary": true, "created": date,
+    keyboard_map = {"label": "Default", "is_default": true, "created": date,
                     "last_modified": date, "mappings": []};
     if (typeof id !== 'undefined') {
         keyboard_map.id = id;

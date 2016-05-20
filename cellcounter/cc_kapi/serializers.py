@@ -16,7 +16,7 @@ class KeyboardSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Keyboard
-        fields = ('id', 'user', 'label', 'default', 'created',
+        fields = ('id', 'user', 'label', 'is_default', 'created',
                   'last_modified', 'mapping_type', 'mappings')
 
     def create(self, validated_data):
@@ -30,7 +30,7 @@ class KeyboardSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         mappings_data = validated_data.pop('mappings')
         instance.label = validated_data.get('label', instance.label)
-        instance.default = validated_data.get('default', instance.default)
+        instance.is_default = validated_data.get('is_default', instance.is_default)
         instance.save()
 
         mapping_objects = [KeyMap.objects.get_or_create(cellid=mapping['cellid'], key=mapping['key'])[0] for
