@@ -9,10 +9,12 @@ except ImportError:
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.utils.encoding import python_2_unicode_compatible
 from colorful.fields import RGBColorField
 from PIL import Image
 
 
+@python_2_unicode_compatible
 class CellType(models.Model):
     readable_name = models.CharField(max_length=50)
     # TODO Use a slugfield
@@ -20,11 +22,12 @@ class CellType(models.Model):
     abbr_name = models.CharField(max_length=10, unique=True)
     comment = models.TextField(blank=True)
     visualisation_colour = RGBColorField(blank=True)
-    
-    def __unicode__(self):
-        return self.readable_name
+
+    def __str__(self):
+        return "CellType: {0}".format(self.readable_name)
 
 
+@python_2_unicode_compatible
 class CellImage(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
@@ -37,6 +40,9 @@ class CellImage(models.Model):
     uploader = models.ForeignKey(User)
     copyright = models.ForeignKey('CopyrightHolder')
     license = models.ForeignKey('License')
+
+    def __str__(self):
+        return "CellImage: {0}".format(self.title)
 
     def similar_cells(self):
         groups = self.similarlookinggroup_set.all()
@@ -71,31 +77,31 @@ class CellImage(models.Model):
             '%s_thumbnail.%s' % (os.path.splitext(suf.name)[0], file_extension),
             suf)
 
-    def __unicode__(self):
-        return self.title
 
-
+@python_2_unicode_compatible
 class SimilarLookingGroup(models.Model):
     name = models.CharField(max_length=100)
     cell_image = models.ManyToManyField("CellImage")
 
-    def __unicode__(self):
-        return self.name
+    def __str__(self):
+        return "CellGroup: {0}".format(self.name)
 
 
+@python_2_unicode_compatible
 class License(models.Model):
     title = models.CharField(max_length=100)
     details = models.TextField()
 
-    def __unicode__(self):
-        return self.title
+    def __str__(self):
+        return "License: {0}".format(self.title)
 
 
+@python_2_unicode_compatible
 class CopyrightHolder(models.Model):
     name = models.CharField(max_length=300)
     link_title = models.CharField(max_length=300, null=True, blank=True)
     link_url = models.CharField(max_length=300, null=True, blank=True)
     user = models.ManyToManyField(User)  # These users may apply this copyright to an image
 
-    def __unicode__(self):
-        return self.name
+    def __str__(self):
+        return "CopyrightHolder: {0}".format(self.name)
