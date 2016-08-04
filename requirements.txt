@@ -1,4 +1,4 @@
-Django==1.9.9
+Django==1.10
 Pillow==3.2.0
 dj-database-url==0.4.1
 django-colorful==1.1.0
