@@ -1,20 +1,8 @@
-from datetime import datetime
-
 import factory
 import factory.fuzzy
-from django.conf import settings
 from django.contrib.auth.models import User
-from django.utils import timezone
 
 from cellcounter.main.models import CellType
-
-
-def _get_tzinfo():
-    """Fetch the current timezone."""
-    if settings.USE_TZ:
-        return timezone.get_current_timezone()
-    else:
-        return None
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -30,9 +18,6 @@ class UserFactory(factory.django.DjangoModelFactory):
     is_active = True
     is_staff = False
     is_superuser = False
-
-    last_login = factory.fuzzy.FuzzyDateTime(datetime(2000, 1, 1, tzinfo=_get_tzinfo()))
-    date_joined = factory.fuzzy.FuzzyDateTime(datetime(2000, 1, 1, tzinfo=_get_tzinfo()))
 
 
 class CellTypeFactory(factory.django.DjangoModelFactory):
