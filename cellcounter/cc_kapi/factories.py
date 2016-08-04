@@ -1,27 +1,15 @@
-import factory
 import string
-from django.contrib.auth.models import User
 
+import factory
+
+from cellcounter.cc_kapi.models import Keyboard, KeyMap
+from cellcounter.main.factories import UserFactory
 from cellcounter.main.models import CellType
-from .models import Keyboard, KeyMap
 
 
-class UserFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = User
-
-    username = factory.Sequence(lambda n: "test%s" % n)
-    first_name = factory.Sequence(lambda n: "test%s" % n)
-    last_name = factory.Sequence(lambda n: "test%s" % n)
-    email = factory.Sequence(lambda n: "test%s@example.com" % n)
-    password = factory.PostGenerationMethodCall('set_password', 'test')
-
-    is_staff = False
-    is_active = True
-    is_superuser = False
-
-
-class KeyboardFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = Keyboard
+class KeyboardFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Keyboard
 
     user = factory.SubFactory(UserFactory)
     label = 'Test'
@@ -43,6 +31,8 @@ class KeyboardFactory(factory.DjangoModelFactory):
         self.save()
 
 
-class KeyMapFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = KeyMap
+class KeyMapFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = KeyMap
+
     key = 'a'
