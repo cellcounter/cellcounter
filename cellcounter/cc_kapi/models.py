@@ -1,9 +1,11 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 
 from cellcounter.main.models import CellType
 
 
+@python_2_unicode_compatible
 class Keyboard(models.Model):
     """Represents a Keyboard mapping between users and keys"""
     user = models.ForeignKey(User)
@@ -12,8 +14,8 @@ class Keyboard(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
 
-    def __unicode__(self):
-        return u"Keyboard %s for %s" %(self.label, self.user.username)
+    def __str__(self):
+        return "Keyboard {0} for {1}".format(self.label, self.user.username)
 
     def _sync_primary_flags(self):
         """Syncs all keyboard primary flags, setting the current to true,
@@ -62,7 +64,11 @@ class Keyboard(models.Model):
             self.set_primary()
 
 
+@python_2_unicode_compatible
 class KeyMap(models.Model):
     cellid = models.ForeignKey(CellType)
     key = models.CharField(max_length=1)
     keyboards = models.ManyToManyField(Keyboard, related_name='mappings')
+
+    def __str__(self):
+        return "KeyMap {0} to {1}".format(self.cellid.abbr_name, self.key)
