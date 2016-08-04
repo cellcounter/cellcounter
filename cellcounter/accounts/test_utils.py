@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from cellcounter.cc_kapi.factories import UserFactory
+from cellcounter.main.factories import UserFactory
 from .forms import PasswordResetForm
 from .utils import read_signup_email
 
