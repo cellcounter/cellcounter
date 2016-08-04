@@ -1,21 +1,27 @@
 from importlib import import_module
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.core.urlresolvers import reverse
 from django.test import TestCase, RequestFactory
-from django.shortcuts import render
-
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
 
-from .views import ListCreateCountInstanceAPI
+from .factories import CountInstanceFactory
 from .middleware import StatsSessionMiddleware
 from .models import CountInstance
+from .views import ListCreateCountInstanceAPI
 
 factory = APIRequestFactory()
 view = ListCreateCountInstanceAPI.as_view()
+
+
+class TestModels(TestCase):
+    def test_count_instance_str(self):
+        count_instance = CountInstanceFactory.build()
+        self.assertEqual(str(count_instance), "CountInstance: {0} at {1}".format(
+            count_instance.session_id, count_instance.timestamp))
 
 
 class TestStatsMiddleware(TestCase):
