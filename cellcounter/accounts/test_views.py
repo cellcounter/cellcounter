@@ -71,7 +71,7 @@ class TestRegistrationView(TestCase):
         self.client.post(reverse('register'), data)
         response = self.client.post(reverse('register'), data, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertNotIn('You have been rate limited', response.content)
+        self.assertNotContains(response, "You have been rate limited")
 
 
 class TestPasswordChangeView(TestCase):
@@ -309,8 +309,8 @@ class TestPasswordResetConfirmView(TestCase):
                                                    'token': token}))
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context['validlink'])
-        self.assertIn("The password reset link was invalid, possibly because it has already been used."
-                      " Please request a new password reset.", response.content)
+        self.assertContains(response, "The password reset link was invalid, possibly because it has already been used."
+                                      " Please request a new password reset.")
 
     def test_get_invalid_user(self):
         response = self.client.get(reverse('password-reset-confirm',
@@ -318,8 +318,8 @@ class TestPasswordResetConfirmView(TestCase):
                                                    'token': self._generate_token(self.user)}))
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context['validlink'])
-        self.assertIn("The password reset link was invalid, possibly because it has already been used."
-                      " Please request a new password reset.", response.content)
+        self.assertContains(response, "The password reset link was invalid, possibly because it has already been used."
+                                      " Please request a new password reset.")
 
     def test_post_invalid_token(self):
         token = "AAA-AAAAAAAAAAAAAAAAAAAA"
@@ -329,8 +329,8 @@ class TestPasswordResetConfirmView(TestCase):
                                     data=self.valid_data)
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context['validlink'])
-        self.assertIn("The password reset link was invalid, possibly because it has already been used."
-                      " Please request a new password reset.", response.content)
+        self.assertContains(response, "The password reset link was invalid, possibly because it has already been used."
+                                      " Please request a new password reset.")
 
     def test_get_valid(self):
         token = self._generate_token(self.user)
