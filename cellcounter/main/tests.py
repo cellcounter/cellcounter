@@ -1,12 +1,10 @@
-import datetime
-import factory
-
-from django.contrib.auth.models import User
-from django.utils.timezone import utc
 from django.core.urlresolvers import reverse
 from django_webtest import WebTest
+from rest_framework.renderers import JSONRenderer
 
-from cellcounter.main.models import *
+from cellcounter.main.factories import UserFactory, CellTypeFactory
+from cellcounter.main.models import CellType
+from cellcounter.main.serializers import CellTypeSerializer
 
 CELLTYPE_LIST = [('Neutrophils', 'neutrophils'),
                  ('Metamyelocytes', 'meta'),
@@ -21,33 +19,6 @@ CELLTYPE_LIST = [('Neutrophils', 'neutrophils'),
                  ('Plasma cells', 'plasma_cells'),
                  ('Lymphoblasts', 'ly_blasts'),
                  ('Other', 'other')]
-
-CELLTYPE_JSON = '[{"id":1,"readable_name":"Neutrophils","machine_name":"neutrophils","abbr_name":"neut","comment":"","visualisation_colour":"#4f6228"},{"id":2,"readable_name":"Metamyelocytes","machine_name":"meta","abbr_name":"meta","comment":"","visualisation_colour":"#77933c"},{"id":3,"readable_name":"Myelocytes","machine_name":"myelocytes","abbr_name":"myelo","comment":"","visualisation_colour":"#c3d69b"},{"id":4,"readable_name":"Promyelocytes","machine_name":"promyelocytes","abbr_name":"promyelo","comment":"","visualisation_colour":"#d7e4bd"},{"id":5,"readable_name":"Blasts","machine_name":"blasts","abbr_name":"blast","comment":"","visualisation_colour":"#ebf1de"},{"id":6,"readable_name":"Basophils","machine_name":"basophils","abbr_name":"baso","comment":"","visualisation_colour":"#8064a2"},{"id":7,"readable_name":"Eosinophils","machine_name":"eosinophils","abbr_name":"eo","comment":"","visualisation_colour":"#f79546"},{"id":8,"readable_name":"Erythroid","machine_name":"erythroid","abbr_name":"erythro","comment":"","visualisation_colour":"#ff0000"},{"id":9,"readable_name":"Lymphocytes","machine_name":"lymphocytes","abbr_name":"lympho","comment":"","visualisation_colour":"#ffffff"},{"id":10,"readable_name":"Monocytes","machine_name":"monocytes","abbr_name":"mono","comment":"","visualisation_colour":"#bfbfbf"},{"id":11,"readable_name":"Plasma cells","machine_name":"plasma_cells","abbr_name":"plasma","comment":"","visualisation_colour":"#0000ff"},{"id":12,"readable_name":"Other","machine_name":"other","abbr_name":"other","comment":"","visualisation_colour":"#f9ff00"},{"id":13,"readable_name":"Lymphoblasts","machine_name":"lymphoblasts","abbr_name":"ly_blasts","comment":"","visualisation_colour":"#606060"},{"id":14,"readable_name":"test","machine_name":"test","abbr_name":"test","comment":"Test","visualisation_colour":"#FFFFFF"}]'
-
-
-class UserFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = User
-
-    username = factory.Sequence(lambda n: "test%s" % n)
-    first_name = factory.Sequence(lambda n: "test%s" % n)
-    last_name = factory.Sequence(lambda n: "test%s" % n)
-    email = factory.Sequence(lambda n: "test%s@example.com" % n)
-    password = 'pbkdf2_sha256$10000$8na6FeT9qxUY$2LUHCd+ipsMynWF0RTz+vdDQ0GDS1ZS+Isi5k3dyi3A='
-    is_staff = False
-    is_active = True
-    is_superuser = False
-    last_login = datetime.datetime.utcnow().replace(tzinfo=utc)
-    date_joined = datetime.datetime.utcnow().replace(tzinfo=utc)
-
-
-class CellTypeFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = CellType
-    
-    readable_name = 'test'
-    machine_name = 'test'
-    abbr_name = 'test'
-    comment = "Test"
-    visualisation_colour = '#FFFFFF'
 
 
 class TestMainViews(WebTest):
@@ -67,5 +38,7 @@ class TestMainViews(WebTest):
 
     def test_get_celltype_api(self):
         response = self.app.get(reverse('cell_types'))
+        queryset = CellType.objects.all().order_by('id')
+        serializer = CellTypeSerializer(queryset, many=True)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(CELLTYPE_JSON, response.body)
+        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
