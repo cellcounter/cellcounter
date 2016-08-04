@@ -14,9 +14,14 @@ from .serializers import KeyboardSerializer
 
 
 class KeyboardTestCase(TestCase):
-    def test_unicode(self):
+    def test_keyboard_str(self):
         keyboard = KeyboardFactory(user__username='alpha', label='alpha')
-        self.assertEqual(keyboard.__unicode__(), 'Keyboard alpha for alpha')
+        self.assertEqual(keyboard.__str__(), 'Keyboard alpha for alpha')
+
+    def test_keymap_str(self):
+        keyboard = KeyboardFactory()
+        keymap = keyboard.mappings.first()
+        self.assertEqual(keymap.__str__(), "KeyMap {0} to {1}".format(keymap.cellid.abbr_name, keymap.key))
 
     def test_set_primary_self(self):
         keyboard = KeyboardFactory(add_maps=False)
