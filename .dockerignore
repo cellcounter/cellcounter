@@ -1,0 +1,6 @@
+.git/
+.gitignore
+.idea/
+README.md
+*.pyc
+*.sqlite3
