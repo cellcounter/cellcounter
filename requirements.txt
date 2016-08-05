@@ -11,4 +11,5 @@ pytz==2016.3
 psycopg2==2.6.1
 uWSGI==2.0.12
 wsgiref==0.1.2
+whitenoise==3.2
 -e git+https://github.com/django-compressor/django-compressor.git@51ec27f54f9524c727f01e23abbff3183b598b7e#egg=django_compressor
