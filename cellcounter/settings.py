@@ -193,10 +193,14 @@ if 'ENABLE_DJANGO_LOGGING' in os.environ:
                 'filename': os.environ.get('DJANGO_LOG_PATH'),
                 'formatter': 'verbose'
             },
+            'console': {
+                'class': 'logging.StreamHandler',
+                'formatter': 'verbose'
+            },
         },
         'loggers': {
             'django': {
-                'handlers': ['logfile'],
+                'handlers': ['console'],
                 'level': 'ERROR',
                 'propagate': False,
             },
@@ -206,7 +210,7 @@ if 'ENABLE_DJANGO_LOGGING' in os.environ:
                 'propagate': True,
             },
             'cellcountr': {
-                'handlers': ['mail_admins', 'logfile'],
+                'handlers': ['mail_admins', 'console'],
                 'level': 'WARNING',
                 'propagate': False
             },
