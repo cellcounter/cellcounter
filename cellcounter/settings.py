@@ -201,17 +201,17 @@ if 'ENABLE_DJANGO_LOGGING' in os.environ:
         'loggers': {
             'django': {
                 'handlers': ['console'],
-                'level': 'ERROR',
+                'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
                 'propagate': False,
             },
             'django.request': {
                 'handlers': ['mail_admins'],
-                'level': 'ERROR',
+                'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
                 'propagate': True,
             },
-            'cellcountr': {
+            'cellcounter': {
                 'handlers': ['mail_admins', 'console'],
-                'level': 'WARNING',
+                'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
                 'propagate': False
             },
         }
