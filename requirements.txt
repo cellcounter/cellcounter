@@ -1,14 +1,14 @@
-Django==1.9.5
-Pillow==3.1.1
-dj-database-url==0.4.0
+Django==1.10
+Pillow==3.2.0
+dj-database-url==0.4.1
 django-colorful==1.1.0
 django-braces==1.8.1
 djangorestframework==3.3.3
-django-compressor==2.0
 django-pylibmc==0.6.1
+django-ratelimit==1.0.0
 pylibmc==1.5.1
 pytz==2016.3
 psycopg2==2.6.1
 uWSGI==2.0.12
 wsgiref==0.1.2
--e git+https://github.com/jsocol/django-ratelimit.git@a25bc6424d820be6f1a41cb07e4c554ac00da9df#egg=django_ratelimit-master
+-e git+https://github.com/django-compressor/django-compressor.git@51ec27f54f9524c727f01e23abbff3183b598b7e#egg=django_compressor
