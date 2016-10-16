@@ -892,11 +892,17 @@ function clear_keyboard() {
     if ('id' in keyboard_map) {
         var id = keyboard_map.id;
     }
+    if ('user' in keyboard_map) {
+        var user = keyboard_map.user;
+    }
     var date = new Date(Date.now()).toISOString();
     keyboard_map = {"label": "Default", "is_primary": true, "created": date,
                     "last_modified": date, "mappings": []};
     if (typeof id !== 'undefined') {
         keyboard_map.id = id;
+    }
+    if (typeof user !== 'undefined') {
+        keyboard_map.user = user;
     }
     update_keyboard();
 }
