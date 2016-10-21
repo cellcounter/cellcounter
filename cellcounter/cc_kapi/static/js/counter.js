@@ -510,6 +510,14 @@ function display_stats(count_total, format) {
             cell_percent_string = cell_percent.toString() + '%';
         }
 
+        if (cell_percent === 100 && cell_total < count_total) {
+            cell_percent_string = '&ge;99.5%';
+        }
+
+        if (cell_percent_abnormal === 100 && count_data[i].abnormal < cell_total) {
+            cell_percent_abnormal_string = '&ge;99.5%';
+        }
+
         if (format === 'HTML') {
             per += '<tr><td class="celltypes">' + count_data[i].readable_name + '</td><td class="ignore" style="background-color:' + count_data[i].visualisation_colour + '"></td><td>' + cell_percent_string + "</td><td class=\"abnormal_stats\">" + cell_percent_abnormal_string + '</td><td>' + count_data[i].count + '</td><td class="abnormal_count abnormal_stats">' + count_data[i].abnormal + '</td></tr>';
         } else {
