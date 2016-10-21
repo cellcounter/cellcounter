@@ -1,11 +1,13 @@
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.permissions import BasePermission
-from rest_framework.throttling import AnonRateThrottle
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework.response import Response
+from rest_framework.throttling import AnonRateThrottle
+from rest_framework_xml.renderers import XMLRenderer
 
-from .serializers import CountInstanceCreateSerializer, CountInstanceModelSerializer
 from .models import CountInstance
+from .serializers import CountInstanceCreateSerializer, CountInstanceModelSerializer
 
 SAFE_METHODS = ['GET', 'HEAD', 'OPTIONS']
 
@@ -16,9 +18,9 @@ class OpenPostStaffGet(BasePermission):
     """
     def has_permission(self, request, view):
         if (request.method == 'POST' or
-            request.method in SAFE_METHODS and
-            request.user.is_authenticated() and
-            request.user.is_staff):
+                all([request.method in SAFE_METHODS,
+                     request.user.is_authenticated(),
+                     request.user.is_staff])):
                 return True
         return False
 
@@ -32,6 +34,7 @@ class ListCreateCountInstanceAPI(ListCreateAPIView):
     serializer_class = CountInstanceModelSerializer
     queryset = CountInstance.objects.all()
     throttle_classes = (CountInstanceAnonThrottle,)
+    renderer_classes = (JSONRenderer, BrowsableAPIRenderer, XMLRenderer)
 
     def create(self, request, *args, **kwargs):
         serializer = CountInstanceCreateSerializer(data=request.data)
