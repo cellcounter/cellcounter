@@ -22,7 +22,7 @@ class KeyboardListItemSerializer(serializers.ModelSerializer):
         model = Keyboard
         fields = ('id', 'user', 'label', 'created',
                   'last_modified','is_default', 'device_type','href')
-        read_only_fields = ('href')
+        read_only_fields = ('href',)
 
     id = serializers.IntegerField(required=False)
     user = serializers.CharField(source='user.username', allow_null=True)

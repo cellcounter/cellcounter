@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from cellcounter.main.models import CellType
 from .models import Keyboard, KeyMap, DefaultKeyboards
 
+import factory
+
 
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
