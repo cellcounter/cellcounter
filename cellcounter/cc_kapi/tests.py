@@ -349,7 +349,7 @@ class KeyboardsAPIDesktopDetailTest(WebTest):
         response = self.app.delete(reverse('keyboards-desktop-detail', kwargs={'pk': self.mobile_keyboard.id}), user=user, status=404)
         self.assertEqual(response.status_code, 404)
         self.assertEqual(len(Keyboard.objects.filter(user=self.user)), 2)
-        self.assertEqual('{"detail":"desktop keyboard with id \'4\' not found"}', response.body)
+        self.assertEqual('{"detail":"desktop keyboard with id \'' + str(self.mobile_keyboard.id) + '\' not found"}', response.body)
 
 ##### test post
     def test_post_keyboard_desktop_logged_out(self):

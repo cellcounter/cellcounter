@@ -80,7 +80,7 @@ class KeyboardViewSet(viewsets.ViewSet):
         user = None
         if self.request.user.is_authenticated():
             user = self.request.user
-            user_keyboards = Keyboard.objects.filter(user=user)
+            user_keyboards = Keyboard.objects.filter(user=user).order_by('id')
 
         # set the default flags appropriately
         default_desktop, default_mobile = None, None
