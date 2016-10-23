@@ -1,12 +1,9 @@
-from django.conf.urls import patterns, url
+from .views import KeyboardViewSet
 
-from .views import KeyboardsListCreateView, KeyboardGetUpdateDestroyView, DefaultKeyboardView
+from rest_framework import routers
+from .routers import KeyboardAPIRouter
 
-urlpatterns = [
-                       url('^$', KeyboardsListCreateView.as_view(),
-                           name='keyboards'),
-                       url('^default/$', DefaultKeyboardView.as_view(),
-                           name='default-keyboard'),
-                       url('^(?P<keyboard_id>\d+)/$', KeyboardGetUpdateDestroyView.as_view(),
-                           name='keyboard-detail'),
-]
+router = KeyboardAPIRouter()
+router.register(r'api/keyboards', KeyboardViewSet, base_name='keyboards')
+urlpatterns = router.urls
+
