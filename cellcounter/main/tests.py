@@ -23,13 +23,29 @@ CELLTYPE_LIST = [('Neutrophils', 'neutrophils'),
                  ('Lymphoblasts', 'ly_blasts'),
                  ('Other', 'other')]
 
-CELLTYPE_JSON = '[{"id":1,"readable_name":"Neutrophils","machine_name":"neutrophils","abbr_name":"neut","comment":"","visualisation_colour":"#4f6228","display_order":4},{"id":2,"readable_name":"Metamyelocytes","machine_name":"meta","abbr_name":"meta","comment":"","visualisation_colour":"#77933c","display_order":3},{"id":3,"readable_name":"Myelocytes","machine_name":"myelocytes","abbr_name":"myelo","comment":"","visualisation_colour":"#c3d69b","display_order":2},{"id":4,"readable_name":"Promyelocytes","machine_name":"promyelocytes","abbr_name":"promyelo","comment":"","visualisation_colour":"#d7e4bd","display_order":1},{"id":5,"readable_name":"Blasts","machine_name":"blasts","abbr_name":"blast","comment":"","visualisation_colour":"#ebf1de","display_order":0},{"id":6,"readable_name":"Basophils","machine_name":"basophils","abbr_name":"baso","comment":"","visualisation_colour":"#8064a2","display_order":6},{"id":7,"readable_name":"Eosinophils","machine_name":"eosinophils","abbr_name":"eo","comment":"","visualisation_colour":"#f79546","display_order":7},{"id":8,"readable_name":"Erythroid","machine_name":"erythroid","abbr_name":"erythro","comment":"","visualisation_colour":"#ff0000","display_order":10},{"id":9,"readable_name":"Lymphocytes","machine_name":"lymphocytes","abbr_name":"lympho","comment":"","visualisation_colour":"#ffffff","display_order":8},{"id":10,"readable_name":"Monocytes","machine_name":"monocytes","abbr_name":"mono","comment":"","visualisation_colour":"#bfbfbf","display_order":5},{"id":11,"readable_name":"Plasma cells","machine_name":"plasma_cells","abbr_name":"plasma","comment":"","visualisation_colour":"#0000ff","display_order":9},{"id":12,"readable_name":"Other","machine_name":"other","abbr_name":"other","comment":"","visualisation_colour":"#f9ff00","display_order":11},{"id":13,"readable_name":"Lymphoblasts","machine_name":"lymphoblasts","abbr_name":"ly_blasts","comment":"","visualisation_colour":"#606060","display_order":12},{"id":14,"readable_name":"test","machine_name":"test","abbr_name":"test","comment":"Test","visualisation_colour":"#FFFFFF","display_order":13}]'
+CELLTYPE_JSON = '[{"id":1,"readable_name":"Neutrophils","machine_name":"neutrophils","abbr_name":"neut","comment":"","visualisation_colour":"#4f6228"},{"id":2,"readable_name":"Metamyelocytes","machine_name":"meta","abbr_name":"meta","comment":"","visualisation_colour":"#77933c"},{"id":3,"readable_name":"Myelocytes","machine_name":"myelocytes","abbr_name":"myelo","comment":"","visualisation_colour":"#c3d69b"},{"id":4,"readable_name":"Promyelocytes","machine_name":"promyelocytes","abbr_name":"promyelo","comment":"","visualisation_colour":"#d7e4bd"},{"id":5,"readable_name":"Blasts","machine_name":"blasts","abbr_name":"blast","comment":"","visualisation_colour":"#ebf1de"},{"id":6,"readable_name":"Basophils","machine_name":"basophils","abbr_name":"baso","comment":"","visualisation_colour":"#8064a2"},{"id":7,"readable_name":"Eosinophils","machine_name":"eosinophils","abbr_name":"eo","comment":"","visualisation_colour":"#f79546"},{"id":8,"readable_name":"Erythroid","machine_name":"erythroid","abbr_name":"erythro","comment":"","visualisation_colour":"#ff0000"},{"id":9,"readable_name":"Lymphocytes","machine_name":"lymphocytes","abbr_name":"lympho","comment":"","visualisation_colour":"#ffffff"},{"id":10,"readable_name":"Monocytes","machine_name":"monocytes","abbr_name":"mono","comment":"","visualisation_colour":"#bfbfbf"},{"id":11,"readable_name":"Plasma cells","machine_name":"plasma_cells","abbr_name":"plasma","comment":"","visualisation_colour":"#0000ff"},{"id":12,"readable_name":"Other","machine_name":"other","abbr_name":"other","comment":"","visualisation_colour":"#f9ff00"},{"id":13,"readable_name":"Lymphoblasts","machine_name":"lymphoblasts","abbr_name":"ly_blasts","comment":"","visualisation_colour":"#606060"},{"id":14,"readable_name":"test","machine_name":"test","abbr_name":"test","comment":"Test","visualisation_colour":"#FFFFFF"}]'
+
+
+class UserFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = User
+
+    username = factory.Sequence(lambda n: "test%s" % n)
+    first_name = factory.Sequence(lambda n: "test%s" % n)
+    last_name = factory.Sequence(lambda n: "test%s" % n)
+    email = factory.Sequence(lambda n: "test%s@example.com" % n)
+    password = 'pbkdf2_sha256$10000$8na6FeT9qxUY$2LUHCd+ipsMynWF0RTz+vdDQ0GDS1ZS+Isi5k3dyi3A='
+    is_staff = False
+    is_active = True
+    is_superuser = False
+    last_login = datetime.datetime.utcnow().replace(tzinfo=utc)
+    date_joined = datetime.datetime.utcnow().replace(tzinfo=utc)
 
 
 class CellTypeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = CellType
-
+    
     readable_name = 'test'
     machine_name = 'test'
     abbr_name = 'test'
@@ -57,26 +73,4 @@ class TestMainViews(WebTest):
         response = self.app.get(reverse('cell_types'))
         self.assertEqual(200, response.status_code)
         self.assertEqual(CELLTYPE_JSON, response.body.decode("utf-8"))
-
-    #def test_javascript(self):
-        #p = subprocess.run(["qunit", ""], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    #    response = self.app.get('/').content
-
-    #    print(dir(response))
-
-    #    try:
-    #        temp_dir = mkdtemp()
-    #        filename = "{}/index.html".format(temp_dir)
-    #        print(filename)
-    #        with open(filename, "w") as text_file:
-    #            print(response.decode('utf-8'), file=text_file)
-
-    #        p = subprocess.run(["qunit", filename], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    #        print(p.stderr.decode('utf-8'))
-    #        print(p.stdout.decode('utf-8'))
-
-            #os.remove(filename)
-    #    finally:
-            #os.rmdir(temp_dir)
-    #        pass
 

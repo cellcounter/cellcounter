@@ -33,12 +33,12 @@ urlpatterns = [
                            CellImageDetailView.as_view(), name="page"),
                        url(r'^api/cell_types/$', CellTypesListView.as_view(),
                            name="cell_types"),
-                       url(r'^api/stats/$', include('cellcounter.statistics.urls')),
+                       url(r'^api/stats/', include('cellcounter.statistics.urls')),
                        url(r'^login/$', login,
                            {'template_name': 'main/login.html'}, name='login'),
                        url(r'^logout/$', logout, {'next_page': '/'},
                            name='logout'),
-                       url(r'^api/keyboards/', include(
+                       url(r'^', include(
                            'cellcounter.cc_kapi.urls')),
                        url(r'^accounts/', include(
                            'cellcounter.accounts.urls')),

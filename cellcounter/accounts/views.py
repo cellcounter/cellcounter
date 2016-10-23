@@ -17,6 +17,8 @@ from ratelimit.exceptions import Ratelimited
 from ratelimit.mixins import RatelimitMixin
 from ratelimit.utils import is_ratelimited
 
+from ..cc_kapi.serializers import KeyboardListItemSerializer
+
 from .forms import EmailUserCreationForm, PasswordResetForm
 
 
@@ -87,7 +89,18 @@ class UserDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(UserDetailView, self).get_context_data(**kwargs)
-        context['keyboards'] = self.object.keyboard_set.all().order_by('-is_default')
+        user_keyboards = self.object.keyboard_set.all().order_by('-device_type')
+        if hasattr(self.request.user, 'defaultkeyboards'):
+            default_desktop = self.request.user.defaultkeyboards.desktop
+            default_mobile = self.request.user.defaultkeyboards.mobile
+            if default_desktop:
+                [user_keyboard._set_default() for user_keyboard in user_keyboards if user_keyboard.id == default_desktop.id]
+            if default_mobile:
+                [user_keyboard._set_default() for user_keyboard in user_keyboards if user_keyboard.id == default_mobile.id]
+
+        keyboard_list = KeyboardListItemSerializer(user_keyboards, many=True)
+        context['keyboards'] = keyboard_list.data
+
         return context
 
 
