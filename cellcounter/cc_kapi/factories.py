@@ -4,6 +4,8 @@ from django.contrib.auth.models import User, AnonymousUser
 from cellcounter.main.models import CellType
 from .models import Keyboard, KeyMap, DefaultKeyboards
 
+import factory
+
 
 class UserFactory(factory.DjangoModelFactory):
     class Meta:

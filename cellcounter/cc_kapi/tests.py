@@ -25,7 +25,7 @@ class KeyboardTestCase(TestCase):
 
     def test_set_keymaps(self):
         user = UserFactory()
-        keyboard = KeyboardFactory(user=user, is_default=True)
+        keyboard = KeyboardFactory(user=user)
         number_old_maps = len(keyboard.mappings.all())
         new_maps = [KeyMapFactory(cellid=CellType.objects.get(id=1))]
         keyboard.set_keymaps(new_maps)
