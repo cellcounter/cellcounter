@@ -1,4 +1,3 @@
-import factory
 import string
 from django.contrib.auth.models import User, AnonymousUser
 
@@ -67,14 +66,14 @@ class KeyboardFactory(factory.DjangoModelFactory):
     def add_maps(self, create, extracted, **kwargs):
         if not create:
             return
-        if extracted == False:
+        if not extracted:
             return
         i = 0
         for cell in CellType.objects.all():
-            mapping, created = KeyMap.objects.get_or_create(
+            mapping, created = models.KeyMap.objects.get_or_create(
                 cellid=cell, key=string.ascii_lowercase[i])
             self.mappings.add(mapping)
-            i = i+1
+            i += 1
 
         self.save()
 

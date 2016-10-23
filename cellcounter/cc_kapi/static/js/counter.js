@@ -512,6 +512,14 @@ function display_stats(count_total, format) {
             cell_percent_string = cell_percent.toString() + '%';
         }
 
+        if (cell_percent === 100 && cell_total < count_total) {
+            cell_percent_string = '&ge;99.5%';
+        }
+
+        if (cell_percent_abnormal === 100 && count_data[i].abnormal < cell_total) {
+            cell_percent_abnormal_string = '&ge;99.5%';
+        }
+
         if (format === 'HTML') {
             per += '<tr><td class="celltypes">' + count_data[i].readable_name + '</td><td class="ignore" style="background-color:' + count_data[i].visualisation_colour + '"></td><td>' + cell_percent_string + "</td><td class=\"abnormal_stats\">" + cell_percent_abnormal_string + '</td><td>' + count_data[i].count + '</td><td class="abnormal_count abnormal_stats">' + count_data[i].abnormal + '</td></tr>';
         } else {
@@ -898,11 +906,17 @@ function clear_keyboard() {
     if ('id' in keyboard_map) {
         var id = keyboard_map.id;
     }
+    if ('user' in keyboard_map) {
+        var user = keyboard_map.user;
+    }
     var date = new Date(Date.now()).toISOString();
     keyboard_map = {"label": "Default", "is_default": true, "created": date,
                     "last_modified": date, "mappings": []};
     if (typeof id !== 'undefined') {
         keyboard_map.id = id;
+    }
+    if (typeof user !== 'undefined') {
+        keyboard_map.user = user;
     }
     update_keyboard();
 }

@@ -1,5 +1,6 @@
 import os
 import uuid
+
 import dj_database_url
 
 DEBUG = bool(os.environ.get('DEBUG', False))
@@ -136,7 +137,7 @@ SECURE_REQUIRED_PATHS = (
     # '/accounts/',
 )
 
-ALLOWED_HOSTS = ['.cellcountr.com']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 ROOT_URLCONF = 'cellcounter.urls'
 
@@ -170,15 +171,17 @@ else:
 
 RATELIMIT_VIEW = 'cellcounter.accounts.views.rate_limited'
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
+# Logging config
+
 if 'ENABLE_DJANGO_LOGGING' in os.environ:
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
+        'formatters': {
+            'verbose': {
+                'format': '%(levelname)s %(asctime)s %(module)s %(funcName)s %(lineno)d %(message)s'
+            }
+        },
         'filters': {
             'require_debug_false': {
                 '()': 'django.utils.log.RequireDebugFalse'
@@ -187,31 +190,33 @@ if 'ENABLE_DJANGO_LOGGING' in os.environ:
         'handlers': {
             'mail_admins': {
                 'level': 'ERROR',
+                'class': 'django.utils.log.AdminEmailHandler',
                 'filters': ['require_debug_false'],
-                'class': 'django.utils.log.AdminEmailHandler'
             },
-            # Log to a text file that can be rotated by logrotate
             'logfile': {
                 'class': 'logging.handlers.WatchedFileHandler',
-                'filename': os.environ.get('DJANGO_LOG_PATH')
+                'filename': os.environ.get('DJANGO_LOG_PATH'),
+                'formatter': 'verbose'
+            },
+            'console': {
+                'class': 'logging.StreamHandler',
+                'formatter': 'verbose'
             },
         },
         'loggers': {
-            'django.request': {
-                'handlers': ['mail_admins'],
-                'level': 'ERROR',
-                'propagate': True,
-            },
-            # Might as well log any errors anywhere else in Django
             'django': {
-                'handlers': ['logfile'],
-                'level': 'ERROR',
+                'handlers': ['console'],
+                'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
                 'propagate': False,
             },
-            # Your own app - this assumes all logger names start with "cellcountr."
-            'cellcountr': {
-                'handlers': ['logfile'],
-                'level': 'WARNING',  # Or maybe INFO or DEBUG
+            'django.request': {
+                'handlers': ['mail_admins'],
+                'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+                'propagate': True,
+            },
+            'cellcounter': {
+                'handlers': ['mail_admins', 'console'],
+                'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
                 'propagate': False
             },
         }

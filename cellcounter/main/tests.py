@@ -1,12 +1,10 @@
-import datetime
 import factory
-
-from django.contrib.auth.models import User
-from django.utils.timezone import utc
 from django.core.urlresolvers import reverse
 from django_webtest import WebTest
 
+from cellcounter.cc_kapi.factories import UserFactory
 from cellcounter.main.models import *
+
 
 CELLTYPE_LIST = [('Neutrophils', 'neutrophils'),
                  ('Metamyelocytes', 'meta'),
