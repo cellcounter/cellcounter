@@ -23,7 +23,7 @@ urlpatterns = [
                   url(r'^api/stats/$', include('cellcounter.statistics.urls')),
                   url(r'^login/$', login, {'template_name': 'main/login.html'}, name='login'),
                   url(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
-                  url(r'^', include('cellcounter.cc_kapi.urls')),
+                  url(r'^api/keyboards', include('cellcounter.cc_kapi.urls')),
                   url(r'^accounts/', include('cellcounter.accounts.urls')),
                   url(r'^admin/', include(admin.site.urls)),
                   url(r'^terms$', TemplateView.as_view(template_name="main/terms.html"), name="terms"),
