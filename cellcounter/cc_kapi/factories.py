@@ -39,18 +39,6 @@ class DefaultKeyboardFactory(factory.django.DjangoModelFactory):
     id = 0
     user = None
 
-    #@factory.post_generation
-    #def add_maps(self, create, extracted, **kwargs):
-    #    if create:
-    #        return
-    #    if extracted == False:
-    #        return
-    #    i = 0
-    #    for cell in CellType.objects.all():
-    #        mapping = DefaultKeyMapFactory(cellid=cell, key=string.ascii_lowercase[i])
-    #        print mapping
-    #        self.mappings.add(mapping)
-    #        i = i+1
 
 class DefaultKeyMapFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -59,7 +47,12 @@ class DefaultKeyMapFactory(factory.django.DjangoModelFactory):
 
     key = 'a'
 
+<<<<<<< HEAD
 class KeyboardFactory(factory.django.DjangoModelFactory):
+=======
+
+class KeyboardFactory(factory.DjangoModelFactory):
+>>>>>>> 992d7b7 (Remove redundant (commented out) code.)
     class Meta:
         model = Keyboard
 
