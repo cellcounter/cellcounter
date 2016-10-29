@@ -62,16 +62,8 @@ class Keyboard(models.Model):
         """new_mapping_list is a list of KeyMap objects"""
         self._sync_keymaps(new_mapping_list)
 
-    def delete(self):
-        """Custom delete method, covering setting default flags"""
-        # FIXME: get the DefaultKeyboards to delete the default
-        user = self.user
-
-        super(Keyboard, self).delete()
-
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        # FIXME: get the DefaultKeyboards to set the default
 
         if self.user:
             self.last_modified = timezone.now()
