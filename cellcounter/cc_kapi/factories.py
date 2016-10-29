@@ -21,6 +21,7 @@ class UserFactory(factory.DjangoModelFactory):
     is_active = True
     is_superuser = False
 
+
 class DefaultKeyboardsFactory(factory.DjangoModelFactory):
     class Meta:
         model = DefaultKeyboards
@@ -37,18 +38,6 @@ class DefaultKeyboardFactory(factory.DjangoModelFactory):
     id = 0
     user = None
 
-    #@factory.post_generation
-    #def add_maps(self, create, extracted, **kwargs):
-    #    if create:
-    #        return
-    #    if extracted == False:
-    #        return
-    #    i = 0
-    #    for cell in CellType.objects.all():
-    #        mapping = DefaultKeyMapFactory(cellid=cell, key=string.ascii_lowercase[i])
-    #        print mapping
-    #        self.mappings.add(mapping)
-    #        i = i+1
 
 class DefaultKeyMapFactory(factory.DjangoModelFactory):
     class Meta:
@@ -56,6 +45,7 @@ class DefaultKeyMapFactory(factory.DjangoModelFactory):
         strategy = factory.BUILD_STRATEGY
 
     key = 'a'
+
 
 class KeyboardFactory(factory.DjangoModelFactory):
     class Meta:
