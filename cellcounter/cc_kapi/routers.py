@@ -33,7 +33,7 @@ class KeyboardAPIRouter(SimpleRouter):
         ),
         Route(
             url=r'^{prefix}/desktop/{lookup}/set_default$',
-            mapping={'post': 'set_default'},
+            mapping={'put': 'set_default'},
             name='{basename}-desktop-set_default',
             initkwargs={'suffix': 'Desktop Set Default',
                         'device_type' : Keyboard.DESKTOP}
@@ -57,7 +57,7 @@ class KeyboardAPIRouter(SimpleRouter):
         ),
         Route(
             url=r'^{prefix}/mobile/{lookup}/set_default$',
-            mapping={'post': 'set_default'},
+            mapping={'put': 'set_default'},
             name='{basename}-mobile-set_default',
             initkwargs={'suffix': 'Mobile Set Default',
                         'device_type' : Keyboard.MOBILE}
