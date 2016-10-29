@@ -6,6 +6,7 @@ from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import connection
 
 from ..defaults import BUILTIN_KEYBOARDS
 from ..models import User
@@ -81,6 +82,12 @@ def undo_user_default_keyboards(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
+    def database_detect_sqlite_noop():
+        # hack around sqlite not supporting the SET CONSTRAINTS SQL command
+        if connection.vendor == 'sqlite':
+            return migrations.RunSQL.noop
+        return 'SET CONSTRAINTS ALL IMMEDIATE'
+
     dependencies = [
         ('auth', '0007_alter_validators_add_error_messages'),
         ('main', '0002_initial_data'),
@@ -88,6 +95,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunSQL(database_detect_sqlite_noop(),
+                      reverse_sql=migrations.RunSQL.noop),
         migrations.CreateModel(
             name='DefaultKeyboards',
             fields=[
@@ -135,5 +144,7 @@ class Migration(migrations.Migration):
         migrations.RunPython(
             builtin_keyboards,
             remove_builtin_keyboards,
-    ),
+        ),
+        migrations.RunSQL(migrations.RunSQL.noop,
+                      reverse_sql=database_detect_sqlite_noop()),
     ]

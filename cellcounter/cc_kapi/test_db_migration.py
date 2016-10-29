@@ -1,4 +1,3 @@
-#from django.apps import apps
 from django.test import TransactionTestCase
 from django.db.migrations.executor import MigrationExecutor
 from django.db import connection, transaction
@@ -15,21 +14,14 @@ from django.db import models
 
 class TestMigrations(TransactionTestCase):
 
-    @property
-    def app(self):
-        return apps.get_containing_app_config(type(self).__module__).name
-
     migrate_from = None
     migrate_to = None
 
     def setUp(self):
         assert self.migrate_from and self.migrate_to, \
             "TestCase '{}' must define migrate_from and migrate_to properties".format(type(self).__name__)
-        #self.migrate_from = [(self.app, self.migrate_from)]
-        #self.migrate_to = [(self.app, self.migrate_to)]
-        connection.prepare_database()
 
-        transaction.commit()
+        connection.prepare_database()
 
         executor = MigrationExecutor(connection)
         old_apps = executor.loader.project_state(self.migrate_from).apps
@@ -37,6 +29,7 @@ class TestMigrations(TransactionTestCase):
         # Reverse to the original migration
         executor.migrate(self.migrate_from)
 
+        # Setup the database in the pre-migration state
         self.setUpBeforeMigration(old_apps)
 
         # Run the migration to test
@@ -54,13 +47,13 @@ class DefaultsTestCase(TestMigrations):
     migrate_from = [('cc_kapi', u'0001_initial')]
     migrate_to = [('cc_kapi', u'0002_v2api')]
 
-    def setUpBeforeMigration(self, japps):
+    def setUpBeforeMigration(self, apps):
         # create users and keyboards under the old schema
-        User = japps.get_model('auth', 'User')
+        User = apps.get_model('auth', 'User')
 
         class KeyboardFactory2(KeyboardFactory):
             class Meta:
-                model = japps.get_model('cc_kapi', 'Keyboard')
+                model = apps.get_model('cc_kapi', 'Keyboard')
 
         user = User(username="test")
         user.save()
