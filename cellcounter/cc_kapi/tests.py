@@ -382,16 +382,16 @@ class KeyboardsAPIDesktopSetDefaultTest(WebTest):
         response = self.app.get(reverse('keyboards-desktop-set_default', kwargs={'pk': 'builtin'}), MOCK_KEYBOARD, user=self.user, status=405)
         self.assertEqual(response.status_code, 405)
 
-# test put
-    def test_put_keyboard_logged_out(self):
-        response = self.app.put(reverse('keyboards-desktop-set_default', kwargs={'pk': 'builtin'}), MOCK_KEYBOARD, status=403)
+##### test post
+    def test_post_keyboard_logged_out(self):
+        response = self.app.post(reverse('keyboards-desktop-set_default', kwargs={'pk': 'builtin'}), MOCK_KEYBOARD, status=403)
         self.assertEqual(response.status_code, 403)
 
-    def test_put_keyboard(self):
-        response = self.app.put(reverse('keyboards-desktop-set_default', kwargs={'pk': 'builtin'}), MOCK_KEYBOARD, user=self.user, status=405)
+    def test_post_keyboard(self):
+        response = self.app.post(reverse('keyboards-desktop-set_default', kwargs={'pk': 'builtin'}), MOCK_KEYBOARD, user=self.user, status=405)
         self.assertEqual(response.status_code, 405)
 
-# test delete
+##### test delete
     def test_delete_keyboard_logged_out(self):
         response = self.app.delete(reverse('keyboards-desktop-set_default', kwargs={'pk': 'builtin'}), status=403)
         self.assertEqual(response.status_code, 403)
@@ -401,23 +401,23 @@ class KeyboardsAPIDesktopSetDefaultTest(WebTest):
         self.assertEqual(response.status_code, 405)
 
 
-##### test post
-    def test_post_keyboard_desktop_logged_out(self):
-        response = self.app.post(reverse('keyboards-desktop-set_default', kwargs={'pk': "builtin"}), MOCK_KEYBOARD, status=403)
+##### test put
+    def test_put_keyboard_desktop_logged_out(self):
+        response = self.app.put(reverse('keyboards-desktop-set_default', kwargs={'pk': "builtin"}), MOCK_KEYBOARD, status=403)
         self.assertEqual(response.status_code, 403)
 
-    def test_post_keyboard_desktop_builtin_default(self):
-        response = self.app.post(reverse('keyboards-desktop-set_default', kwargs={'pk': "builtin"}), user=self.user.username, status=200)
+    def test_put_keyboard_desktop_builtin_default(self):
+        response = self.app.put(reverse('keyboards-desktop-set_default', kwargs={'pk': "builtin"}), user=self.user.username, status=200)
         self.assertEqual('{"status":"Default cleared"}', response.body)
         self.assertEqual(response.status_code, 200)
 
-    def test_post_keyboard_desktop_set_user_default(self):
+    def test_put_keyboard_desktop_set_user_default(self):
         # retrieve the default keyboard
         response = self.app.get(reverse('keyboards-desktop-detail', kwargs={'pk': 'default'}), user=self.user, status=200)
         # assert that it is the builtin keyboard
         serializer = KeyboardSerializer(self.builtin_desktop_keyboard)
         self.assertEqual(JSONRenderer().render(serializer.data), response.body)
-        response = self.app.post(reverse('keyboards-desktop-set_default', kwargs={'pk': self.desktop_keyboard.id}), user=self.user.username, status=200)
+        response = self.app.put(reverse('keyboards-desktop-set_default', kwargs={'pk': self.desktop_keyboard.id}), user=self.user.username, status=200)
         self.assertEqual(response.status_code, 200)
 
         # retrieve the new default keyboard
@@ -426,8 +426,8 @@ class KeyboardsAPIDesktopSetDefaultTest(WebTest):
         serializer = KeyboardSerializer(self.desktop_keyboard)
         self.assertEqual(JSONRenderer().render(serializer.data), response.body)
 
-    def test_post_keyboard_desktop_mobile(self):
-        response = self.app.post(reverse('keyboards-desktop-set_default', kwargs={'pk': self.mobile_keyboard.id}), MOCK_KEYBOARD, user=self.user.username, status=404)
+    def test_put_keyboard_desktop_mobile(self):
+        response = self.app.put(reverse('keyboards-desktop-set_default', kwargs={'pk': self.mobile_keyboard.id}), MOCK_KEYBOARD, user=self.user.username, status=404)
         self.assertEqual(response.status_code, 404)
 
 
@@ -524,11 +524,11 @@ class KeyboardsAPICompositeActions(WebTest):
         self.assertEqual(JSONRenderer().render(serializer.data), response.body)
 
         # set the default desktop keyboard...
-        response = self.app.post(reverse('keyboards-desktop-set_default', kwargs={'pk': self.desktop_keyboard.id}), user=self.user.username, status=200)
+        response = self.app.put(reverse('keyboards-desktop-set_default', kwargs={'pk': self.desktop_keyboard.id}), user=self.user.username, status=200)
         self.assertEqual(response.status_code, 200)
 
         # ... and the mobile one
-        response = self.app.post(reverse('keyboards-mobile-set_default', kwargs={'pk': self.mobile_keyboard.id}), user=self.user.username, status=200)
+        response = self.app.put(reverse('keyboards-mobile-set_default', kwargs={'pk': self.mobile_keyboard.id}), user=self.user.username, status=200)
         self.assertEqual(response.status_code, 200)
 
         # retrieve the new default desktop keyboard
