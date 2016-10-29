@@ -5,6 +5,7 @@ from pytz import utc
 from .models import Keyboard
 
 BUILTIN_DESKTOP_KEYBOARD_MAP = {
+                        "user": None,
                         "label": u"Default desktop",
                         "created": datetime.datetime(2013, 10, 22, 12, 15, 5, 0, tzinfo=utc),
                         "last_modified": datetime.datetime(2013, 10, 22, 12, 15, 13, 0, tzinfo=utc),
