@@ -1,7 +1,7 @@
 #from django.apps import apps
 from django.test import TransactionTestCase
 from django.db.migrations.executor import MigrationExecutor
-from django.db import connection
+from django.db import connection, transaction
 
 from django.utils import timezone
 
@@ -28,6 +28,9 @@ class TestMigrations(TransactionTestCase):
         #self.migrate_from = [(self.app, self.migrate_from)]
         #self.migrate_to = [(self.app, self.migrate_to)]
         connection.prepare_database()
+
+        transaction.commit()
+
         executor = MigrationExecutor(connection)
         old_apps = executor.loader.project_state(self.migrate_from).apps
 
