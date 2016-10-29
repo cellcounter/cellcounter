@@ -5,18 +5,24 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
+from django.core.exceptions import ObjectDoesNotExist
 
 from ..defaults import BUILTIN_KEYBOARDS
+from ..models import User
+from ..models import Keyboard as KeyboardLatest
 
-def default_keyboards(apps, schema_editor):
+def builtin_keyboards(apps, schema_editor):
+    """Insert the builtin keyboards into the database.
+    """
     CellType = apps.get_model("main", "CellType")
 
     KeyMap = apps.get_model("cc_kapi", "KeyMap")
     Keyboard = apps.get_model("cc_kapi", "Keyboard")
 
     for keyboard_data in BUILTIN_KEYBOARDS:
-        mappings_data = keyboard_data.pop('mappings')
-        kb = Keyboard.objects.create(**keyboard_data)
+        mappings_data = keyboard_data['mappings']
+        k_data = dict((k, keyboard_data[k]) for k in keyboard_data.keys() if k not in ['mappings'])
+        kb = Keyboard.objects.create(**k_data)
 
         celltype_objects = [CellType.objects.get(id=mapping['cellid']) for
                             mapping in mappings_data]
@@ -27,6 +33,50 @@ def default_keyboards(apps, schema_editor):
         [kb.mappings.add(x) for x in mapping_objects]
 
         kb.save()
+
+def remove_builtin_keyboards(apps, schema_editor):
+    # get all the models corresponding to the current state
+    Keyboard = apps.get_model("cc_kapi", "Keyboard")
+
+    builtin_keyboards = Keyboard.objects.filter(user=None)
+
+    for kb in builtin_keyboards:
+        kb.delete()
+
+def migrate_user_default_keyboards(apps, schema_editor):
+    # get all the models corresponding to the current state
+    Keyboard = apps.get_model("cc_kapi", "Keyboard")
+    DefaultKeyboards = apps.get_model("cc_kapi", "DefaultKeyboards")
+    User = apps.get_model("auth", "user")
+
+    for user in User.objects.all():
+        # the previous code should guarantee there is at most one primary keyboard per user
+        try:
+            keyboard = Keyboard.objects.get(user=user, is_primary=True)
+        except ObjectDoesNotExist:
+            continue
+        if not hasattr(user, 'defaultkeyboards'):
+            defaultkeyboards = DefaultKeyboards.objects.create(user=user)
+        else:
+            defaultkeyboards = user.defaultkeyboards
+        if keyboard.device_type == KeyboardLatest.DESKTOP:
+            defaultkeyboards.desktop = keyboard
+        elif keyboard.device_type == KeyboardLatest.MOBILE:
+            defaultkeyboards.mobile = keyboard
+        defaultkeyboards.save()
+
+def undo_user_default_keyboards(apps, schema_editor):
+    # get all the models corresponding to the current state
+    Keyboard = apps.get_model("cc_kapi", "Keyboard")
+    DefaultKeyboards = apps.get_model("cc_kapi", "DefaultKeyboards")
+    User = apps.get_model("auth", "user")
+
+    for user in User.objects.all():
+        if hasattr(user, 'defaultkeyboards') and hasattr(user.defaultkeyboards, 'desktop'):
+            default_desktop = user.defaultkeyboards.desktop
+            keyboard = Keyboard.objects.get(id=default_desktop.id)
+            keyboard.is_primary = True
+            keyboard.save()
 
 
 class Migration(migrations.Migration):
@@ -43,10 +93,6 @@ class Migration(migrations.Migration):
             fields=[
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to=settings.AUTH_USER_MODEL)),
             ],
-        ),
-        migrations.RemoveField(
-            model_name='keyboard',
-            name='is_primary',
         ),
         migrations.AddField(
             model_name='keyboard',
@@ -78,5 +124,16 @@ class Migration(migrations.Migration):
             name='last_modified',
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
-        migrations.RunPython(default_keyboards),
+        migrations.RunPython(
+            migrate_user_default_keyboards,
+            undo_user_default_keyboards,
+        ),
+        migrations.RemoveField(
+            model_name='keyboard',
+            name='is_primary',
+        ),
+        migrations.RunPython(
+            builtin_keyboards,
+            remove_builtin_keyboards,
+    ),
     ]
