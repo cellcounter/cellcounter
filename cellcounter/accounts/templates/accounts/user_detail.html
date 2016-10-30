@@ -31,7 +31,7 @@
     {% for keyboard in keyboards %}
         <tr><td><a href="" class="keyboard-label" data-type="text" data-pk="{{ keyboard.id }}" title="Click to change label">{{ keyboard.label }}</a></td><td>{{ keyboard.device_type }}</td><td>{% if keyboard.is_default %}<i class="icon-ok"></i>{% endif %}</td>
             <td>
-                <a href="" title="Set keyboard as default" class="btn btn-success" onclick="set_keyboard_primary('{{ keyboard.href }}');"><i class="icon-ok icon-white"></i></a>
+                <a href="" title="Set keyboard as default" class="btn btn-success" onclick="set_keyboard_default('{{ keyboard.href }}');"><i class="icon-ok icon-white"></i></a>
                 <a href="" title="Delete keyboard" class="btn btn-danger" onclick="delete_specific_keyboard('{{ keyboard.href }}');"><i class="icon-trash icon-white"></i></a>
             </td>
         </tr>

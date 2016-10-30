@@ -337,6 +337,8 @@ class KeyboardsAPIDesktopDetailTest(WebTest):
         response = self.app.delete(reverse('keyboards-desktop-detail', kwargs={'pk': self.desktop_keyboard.id}), user=self.user, status=200)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(Keyboard.objects.filter(user=self.user)), 1)
+        with self.assertRaises(Keyboard.DoesNotExist):
+            Keyboard.objects.get(id=self.desktop_keyboard.id)
 
     def test_delete_keyboard_desktop_mobile(self):
         self.assertEqual(len(Keyboard.objects.filter(user=self.user)), 2)

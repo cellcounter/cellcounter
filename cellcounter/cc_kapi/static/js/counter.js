@@ -637,7 +637,7 @@ function load_keyboard(href) {
     }
 }
 
-function set_keyboard_primary(keyboard_href) {
+function set_keyboard_default(keyboard_href) {
     "use strict";
     $.ajax({
         url: keyboard_href + 'set_default',
