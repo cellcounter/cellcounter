@@ -37,7 +37,7 @@ api/keyboards/desktop/<id>/
     DELETE: deletes the specified desktop keyboard
 
 api/keyboards/desktop/<id>/set_default
-    POST: sets the specified desktop keyboard as the default desktop keyboard
+    PUT: sets the specified desktop keyboard as the default desktop keyboard
 
 api/keyboards/mobile/
     GET: lists all available mobile keyboards, including builtin and user keyboards
@@ -49,5 +49,5 @@ api/keyboards/mobile/<id>/
     DELETE: deletes the specified mobile keyboard
 
 api/keyboards/mobile/<id>/set_default
-    POST: sets the specified mobile keyboard as the default mobile keyboard
+    PUT: sets the specified mobile keyboard as the default mobile keyboard
 
