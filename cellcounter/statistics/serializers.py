@@ -1,4 +1,5 @@
 from rest_framework.serializers import ModelSerializer
+
 from .models import CountInstance
 
 
@@ -11,3 +12,4 @@ class CountInstanceCreateSerializer(ModelSerializer):
 class CountInstanceModelSerializer(ModelSerializer):
     class Meta:
         model = CountInstance
+        fields = '__all__'
