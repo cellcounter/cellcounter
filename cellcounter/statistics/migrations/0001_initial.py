@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('session_id', models.CharField(max_length=32)),
                 ('ip_address', models.GenericIPAddressField()),
                 ('count_total', models.IntegerField()),
-                ('user', models.ForeignKey(default=None, to=settings.AUTH_USER_MODEL, null=True)),
+                ('user', models.ForeignKey(default=None, to=settings.AUTH_USER_MODEL, null=True, on_delete=models.CASCADE)),
             ],
         ),
     ]

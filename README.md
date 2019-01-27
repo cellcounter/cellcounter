@@ -32,3 +32,6 @@ Run the Django webserver, setting the DEBUG environment variable:
 To run the test suite locally, you also need the test requirements in your virtualenv:
 
     pip install -r test-requirements.txt
+
+    export TEST=True
+    python manage.py test

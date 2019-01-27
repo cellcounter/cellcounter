@@ -19,7 +19,7 @@ class OpenPostStaffGet(BasePermission):
     def has_permission(self, request, view):
         if (request.method == 'POST' or
                 all([request.method in SAFE_METHODS,
-                     request.user.is_authenticated(),
+                     request.user.is_authenticated,
                      request.user.is_staff])):
                 return True
         return False
@@ -39,7 +39,7 @@ class ListCreateCountInstanceAPI(ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = CountInstanceCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             user = self.request.user
         else:
             user = None
