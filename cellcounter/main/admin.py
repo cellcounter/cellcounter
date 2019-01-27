@@ -1,5 +1,7 @@
 from django.contrib import admin
-from models import CellImage, CellType, SimilarLookingGroup, License, CopyrightHolder
+
+from .models import CellImage, CellType, SimilarLookingGroup, License, CopyrightHolder
+
 
 class CellImageAdmin(admin.ModelAdmin):
     pass
@@ -12,8 +14,10 @@ class SimilarLookingGroupAdmin(admin.ModelAdmin):
 class CellTypeAdmin(admin.ModelAdmin):
     pass 
 
+
 class LicenseAdmin(admin.ModelAdmin):
     pass 
+
 
 class CopyrightHolderAdmin(admin.ModelAdmin):
     pass 

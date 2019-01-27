@@ -1,0 +1,8 @@
+Thanks for requesting to reset your password for Cellcountr for email {{ email }}.
+
+Follow the link below:
+{{ url }}
+
+Any issues, feel free to contact us.
+
+-- The Cellcountr Team

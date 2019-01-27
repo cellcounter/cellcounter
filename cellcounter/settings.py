@@ -1,9 +1,10 @@
 import os
-# Django settings for cellcounter project.
 import uuid
+
 import dj_database_url
 
-DEBUG = DEBUG = bool(os.environ.get('DEBUG', False))
+DEBUG = bool(os.environ.get('DEBUG', False))
+TEST = bool(os.environ.get('TEST', False))
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -11,10 +12,21 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
-
-DATABASES = {'default': dj_database_url.config(default='postgres://localhost')}
-
 PROJECT_DIR = os.path.dirname(__file__)
+
+DEFAULT_DATABASE_URL = "sqlite:///%s" % os.path.join(PROJECT_DIR, 'db.sqlite3')
+
+if TEST:
+    # Need to disable rate limiting for test purposes
+    if not bool(os.environ.get('TRAVIS', False)):
+        DEFAULT_DATABASE_URL = 'sqlite://:memory:'
+    RATELIMIT_ENABLE = False
+
+# Change default address if env-var is set
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+
+DATABASES = {'default': dj_database_url.config(default=DEFAULT_DATABASE_URL)}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -59,14 +71,15 @@ STATIC_ROOT = os.path.join(PROJECT_DIR, '../static/')
 STATIC_URL = '/static/'
 
 # Additional locations of static files
-#STATICFILES_DIRS = (os.path.join(PROJECT_DIR, 'static'),)
+# STATICFILES_DIRS = (os.path.join(PROJECT_DIR, 'static'),)
 
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'compressor.finders.CompressorFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -77,53 +90,54 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_URL = '/logout/'
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
-
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    'cellcounter.statistics.middleware.StatsSessionMiddleware',
+    # 'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'cellcounter.middleware.SecureRequiredMiddleware',
+    'ratelimit.middleware.RatelimitMiddleware',
 )
 
 # HTTPS_SUPPORT = True
 HTTPS_SUPPORT = False
 
 SECURE_REQUIRED_PATHS = (
-#    '/admin/',
-#    '/count/',
-#    '/login/',
-#    '/accounts/',
+    # '/admin/',
+    # '/count/',
+    # '/login/',
+    # '/accounts/',
 )
+
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 ROOT_URLCONF = 'cellcounter.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'cellcounter.wsgi.application'
 
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.contrib.auth.context_processors.auth',
-    'django.contrib.messages.context_processors.messages',
-)
+# Template settings
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -133,24 +147,36 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-    'gunicorn',
-    'storages',
     'colorful',
-    'south',
+    'rest_framework',
+    'compressor',
     'cellcounter.main',
+    'cellcounter.cc_kapi',
     'cellcounter.accounts',
-    'django_extensions',
+    'cellcounter.statistics'
 )
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
+CACHES = {'default': {}}
+
+if DEBUG or TEST:
+    CACHES['default']['BACKEND'] = 'django.core.cache.backends.locmem.LocMemCache'
+else:
+    CACHES['default']['BACKEND'] = 'django.core.cache.backends.memcached.PyLibMCCache'
+    CACHES['default']['LOCATION'] = os.environ.get('MEMCACHED_LOCATION')
+
+RATELIMIT_VIEW = 'cellcounter.accounts.views.rate_limited'
+
+# Logging config
+
 if 'ENABLE_DJANGO_LOGGING' in os.environ:
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
+        'formatters': {
+            'verbose': {
+                'format': '%(levelname)s %(asctime)s %(module)s %(funcName)s %(lineno)d %(message)s'
+            }
+        },
         'filters': {
             'require_debug_false': {
                 '()': 'django.utils.log.RequireDebugFalse'
@@ -159,48 +185,47 @@ if 'ENABLE_DJANGO_LOGGING' in os.environ:
         'handlers': {
             'mail_admins': {
                 'level': 'ERROR',
+                'class': 'django.utils.log.AdminEmailHandler',
                 'filters': ['require_debug_false'],
-                'class': 'django.utils.log.AdminEmailHandler'
             },
-            # Log to a text file that can be rotated by logrotate
             'logfile': {
                 'class': 'logging.handlers.WatchedFileHandler',
-                'filename': '/var/log/django/cellcountr.log'
+                'filename': os.environ.get('DJANGO_LOG_PATH'),
+                'formatter': 'verbose'
+            },
+            'console': {
+                'class': 'logging.StreamHandler',
+                'formatter': 'verbose'
             },
         },
         'loggers': {
-            'django.request': {
-                'handlers': ['mail_admins'],
-                'level': 'ERROR',
-                'propagate': True,
-            },
-            # Might as well log any errors anywhere else in Django
             'django': {
-                'handlers': ['logfile'],
-                'level': 'ERROR',
+                'handlers': ['console'],
+                'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
                 'propagate': False,
             },
-            # Your own app - this assumes all logger names start with "cellcountr."
-            'cellcountr': {
-                'handlers': ['logfile'],
-                'level': 'WARNING', # Or maybe INFO or DEBUG
+            'django.request': {
+                'handlers': ['mail_admins'],
+                'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+                'propagate': True,
+            },
+            'cellcounter': {
+                'handlers': ['mail_admins', 'console'],
+                'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
                 'propagate': False
             },
         }
     }
 
-# Associates a UserProfile with the User
-# TODO In Django 1.5 we should use a custom User model
-AUTH_PROFILE_MODULE = 'accounts.UserProfile'
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+    )
+}
 
-if 'AWS_STORAGE_BUCKET_NAME' in os.environ:
-    AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
-    STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-    S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
-    STATIC_URL = S3_URL
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
-try:
-   from localsettings import *
-except ImportError:
-    pass
+# Store session cookies for 1 week only
+SESSION_COOKIE_AGE = 604800
 
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"

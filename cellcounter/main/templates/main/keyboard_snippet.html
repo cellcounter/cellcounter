@@ -1,4 +1,4 @@
-<div id="openkeyboard" class="btn btn-primary">Open keyboard</div>
+<div id="keyboard-buttons"></div>
 <div id="counterbox" style="position: relative;" class="largekeyboard">
         <div id="keysbox" style="position: absolute; top: 0px; z-index: -1;">
         <!-- Row 1 -->
@@ -101,14 +101,17 @@
             </div>
         </div>
     </div>
-    <div id='visualisation' class="largekeyboard">
+    <div id='visualisation' class="visualisation largekeyboard">
         <div id='doughnut'></div>
-        <div id="total" style="width: 100%; height: 100%; text-align: center; position: absolute; left: 0px; top: 0px; line-height: 200px">0</div>
+        <div class="total"></div>
     </div>
     
     <div id="editkeymapbox" title="Edit key map">
         {% if not logged_in %}<p>You may edit the keyboard map, however it will not be saved.{% endif %}<p>Select a cell type then press the key you want assigned to it. Press 'enter' to select next cell type.</p>
         <button class="btn btn-primary" id="clearkeyboard">Clear key map</button>
+        {% if user.is_authenticated %}
+        <button class="btn btn-primary" id="select_button">Select Keyboard</button>
+        {% endif %}
         <div id="celllist">
         </div>
         <div style="padding-top: 10px; clear: both;"><input type="checkbox" id="multi_key" checked="checked" /> Only allow one key per cell type</div>
@@ -116,10 +119,6 @@
     </div>
 
     <button class="btn btn-primary" id="edit_button">Edit key map</button>
-    <button class="btn btn-primary" id="reset_button">Reset count</button>
-    <button class="btn btn-primary" id="close_button">Close Keyboard</button>
-
-    <div id="dialog-confirm" title="Reset the count?" style="display: none">
-        <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>Once reset, the count cannot be recovered. Are you sure?</p>
-    </div>
+    <button class="btn btn-danger reset_button" id="reset_button">Reset count</button>
+    <button class="btn btn-success" id="close_button">Close &amp; display results</button>
 </div>

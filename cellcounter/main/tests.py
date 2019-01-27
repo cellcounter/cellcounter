@@ -1,19 +1,13 @@
-import re
-import datetime
-
 import factory
-import webtest
-from django.test import TestCase
-from django.test.client import Client
-from django.utils.timezone import utc
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django_webtest import WebTest
 
+from cellcounter.cc_kapi.factories import UserFactory
 from cellcounter.main.models import *
 
+
 CELLTYPE_LIST = [('Neutrophils', 'neutrophils'),
-                 ('Band Forms', 'band_forms'),
+                 ('Metamyelocytes', 'meta'),
                  ('Myelocytes', 'myelocytes'),
                  ('Promyelocytes', 'promyelocytes'),
                  ('Blasts', 'blasts'),
@@ -23,254 +17,39 @@ CELLTYPE_LIST = [('Neutrophils', 'neutrophils'),
                  ('Lymphocytes', 'lymphocytes'),
                  ('Monocytes', 'monocytes'),
                  ('Plasma cells', 'plasma_cells'),
-                 ('Other', 'other'),]
+                 ('Lymphoblasts', 'ly_blasts'),
+                 ('Other', 'other')]
 
-class UserFactory(factory.Factory):
-    FACTORY_FOR = User
+CELLTYPE_JSON = '[{"id":1,"readable_name":"Neutrophils","machine_name":"neutrophils","abbr_name":"neut","comment":"","visualisation_colour":"#4f6228"},{"id":2,"readable_name":"Metamyelocytes","machine_name":"meta","abbr_name":"meta","comment":"","visualisation_colour":"#77933c"},{"id":3,"readable_name":"Myelocytes","machine_name":"myelocytes","abbr_name":"myelo","comment":"","visualisation_colour":"#c3d69b"},{"id":4,"readable_name":"Promyelocytes","machine_name":"promyelocytes","abbr_name":"promyelo","comment":"","visualisation_colour":"#d7e4bd"},{"id":5,"readable_name":"Blasts","machine_name":"blasts","abbr_name":"blast","comment":"","visualisation_colour":"#ebf1de"},{"id":6,"readable_name":"Basophils","machine_name":"basophils","abbr_name":"baso","comment":"","visualisation_colour":"#8064a2"},{"id":7,"readable_name":"Eosinophils","machine_name":"eosinophils","abbr_name":"eo","comment":"","visualisation_colour":"#f79546"},{"id":8,"readable_name":"Erythroid","machine_name":"erythroid","abbr_name":"erythro","comment":"","visualisation_colour":"#ff0000"},{"id":9,"readable_name":"Lymphocytes","machine_name":"lymphocytes","abbr_name":"lympho","comment":"","visualisation_colour":"#ffffff"},{"id":10,"readable_name":"Monocytes","machine_name":"monocytes","abbr_name":"mono","comment":"","visualisation_colour":"#bfbfbf"},{"id":11,"readable_name":"Plasma cells","machine_name":"plasma_cells","abbr_name":"plasma","comment":"","visualisation_colour":"#0000ff"},{"id":12,"readable_name":"Other","machine_name":"other","abbr_name":"other","comment":"","visualisation_colour":"#f9ff00"},{"id":13,"readable_name":"Lymphoblasts","machine_name":"lymphoblasts","abbr_name":"ly_blasts","comment":"","visualisation_colour":"#606060"},{"id":14,"readable_name":"test","machine_name":"test","abbr_name":"test","comment":"Test","visualisation_colour":"#FFFFFF"}]'
 
-    username = factory.Sequence(lambda n: "test%s" % n)
-    first_name = factory.Sequence(lambda n: "test%s" % n)
-    last_name = factory.Sequence(lambda n: "test%s" % n)
-    email = factory.Sequence(lambda n: "test%s@example.com" % n)
-    password = 'pbkdf2_sha256$10000$8na6FeT9qxUY$2LUHCd+ipsMynWF0RTz+vdDQ0GDS1ZS+Isi5k3dyi3A='
-    is_staff = False
-    is_active = True
-    is_superuser = False
-    last_login = datetime.datetime.utcnow().replace(tzinfo=utc)
-    date_joined = datetime.datetime.utcnow().replace(tzinfo=utc)
 
-class CellTypeFactory(factory.Factory):
-    FACTORY_FOR = CellType
-    
-    readable_name = '' 
-    machine_name = '' 
-    abbr_name = ''
-    comment = ""
-    visualisaion_colour = ''
+class CellTypeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CellType
 
-class CellCountTestCase(TestCase):
+    readable_name = 'test'
+    machine_name = 'test'
+    abbr_name = 'test'
+    comment = "Test"
+    visualisation_colour = '#FFFFFF'
 
-    def test_total_count(self):
-        cell = CellCountFactory.build()
-        self.assertEquals(cell.get_total_count(), 10)
 
-    def test_percentage_count(self):
-        cellcount_instance = CellCountInstanceFactory()
-        for cell in CellType.objects.all():
-            cellcount = CellCountFactory(
-                    cell_count_instance=cellcount_instance, cell=cell)
-        self.assertEquals(cellcount.percentage(), 8.0)
-
-class TestSubmitCount(WebTest):
-
+class TestMainViews(WebTest):
     def setUp(self):
-        self.cellcount_instance = CellCountInstanceFactory(user__username='foo')
-        for cell in CellType.objects.all():
-            cellcount = CellCountFactory(
-                    cell_count_instance=self.cellcount_instance, cell=cell)
+        self.user = UserFactory()
+        self.cell_type = CellTypeFactory()
 
-    def test_logged_out_302(self):
+    def test_new_count_view(self):
         response = self.app.get(reverse('new_count'))
-        self.assertRedirects(response, "%s?next=%s" %(reverse('login'),
-                             reverse('new_count')))
+        self.assertFalse(response.context['logged_in'])
+        self.assertEqual(200, response.status_code)
 
-    def test_logged_in_get(self):
-        form = self.app.get(reverse('new_count'), user='foo').form
-        # Cellcount main details
-        self.assertIn('cellcount-tissue_type', form.fields)
+    def test_new_count_login(self):
+        response = self.app.get(reverse('new_count'), user=self.user)
+        self.assertTrue(response.context['logged_in'])
+        self.assertEqual(200, response.status_code)
 
-        # For all cells
-        for celltype in CELLTYPE_LIST:
-            self.assertIn(celltype[1]+'-cell', form.fields)
-            self.assertIn(celltype[1]+'-normal_count', form.fields)
-            self.assertIn(celltype[1]+'-abnormal_count', form.fields)
-
-    def test_logged_in_post_valid(self):
-        form = self.app.get(reverse('new_count'), user='foo').form
-        form.set('cellcount-tissue_type', 'Bone marrow')
-        form.set('bonemarrow-trail_cellularity', 'Normal')
-        form.set('bonemarrow-particle_cellularity', 'Normal')
-        form.set('bonemarrow-particulate', 'No particles')
-        form.set('bonemarrow-haemodilution', 'Moderate')
-        form.set('bonemarrow-site', 'Iliac Crest')
-        form.set('bonemarrow-ease_of_aspiration', 'Easy')
-        form.set('granulopoiesis-no_dysplasia', True)
-        form.set('erythropoiesis-no_dysplasia', True)
-        form.set('megakaryocyte-relative_count', 'Normal')
-        form.set('megakaryocyte-no_dysplasia', True)
-        form.set('ironstain-stain_performed', False)
-        form.set('cellcount-overall_comment', 'Unremarkable aspiration')
-
-        response = form.submit().follow()
-        self.assertIn('Count submitted successfully', response.body)
-        cell_count = CellCountInstance.objects.get(id=2)
-        self.assertEqual('Unremarkable aspiration', cell_count.overall_comment)
-
-    def test_invalid_form(self):
-        # Missing bonemarrow-site
-        form = self.app.get(reverse('new_count'), user='foo').form
-        form.set('cellcount-tissue_type', 'Bone marrow')
-        form.set('bonemarrow-trail_cellularity', 'Normal')
-        form.set('bonemarrow-particle_cellularity', 'Normal')
-        form.set('bonemarrow-particulate', 'No particles')
-        form.set('bonemarrow-haemodilution', 'Moderate')
-        form.set('bonemarrow-ease_of_aspiration', 'Easy')
-        form.set('megakaryocyte-relative_count', 'Normal')
-        form.set('cellcount-overall_comment', 'Unremarkable aspiration')
-
-        response = form.submit()
-        self.assertNotIn('Count submitted successfully', response.body)
-
-class TestViewCount(WebTest):
-    def setUp(self):
-        self.cellcount_instance = CellCountInstanceRelatedFactory(
-                user__username='foo')
-        for cell in CellType.objects.all():
-            cellcount = CellCountFactory(
-                    cell_count_instance=self.cellcount_instance, cell=cell)
-
-        cellcount_instance = CellCountInstanceRelatedFactory()
-        for cell in CellType.objects.all():
-            cellcount = CellCountFactory(
-                    cell_count_instance=cellcount_instance, cell=cell)
-
-    def test_existent_loggedout(self):
-        response = self.app.get(reverse('view_count', kwargs={'count_id': 1}))
-        self.assertRedirects(response,
-                             "%s?next=%s" %(reverse('login'),
-                             reverse('view_count', kwargs={'count_id': 1})))
-
-    def test_nonexistent_loggedout(self):
-        response = self.app.get(reverse('view_count', kwargs={'count_id': 25}))
-        self.assertRedirects(response,
-                             "%s?next=%s" %(reverse('login'),
-                             reverse('view_count', kwargs={'count_id': 25})))
-
-    def test_nonexistent_count(self):
-        response = self.app.get(reverse('view_count', kwargs={'count_id': 25}),
-                                user='foo', status=404)
-        self.assertEquals('404 NOT FOUND', response.status)
-
-    def test_view_user_count(self):
-        response = self.app.get(reverse('view_count', kwargs={'count_id': 1}),
-                                user='foo')
-        self.assertEquals('200 OK', response.status)
-        self.assertEqual(response.html.find("h1", text=re.compile("Report")),
-                         "Report")
-
-    def test_view_nonuser_count(self):
-        response = self.app.get(reverse('view_count', kwargs={'count_id': 2}),
-                                user='foo', status=403)
-        self.assertEqual('403 FORBIDDEN', response.status)
-
-class TestViewCountsList(WebTest):
-    def setUp(self):
-        self.cellcount_instance = CellCountInstanceRelatedFactory(user__username='foo')
-        for cell in CellType.objects.all():
-            cellcount = CellCountFactory(
-                    cell_count_instance=self.cellcount_instance, cell=cell)
-
-    def test_view_my_count_loggedout(self):
-        response = self.app.get(reverse('my_counts', kwargs={'pk': 1}))
-        self.assertRedirects(response,
-                "%s?next=%s" %(reverse('login'),
-                    reverse('my_counts', kwargs={'pk':1})))
-
-    def test_view_my_count_loggedin(self):
-        response = self.app.get(reverse('my_counts', kwargs={'pk': 1}), 
-                                user='foo')
-        self.assertEqual('200 OK', response.status)
-        self.assertEqual(response.html.find("h2", text=re.compile("My Counts")),
-                         "My Counts")
-        self.assertEqual(response.html.find("b", text=re.compile("Count ID #1")),
-                         "Count ID #1")
-        self.assertTrue(response.html.find("a", href=re.compile("count/1/")))
-        self.assertTrue(response.html.find("a", 
-                        href=re.compile("count/1/edit/")))
-        self.assertTrue(response.html.find("a", 
-                        href=re.compile("count/1/delete/")))
-        self.assertTrue(response.html.find("a", 
-                        href=re.compile("count/new/")))
-
-class TestEditCount(WebTest):
-    def setUp(self):
-        self.cellcount_instance = CellCountInstanceRelatedFactory(user__username='foo')
-        for cell in CellType.objects.all():
-            cellcount = CellCountFactory(
-                    cell_count_instance=self.cellcount_instance, cell=cell)
-        cellcount_instance = CellCountInstanceRelatedFactory()
-        for cell in CellType.objects.all():
-            cellcount = CellCountFactory(
-                    cell_count_instance=cellcount_instance, cell=cell)
-
-    def test_edit_nonexistent_lo(self):
-        response = self.app.get(reverse('edit_count', kwargs={'count_id': 25}))
-        self.assertRedirects(response,
-                             "%s?next=%s" %(reverse('login'),
-                             reverse('edit_count', kwargs={'count_id': 25})))
-
-    def test_edit_nonexistent_li(self):
-        response = self.app.get(reverse('edit_count', kwargs={'count_id': 25}),
-                                user='foo', status=404)
-        self.assertEquals('404 NOT FOUND', response.status)
-
-    def test_edit_own_li(self):
-        form = self.app.get(reverse('edit_count', kwargs={'count_id': 1}),
-                                user='foo').form
-        self.assertIn('cellcount-tissue_type', form.fields)
-
-        # Bonemarrow stats
-        self.assertIn('bonemarrow-trail_cellularity', form.fields)
-        self.assertIn('bonemarrow-particle_cellularity', form.fields)
-        self.assertIn('bonemarrow-particulate', form.fields)
-        self.assertIn('bonemarrow-haemodilution', form.fields)
-        self.assertIn('bonemarrow-site', form.fields)
-        self.assertIn('bonemarrow-ease_of_aspiration', form.fields)
-
-        # Granulopoiesis
-        self.assertIn('granulopoiesis-no_dysplasia', form.fields)
-        self.assertIn('granulopoiesis-hypogranular', form.fields)
-        self.assertIn('granulopoiesis-pelger', form.fields)
-        self.assertIn('granulopoiesis-nuclear_atypia', form.fields)
-        self.assertIn('granulopoiesis-dohle_bodies', form.fields)
-        self.assertIn('granulopoiesis-comment', form.fields)
-
-        # Erythroipoiesis
-        self.assertIn('erythropoiesis-no_dysplasia', form.fields)
-        self.assertIn('erythropoiesis-nuclear_asynchrony', form.fields)
-        self.assertIn('erythropoiesis-multinucleated_forms', form.fields)
-        self.assertIn('erythropoiesis-ragged_haemoglobinisation', form.fields)
-        self.assertIn('erythropoiesis-megaloblastic_change', form.fields)
-        self.assertIn('erythropoiesis-comment', form.fields)
-
-        # Megakaryocytes
-        self.assertIn('megakaryocyte-relative_count', form.fields)
-        self.assertIn('megakaryocyte-no_dysplasia', form.fields)
-        self.assertIn('megakaryocyte-hypolobulated', form.fields)
-        self.assertIn('megakaryocyte-fragmented', form.fields)
-        self.assertIn('megakaryocyte-micromegakaryocytes', form.fields)
-        self.assertIn('megakaryocyte-comment', form.fields)
-
-        # Iron stain
-        self.assertIn('ironstain-stain_performed', form.fields)
-        self.assertIn('ironstain-ringed_sideroblasts', form.fields)
-        self.assertIn('ironstain-iron_content', form.fields)
-        self.assertIn('ironstain-comment', form.fields)
-
-        # Overall comment
-        self.assertIn('cellcount-overall_comment', form.fields)
-
-    def test_post_edit_own(self):
-        form = self.app.get(reverse('edit_count', kwargs={'count_id': 1}),
-                                user='foo').form
-        form.set('cellcount-overall_comment', 'Exciting aspiration')
-
-        response = form.submit().follow()
-        self.assertIn('Count edited successfully', response.body)
-        cell_count = CellCountInstance.objects.get(id=1)
-        self.assertEqual('Exciting aspiration', cell_count.overall_comment)
-
-    def test_edit_others_li(self):
-        response = self.app.get(reverse('edit_count', kwargs={'count_id': 2}),
-                                user='foo', status=403)
-        self.assertEqual('403 FORBIDDEN', response.status)
+    def test_get_celltype_api(self):
+        response = self.app.get(reverse('cell_types'))
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(CELLTYPE_JSON, response.body)

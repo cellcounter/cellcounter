@@ -1,82 +1,72 @@
-from django.http import HttpResponseForbidden, HttpResponse
-from django.shortcuts import render_to_response, HttpResponseRedirect, get_object_or_404
+from django.http import HttpResponse
+from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from django.core.urlresolvers import reverse
-from django.contrib import messages
-from django.views.generic import ListView, DetailView
-from django.contrib.auth.models import User
-from django.core import exceptions
-from django.conf import settings
+from django.views.generic import TemplateView, ListView, DetailView
+from rest_framework.generics import ListAPIView
 from PIL import Image
-import os.path
 
-from cellcounter.main.models import CellType, CellImage
-
-from cellcounter.main.decorators import user_is_owner
-from cellcounter.mixins import JSONResponseMixin
-
-class ListCellTypesView(JSONResponseMixin, ListView):
-    model = CellType
-
-    def get_context_data(self, *args, **kwargs):
-        objects = self.object_list
-        new_context = {}
-        for cell in objects:
-            cell_dict = {
-                'id': cell.pk,
-                'name': cell.readable_name,
-                'slug': cell.machine_name,
-                'abbr': cell.abbr_name,
-                'colour': cell.visualisation_colour
-            }
-            new_context[cell.pk] = cell_dict
-
-        return new_context
-
-def new_count(request):
-        cellcount_form_list = []
-        for celltype in CellType.objects.all():
-            cellcount_form_list.append(celltype)
-
-        return render_to_response('main/submit.html',
-            {'cellcountformslist': cellcount_form_list,
-             'logged_in': request.user.is_authenticated(),},
-            context_instance=RequestContext(request))
+from .models import CellType, CellImage
+from .serializers import CellTypeSerializer
 
 
-def images_by_cell_type(request, cell_type):
-    ct = CellType.objects.get(machine_name = cell_type)
-    images = []
-    copyrightholders = []
-    for ci in ct.cellimage_set.all():
-        if ci.copyright not in copyrightholders:
-            copyrightholders.append(ci.copyright)
-        images.append((copyrightholders.index(ci.copyright) + 1, ci))  
-    return render_to_response('main/images_by_cell_type.html',
-            {'images': images,
-             'copyrightholders': copyrightholders},
-            context_instance=RequestContext(request))
+class CellTypesListView(ListAPIView):
+    queryset = CellType.objects.all().order_by('id')
+    serializer_class = CellTypeSerializer
+
+
+class NewCountTemplateView(TemplateView):
+    template_name = 'main/count.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(NewCountTemplateView, self).get_context_data(**kwargs)
+        context['logged_in'] = self.request.user.is_authenticated()
+        return context
+
+
+class CellImageListView(ListView):
+    model = CellImage
+    template_name = 'main/images_by_cell_type.html'
+
+    def get_queryset(self):
+        return CellImage.objects.filter(celltype__machine_name__iexact=self.kwargs['cell_type'])
+
+    def get_context_data(self, **kwargs):
+        copyright_holders = []
+        image_list = []
+        context = super(CellImageListView, self).get_context_data(**kwargs)
+        if context['object_list']:
+            for image in self.object_list:
+                if image.copyright not in copyright_holders:
+                    copyright_holders.append(image.copyright)
+                image_list.append((copyright_holders.index(image.copyright) + 1, image))
+            context.pop('object_list')
+            context['images'] = image_list
+            context['copyrightholders'] = copyright_holders
+        return context
+
+
+class CellImageDetailView(DetailView):
+    model = CellImage
+    context_object_name = 'cellimage'
+    template_name = 'main/image_page.html'
+    pk_url_kwarg = 'cell_image_pk'
+
 
 def similar_images(request, cell_image_pk):
     ci = CellImage.objects.get(pk = cell_image_pk)
     return render_to_response('main/images_by_cell_type.html',
-                {'images': ci.similar_cells(),},
-                context_instance=RequestContext(request))
+                              {'images': ci.similar_cells()},
+                              context_instance=RequestContext(request))
+
 
 def thumbnail(request, cell_image_pk):
-    ci = CellImage.objects.get(pk = cell_image_pk)
+    ci = CellImage.objects.get(pk=cell_image_pk)
 
     image = Image.open(ci.file.file)
-    thumb_image = image.crop((ci.thumbnail_left, ci.thumbnail_top, ci.thumbnail_left + ci.thumbnail_width, ci.thumbnail_top + ci.thumbnail_width))
+    thumb_image = image.crop((ci.thumbnail_left, ci.thumbnail_top,
+                              ci.thumbnail_left + ci.thumbnail_width,
+                              ci.thumbnail_top + ci.thumbnail_width))
     thumb_image = thumb_image.resize((200, 200), Image.ANTIALIAS)
     response = HttpResponse(mimetype="image/png")
     thumb_image.save(response, "PNG")
     return response
-
-def page(request, cell_image_pk):
-    ci = CellImage.objects.get(pk = cell_image_pk)    
-    return render_to_response('main/image_page.html',
-                {'cellimage': ci},
-                context_instance=RequestContext(request))

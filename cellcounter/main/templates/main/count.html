@@ -1,0 +1,106 @@
+{% extends 'main/base.html' %}
+
+{% load staticfiles %}
+{% load compress %}
+{% block content %}
+
+{% if not logged_in %}
+<script type="text/javascript">
+var notloggedin=true;
+</script>
+{% endif %}
+
+<h3>Welcome to CellCountr!</h3>
+<p>CellCountr provides a simple way to perform cell differentials on a peripheral blood or bone marrow aspirate</p>
+
+<h4>Instructions</h4>
+<div class="well well-small">
+<ul>
+    <li>Press the key corresponding to a cell type to add a count.</li>
+    <li>Press 'Backspace' to remove last normal/abnormal cell entered.</li>
+    <li>To flag a cell as abnormal press 'Space+Key'.</li>
+    <li>Pressing and holding '1' will convert the raw count numbers to a percentage</li>
+    <li>To see example images of the cells in question press 'Shift+Key'.</li>
+    <li>Once your count is complete, click 'Close & display results' to see a tabulated report</li>
+    <li>Continue counting where you left off using the green button above the report, or start a new count using the red button.</li>
+</ul>
+</div>
+
+
+{% include "main/keyboard_snippet.html" %}
+
+<div class="row">
+<div class="span7">
+    <div id="statistics"></div>
+</div>
+<div class="span5">
+    <div id="visualise2" class="visualisation" style="display: none; position: relative;">
+        <div id="doughnut2"></div>
+        <div class="total"></div>
+    </div>
+</div>
+</div>
+
+<p>At present this site is optimised for Firefox or Chromium-based web browsers, and display sizes of at least 1024x768. See the <a href="/about/">About</a> section for more information.</p>
+
+<div class="modal hide fade" id="keyboard_name">
+<div class="modal-header">
+    <h3>Name new Keyboard</h3>
+</div>
+<div class="modal-body">
+    <form class="form-inline">
+        <input id="keyboard-name-input" type="text" placeholder="Keyboard name here ...">
+        <input id="save_new_name" class="submit btn btn-success" value="Create">
+    </form>
+</div>
+</div>
+
+<div class="modal hide fade" id="confirm-reset">
+    <div class="modal-header">
+        <h3>Confirm reset count?</h3>
+    </div>
+    <div class="modal-body">
+        <p>Once reset, counters are zeroed, and this cannot be undone.</p>
+    <form class="form-inline">
+        <input type="button" id="reset-count" class="btn btn-danger" value="Reset">
+        <input type="button" id="cancel-reset" class="btn" value="Cancel">
+    </form>
+    </div>
+</div>
+
+<div class="modal hide fade" id="select-keyboard">
+<div class="modal-header">
+    <h3>Select from saved keyboards</h3>
+</div>
+<div class="modal-body">
+    {% if user.is_authenticated %}
+    <div id="keyboard_list">
+    <table class="table">
+        <thead>
+        <tr><th>Label</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <ul>
+    </ul>
+    </div>
+    {% else %}
+    <p>Only logged-in users can save keyboards</p>
+    {% endif %}
+</div>
+</div>
+
+{% endblock %}
+
+{% block additional_scripts %}
+{% compress js %}
+<script src="{% static "js/visualise.js" %}"></script>
+<script src="{% static "js/counter.js" %}"></script>
+<script>
+    $(function() {
+        open_keyboard();
+    });
+</script>
+{% endcompress %}
+{% endblock %}

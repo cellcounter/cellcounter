@@ -2,10 +2,25 @@ language: python
 python:
   - "2.7"
 
+sudo: False
+
+addons:
+    postgresql: "9.4"
+
 # command to install dependencies
 install:
- - pip install --use-mirrors -q -r requirements.txt
- - pip install --use-mirrors -q -r test-requirements.txt
+    - pip install -r requirements.txt
+    - pip install -r test-requirements.txt
+    - pip install coveralls
+
+env: 
+    - TEST=True DATABASE_URL=postgres://postgres@localhost/cellcountr_test
+
+before_script:
+    - psql -c 'create database cellcountr_test;' -U postgres
 
 # command to run tests
-script: python manage.py test main
+script: coverage run --source=cellcounter --omit='*migrations*' manage.py test
+
+after_success:
+    coveralls
