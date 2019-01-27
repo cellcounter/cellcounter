@@ -6,7 +6,7 @@ from cellcounter.main.models import CellType
 
 class Keyboard(models.Model):
     """Represents a Keyboard mapping between users and keys"""
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     label = models.CharField(max_length=25)
     is_primary = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
@@ -63,6 +63,6 @@ class Keyboard(models.Model):
 
 
 class KeyMap(models.Model):
-    cellid = models.ForeignKey(CellType)
+    cellid = models.ForeignKey(CellType, on_delete=models.CASCADE)
     key = models.CharField(max_length=1)
     keyboards = models.ManyToManyField(Keyboard, related_name='mappings')

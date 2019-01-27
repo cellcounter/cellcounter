@@ -16,7 +16,7 @@ class DefaultKeyboardView(generics.RetrieveAPIView):
         return Keyboard.objects.get(user=self.request.user, is_primary=True)
 
     def retrieve(self, request, *args, **kwargs):
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             return Response(DEFAULT_KEYBOARD_MAP)
 
         try:

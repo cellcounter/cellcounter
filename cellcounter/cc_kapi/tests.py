@@ -3,7 +3,7 @@ import json
 from django_webtest import WebTest
 from django.test import TestCase
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from rest_framework.renderers import JSONRenderer
 
 from cellcounter.main.models import CellType

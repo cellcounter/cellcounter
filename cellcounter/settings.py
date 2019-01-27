@@ -90,7 +90,7 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_URL = '/logout/'
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'cellcounter.statistics.middleware.StatsSessionMiddleware',
     # 'django.contrib.sessions.middleware.SessionMiddleware',

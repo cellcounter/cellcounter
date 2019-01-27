@@ -25,13 +25,13 @@ class CellImage(models.Model):
     description = models.TextField()
     file = models.ImageField(upload_to="cell_images")
     thumbnail = models.ImageField(upload_to="cell_thumbnails", null=True, blank=True)
-    celltype = models.ForeignKey(CellType)
+    celltype = models.ForeignKey(CellType, on_delete=models.CASCADE)
     thumbnail_left = models.IntegerField()
     thumbnail_top = models.IntegerField()
     thumbnail_width = models.IntegerField()
-    uploader = models.ForeignKey(User)
-    copyright = models.ForeignKey('CopyrightHolder')
-    license = models.ForeignKey('License')
+    uploader = models.ForeignKey(User, on_delete=models.CASCADE)
+    copyright = models.ForeignKey('CopyrightHolder', on_delete=models.CASCADE)
+    license = models.ForeignKey('License', on_delete=models.CASCADE)
 
     def similar_cells(self):
         groups = self.similarlookinggroup_set.all()

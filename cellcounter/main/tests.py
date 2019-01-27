@@ -1,5 +1,5 @@
 import factory
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django_webtest import WebTest
 
 from cellcounter.cc_kapi.factories import UserFactory

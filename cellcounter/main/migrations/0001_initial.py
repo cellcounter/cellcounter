@@ -81,25 +81,25 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='cellimage',
             name='celltype',
-            field=models.ForeignKey(to='main.CellType'),
+            field=models.ForeignKey(to='main.CellType', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='cellimage',
             name='copyright',
-            field=models.ForeignKey(to='main.CopyrightHolder'),
+            field=models.ForeignKey(to='main.CopyrightHolder', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='cellimage',
             name='license',
-            field=models.ForeignKey(to='main.License'),
+            field=models.ForeignKey(to='main.License', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='cellimage',
             name='uploader',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]
