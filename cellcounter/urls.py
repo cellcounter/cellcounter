@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.contrib.auth.views import login, logout
+from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import TemplateView
 
 from cellcounter.main import views
@@ -19,8 +19,8 @@ urlpatterns = [
                   url(r'^images/page/(?P<cell_image_pk>\d+)/', views.CellImageDetailView.as_view(), name="page"),
                   url(r'^api/cell_types/', views.CellTypesListView.as_view(), name="cell_types"),
                   url(r'^api/stats/', include('cellcounter.statistics.urls')),
-                  url(r'^login/', login, {'template_name': 'main/login.html'}, name='login'),
-                  url(r'^logout/', logout, {'next_page': '/'}, name='logout'),
+                  url(r'^login/', LoginView.as_view(template_name="main/login.html"), name="login"),
+                  url(r'^logout/', LogoutView.as_view(next_page="/"), name='logout'),
                   url(r'^api/keyboards/', include('cellcounter.cc_kapi.urls')),
                   url(r'^accounts/', include('cellcounter.accounts.urls')),
                   url(r'^admin/', admin.site.urls),
