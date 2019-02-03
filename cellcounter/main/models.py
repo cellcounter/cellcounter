@@ -1,6 +1,6 @@
 import os
 import mimetypes
-from StringIO import StringIO
+from io import StringIO
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile

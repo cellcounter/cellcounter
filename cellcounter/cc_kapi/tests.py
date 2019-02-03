@@ -69,17 +69,22 @@ class DefaultKeyboardAPITest(WebTest):
 
     def test_get_keyboard_anon(self):
         response = self.app.get(reverse('default-keyboard'))
-        self.assertEqual(response.body, DEFAULT_KEYBOARD_STRING)
+        a = json.loads(DEFAULT_KEYBOARD_STRING)
+        b = json.loads(response.body.decode("utf-8"))
+        self.assertEqual(a, b)
 
     def test_get_no_primary(self):
         user = UserFactory()
         response = self.app.get(reverse('default-keyboard'), user=user.username)
-        self.assertEqual(DEFAULT_KEYBOARD_STRING, response.body)
+        a = json.loads(DEFAULT_KEYBOARD_STRING)
+        b = json.loads(response.body.decode("utf-8"))
+        self.assertEqual(a, b)
 
     def test_get_primary_set(self):
         response = self.app.get(reverse('default-keyboard'), user=self.user.username)
         serializer = KeyboardSerializer(self.keyboard)
-        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
+        b = json.loads(response.body.decode("utf-8"))
+        self.assertEqual(serializer.data, b)
 
 
 class KeyboardsListCreateAPITest(WebTest):
@@ -115,21 +120,21 @@ class KeyboardsListCreateAPITest(WebTest):
     def test_post_keyboard_missing_fields(self):
         response = self.app.post(reverse('keyboards'),
                                  json.dumps({k: v for k, v in
-                                            MOCK_KEYBOARD.iteritems() if k != 'label'}),
+                                            list(MOCK_KEYBOARD.items()) if k != 'label'}),
                                  headers={'Content-Type': 'application/json'},
                                  user=self.user.username,
                                  status=400)
-        self.assertEqual(response.body, '{"label":["This field is required."]}')
+        self.assertEqual(response.body.decode("utf-8"), '{"label":["This field is required."]}')
         self.assertEqual(response.status_code, 400)
 
     def test_post_keyboard_missing_mappings(self):
         response = self.app.post(reverse('keyboards'),
                                  json.dumps({k: v for k, v in
-                                            MOCK_KEYBOARD.iteritems() if k != 'mappings'}),
+                                            list(MOCK_KEYBOARD.items()) if k != 'mappings'}),
                                  headers={'Content-Type': 'application/json'},
                                  user=self.user.username,
                                  status=400)
-        self.assertEqual('{"mappings":["This field is required."]}', response.body)
+        self.assertEqual('{"mappings":["This field is required."]}', response.body.decode("utf-8"))
         self.assertEqual(response.status_code, 400)
 
 
@@ -206,21 +211,21 @@ class KeyboardAPITest(WebTest):
     def test_put_keyboard_no_mappings(self):
         response = self.app.put(reverse('keyboard-detail', kwargs={'keyboard_id': self.keyboard.id}),
                                 json.dumps({k: v for k, v in
-                                            MOCK_KEYBOARD.iteritems() if k != 'mappings'}),
+                                            list(MOCK_KEYBOARD.items()) if k != 'mappings'}),
                                 headers={'Content-Type': 'application/json'},
                                 user=self.user.username,
                                 status=400)
-        self.assertEqual('{"mappings":["This field is required."]}', response.body)
+        self.assertEqual('{"mappings":["This field is required."]}', response.body.decode("utf-8"))
         self.assertEqual(response.status_code, 400)
 
     def test_put_keyboard_missing_fields(self):
         response = self.app.put(reverse('keyboard-detail', kwargs={'keyboard_id': self.keyboard.id}),
                                 json.dumps({k: v for k, v in
-                                            MOCK_KEYBOARD.iteritems() if k != 'label'}),
+                                            list(MOCK_KEYBOARD.items()) if k != 'label'}),
                                 headers={'Content-Type': 'application/json'},
                                 user=self.user.username,
                                 status=400)
-        self.assertEqual(response.body, '{"label":["This field is required."]}')
+        self.assertEqual(response.body.decode("utf-8"), '{"label":["This field is required."]}')
         self.assertEqual(response.status_code, 400)
 
     def test_put_keyboard_logged_out(self):

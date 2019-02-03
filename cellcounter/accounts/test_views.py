@@ -1,4 +1,4 @@
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 from django.contrib.auth.models import User, AnonymousUser
@@ -68,7 +68,7 @@ class TestRegistrationView(TestCase):
         self.client.post(reverse('register'), data)
         response = self.client.post(reverse('register'), data, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertNotIn('You have been rate limited', response.content)
+        self.assertNotIn('You have been rate limited', response.content.decode("utf-8"))
 
 
 class TestPasswordChangeView(TestCase):
@@ -307,7 +307,7 @@ class TestPasswordResetConfirmView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context['validlink'])
         self.assertIn("The password reset link was invalid, possibly because it has already been used."
-                      " Please request a new password reset.", response.content)
+                      " Please request a new password reset.", response.content.decode("utf-8"))
 
     def test_get_invalid_user(self):
         response = self.client.get(reverse('password-reset-confirm',
@@ -316,7 +316,7 @@ class TestPasswordResetConfirmView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context['validlink'])
         self.assertIn("The password reset link was invalid, possibly because it has already been used."
-                      " Please request a new password reset.", response.content)
+                      " Please request a new password reset.", response.content.decode("utf-8"))
 
     def test_post_invalid_token(self):
         token = "AAA-AAAAAAAAAAAAAAAAAAAA"
@@ -327,7 +327,7 @@ class TestPasswordResetConfirmView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context['validlink'])
         self.assertIn("The password reset link was invalid, possibly because it has already been used."
-                      " Please request a new password reset.", response.content)
+                      " Please request a new password reset.", response.content.decode("utf-8"))
 
     def test_get_valid(self):
         token = self._generate_token(self.user)

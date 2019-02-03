@@ -11,5 +11,4 @@ pylibmc==1.6.0
 pytz==2018.9
 psycopg2==2.7.7
 uWSGI==2.0.17.1
-wsgiref==0.1.2
 django-compressor==2.2

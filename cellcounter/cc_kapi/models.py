@@ -13,7 +13,7 @@ class Keyboard(models.Model):
     last_modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return u"Keyboard %s for %s" %(self.label, self.user.username)
+        return "Keyboard %s for %s" %(self.label, self.user.username)
 
     def _sync_primary_flags(self):
         """Syncs all keyboard primary flags, setting the current to true,
