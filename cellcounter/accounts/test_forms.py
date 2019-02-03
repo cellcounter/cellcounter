@@ -1,4 +1,4 @@
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 import re
 from django.contrib.auth.tokens import default_token_generator
@@ -109,5 +109,5 @@ class TestPasswordResetForm(TestCase):
         uidb64, token = urlparse(context['url']).path.split('/')[-3:-1]
         self.assertIsNotNone(re.match("[0-9A-Za-z_\-]+", uidb64))
         self.assertIsNotNone(re.match("[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20}", token))
-        self.assertEqual(urlsafe_base64_decode(uidb64), str(user.id))
+        self.assertEqual(urlsafe_base64_decode(uidb64).decode("utf-8"), str(user.id))
         self.assertTrue(default_token_generator.check_token(user, token))
