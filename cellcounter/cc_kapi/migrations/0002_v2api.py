@@ -82,7 +82,7 @@ def undo_user_default_keyboards(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    def database_detect_sqlite_noop():
+    def set_constraints_detect_sqlite_noop():
         # hack around sqlite not supporting the SET CONSTRAINTS SQL command
         if connection.vendor == 'sqlite':
             return migrations.RunSQL.noop
@@ -95,7 +95,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL(database_detect_sqlite_noop(),
+        migrations.RunSQL(set_constraints_detect_sqlite_noop(),
                       reverse_sql=migrations.RunSQL.noop),
         migrations.CreateModel(
             name='DefaultKeyboards',
@@ -146,5 +146,5 @@ class Migration(migrations.Migration):
             remove_builtin_keyboards,
         ),
         migrations.RunSQL(migrations.RunSQL.noop,
-                      reverse_sql=database_detect_sqlite_noop()),
+                      reverse_sql=set_constraints_detect_sqlite_noop()),
     ]
