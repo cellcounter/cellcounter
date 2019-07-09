@@ -1,26 +1,54 @@
-language: python
-python:
-  - "3.5"
+matrix:
+  include:
+    - language: python
+      python:
+        - "3.5"
 
-sudo: False
+      sudo: False
 
-addons:
-    postgresql: "9.6"
+      addons:
+          postgresql: "9.6"
 
-# command to install dependencies
-install:
-    - pip install -r requirements.txt
-    - pip install -r test-requirements.txt
-    - pip install coveralls
+      # command to install dependencies
+      install:
+          - pip install -r requirements.txt
+          - pip install -r test-requirements.txt
+          - pip install coveralls
 
-env: 
-    - TEST=True DATABASE_URL=postgres://postgres@localhost/cellcountr_test
+      env: 
+          - TEST=True DATABASE_URL=postgres://postgres@localhost/cellcountr_test
 
-before_script:
-    - psql -c 'create database cellcountr_test;' -U postgres
+      before_script:
+          - psql -c 'create database cellcountr_test;' -U postgres
+          - npm install -g npm@'>=3'
 
-# command to run tests
-script: coverage run --source=cellcounter --omit='*migrations*' manage.py test
+      # command to run tests
+      script: coverage run --source=cellcounter --omit='*migrations*' manage.py test
 
-after_success:
-    coveralls
+      after_success:
+          coveralls
+
+    - language: python
+      python:
+        - "3.5"
+      node_js:
+        - "12.6"
+
+      sudo: False
+
+      addons:
+          postgresql: "9.6"
+
+      # command to install dependencies
+      install:
+          - pip install -r requirements.txt
+          - pip install -r test-requirements.txt
+          - npm install 
+
+      before_script:
+          - psql -c 'create database cellcountr_test;' -U postgres
+          - npm install -g npm@'>=3'
+
+      # command to run tests
+      script: bash test_integration.sh
+
