@@ -17,6 +17,8 @@ while ! grep -m1 'Quit the server with CONTROL-C.' < $TMP_SERVER_LOG_FILE; do
     sleep 1
 done
 
+cat $TMP_SERVER_LOG_FILE
+
 mocha js_test/integration.js
 
 # kill the server process
