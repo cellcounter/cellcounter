@@ -44,7 +44,7 @@ matrix:
           - pip install -r requirements.txt
           - pip install -r test-requirements.txt
           - npm i -g npm
-          - npm ci
+          - npm ci --verbose
 
       before_script:
           - psql -c 'create database cellcountr_test;' -U postgres
