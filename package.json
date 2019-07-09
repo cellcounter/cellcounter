@@ -1,0 +1,23 @@
+{
+  "name": "cellcounter",
+  "version": "1.0.0",
+  "description": "[![Build Status](https://secure.travis-ci.org/cellcounter/cellcounter.png)](http://travis-ci.org/cellcounter/cellcounter) [![Coverage Status](https://coveralls.io/repos/cellcounter/cellcounter/badge.svg?branch=master&service=github)](https://coveralls.io/github/cellcounter/cellcounter?branch=master)",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cellcounter/cellcounter.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cellcounter/cellcounter/issues"
+  },
+  "homepage": "https://github.com/cellcounter/cellcounter#readme",
+  "dependencies": {
+    "jsdom": "^15.1.1",
+    "mocha": "^6.1.4"
+  }
+}
