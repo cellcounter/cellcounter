@@ -56,7 +56,7 @@ matrix:
           - npm ci --verbose
 
       env: 
-          - DEBUG=True PATH=$PATH:$TRAVIS_BUILD_DIR/node_modules/.bin
+          - DEBUG=True ALLOWED_HOSTS="127.0.0.1" PATH=$PATH:$TRAVIS_BUILD_DIR/node_modules/.bin
 
       before_script:
           - python manage.py migrate
