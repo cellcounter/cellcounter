@@ -6,6 +6,7 @@ export NODE_PATH=$VIRTUAL_ENV/lib/node_modules
 TMP_SERVER_LOG_FILE=$(tempfile)
 
 export DEBUG=True
+
 # disable autoreload or Django unhelpfully changes PID
 python -u manage.py runserver --noreload &>$TMP_SERVER_LOG_FILE &
 
@@ -20,6 +21,8 @@ done
 cat $TMP_SERVER_LOG_FILE
 
 mocha js_test/integration.js
+
+cat $TMP_SERVER_LOG_FILE
 
 # kill the server process
 kill $DEBUG_SERVER_PID
