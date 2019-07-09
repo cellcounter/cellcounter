@@ -41,13 +41,16 @@ matrix:
 
       # command to install dependencies
       install:
+          - echo $HOME
+          - echo $TRAVIS_BUILD_DIR
+          - echo $PATH
           - pip install -r requirements.txt
           - pip install -r test-requirements.txt
           - npm i -g npm
           - npm ci --verbose
 
       env: 
-          - PATH=$PATH:$HOME/node_modules/.bin
+          - PATH=$PATH:$TRAVIS_BUILD_DIR/cellcounter/node_modules/.bin
 
       before_script:
           - psql -c 'create database cellcountr_test;' -U postgres
