@@ -1,7 +1,7 @@
 // Mocha Specification Cases
 
 // Imports
-const assert    = require('assert').strict;
+const assert    = require('assert');
 const { JSDOM } = require('jsdom');
 
 // Setup
