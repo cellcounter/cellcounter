@@ -46,6 +46,9 @@ matrix:
           - npm i -g npm
           - npm ci --verbose
 
+      env: 
+          - PATH=$PATH:$HOME/node_modules/.bin
+
       before_script:
           - psql -c 'create database cellcountr_test;' -U postgres
           #- npm install -g npm@'>=3'
