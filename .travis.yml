@@ -1,5 +1,9 @@
 matrix:
   include:
+    ##################################
+    # Django tests
+    ##################################
+
     - language: python
       python:
         - "3.5"
@@ -9,7 +13,7 @@ matrix:
       addons:
           postgresql: "9.6"
 
-      # command to install dependencies
+      # install dependencies
       install:
           - pip install -r requirements.txt
           - pip install -r test-requirements.txt
@@ -22,11 +26,16 @@ matrix:
           - psql -c 'create database cellcountr_test;' -U postgres
           - npm install -g npm@'>=3'
 
-      # command to run tests
+      # run tests
       script: coverage run --source=cellcounter --omit='*migrations*' manage.py test
 
       after_success:
           coveralls
+
+
+    ##################################
+    # Integration tests
+    ##################################
 
     - language: python
       python:
@@ -39,24 +48,19 @@ matrix:
       addons:
           postgresql: "9.6"
 
-      # command to install dependencies
+      # install dependencies
       install:
-          - echo $HOME
-          - echo $TRAVIS_BUILD_DIR
-          - echo $PATH
           - pip install -r requirements.txt
           - pip install -r test-requirements.txt
           - npm i -g npm
           - npm ci --verbose
 
       env: 
-          - PATH=$PATH:$TRAVIS_BUILD_DIR/node_modules/.bin
+          - DEBUG=True PATH=$PATH:$TRAVIS_BUILD_DIR/node_modules/.bin
 
       before_script:
-          - psql -c 'create database cellcountr_test;' -U postgres
-          #- npm install -g npm@'>=3'
-          #- npm install -g mocha
+          - python manage.py migrate
 
-      # command to run tests
+      # run tests
       script: bash test_integration.sh
 
