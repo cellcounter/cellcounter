@@ -14,51 +14,142 @@ var selected_element = {};
 var date_now = new Date(Date.now()).toISOString();
 var keyboard_map = {"label": "Default", "is_primary": true, "created": date_now,
                     "last_modified": date_now, "mappings": []};
-var key_history = [];
-var count_data = [];
 var chart, chart2;
 
-var celltypes_loading = $.getJSON("/api/cell_types/", function(data) {
-    /* Load cell_types object, and create and load new count_data object
-     * provides error message should loading of data fail. */
-    "use strict";
-    cell_types = {};
-    $.each(data, function(key, cell) {
-        cell.box = [];
-        cell_types[cell.id] = cell;
-    });})
-    .done(function() {
-        "use strict";
-        /* Loads an empty count_data array */
-        var cell_order = ['blasts','promyelocytes','myelocytes','meta','neutrophils','monocytes','basophils',
-            'eosinophils','lymphocytes','plasma_cells','erythroid','other','lymphoblasts'];
 
-        for (var i=0; i < cell_order.length; i++) {
-            for (var cell in cell_types) {
-                if (cell_types.hasOwnProperty(cell)) {
-                    if (cell_types[cell].machine_name === cell_order[i]) {
-                        count_data.push({id: cell_types[cell].id,
-                        count: 0,
-                        abnormal: 0,
-                        visualisation_colour: cell_types[cell].visualisation_colour,
-                        readable_name: cell_types[cell].readable_name,
-                        machine_name: cell_types[cell].machine_name});
+/* Counter object */
+
+var counter = (function() {
+    var undo_history = [];
+    var count_data = [];
+
+    return {
+      init: function () {
+        /* Load cell_types object, and create and load new count_data object
+         * provides error message should loading of data fail.
+         * Returns a Deferred object for promise chaining. */
+        return $.getJSON("/api/cell_types/", function(data) {
+            "use strict";
+            cell_types = {};
+            $.each(data, function(key, cell) {
+                cell.box = [];
+                cell_types[cell.id] = cell;
+            });
+        }).done(function() {
+            "use strict";
+            /* Loads an empty count_data array */
+            var cell_order = ['blasts','promyelocytes','myelocytes','meta','neutrophils','monocytes','basophils',
+                'eosinophils','lymphocytes','plasma_cells','erythroid','other','lymphoblasts'];
+
+            for (var i=0; i < cell_order.length; i++) {
+                for (var cell in cell_types) {
+                    if (cell_types.hasOwnProperty(cell)) {
+                        if (cell_types[cell].machine_name === cell_order[i]) {
+                            count_data.push({id: cell_types[cell].id,
+                            count: 0,
+                            abnormal: 0,
+                            visualisation_colour: cell_types[cell].visualisation_colour,
+                            readable_name: cell_types[cell].readable_name,
+                            machine_name: cell_types[cell].machine_name});
+                        }
                     }
                 }
             }
-        }
-    })
-    .fail(function() {
+        }).fail(function() {
+            "use strict";
+            add_alert('ERROR', 'Cellcountr failed to load cell data. Please refresh page');
+        });
+      },
+
+      reset: function () {
+        /* Reset all the count data and the undo history */
         "use strict";
-        add_alert('ERROR', 'Cellcountr failed to load cell data. Please refresh page');
-    });
+        for (var i = 0; i < count_data.length; i++) {
+            count_data[i].count = 0;
+            count_data[i].abnormal = 0;
+        }
+        undo_history = [];
+      },
 
-$(document).ready(function() {
-    "use strict";
-    var i, j, k;
-    chart = doughnutChart('#doughnut').data(count_data);
-    chart2 = doughnutChart('#doughnut2').data(count_data);
+      get_count_data: function () {
+        /* XXX: to remove. Exposes private count_data structure - all access should be through a class method */
+        return count_data;
+      },
 
+      increment: function (cell_type_id, abnormal) {
+        if (abnormal === true) {
+            for (j = 0; j < count_data.length; j++) {
+                if (count_data[j].id === cell_type_id) {
+                    count_data[j].abnormal++;
+                }
+            }
+            undo_history.push({c_id: cell_type_id, c_type: 'abnormal'});
+        } else {
+            for (j = 0; j < count_data.length; j++) {
+                if (count_data[j].id === cell_type_id) {
+                    count_data[j].count++;
+                }
+            }
+            undo_history.push({c_id: cell_type_id, c_type: 'count'});
+        }
+
+      },
+
+      undo: function () {
+        var last_key = undo_history.pop();
+        if (typeof last_key !== "undefined") {
+            var c_id = last_key.c_id;
+            var c_type = last_key.c_type;
+
+            for (i=0; i < count_data.length; i++) {
+                if (count_data[i].id === c_id) {
+                    if (count_data[i][c_type] > 0 ) {
+                        count_data[i][c_type]--;
+                    }
+                }
+            }
+            return c_id;
+        } else {
+            /* Nothing to delete */
+            undo_history = [];
+        }
+      },
+
+      get_counts: function (cell_id) {
+        var count_normal;
+        var count_abnormal;
+
+        for (k=0; k < count_data.length; k++) {
+            if (count_data[k].id === cell_id) {
+                count_normal = count_data[k].count;
+                count_abnormal = count_data[k].abnormal;
+            }
+        }
+        return {
+            normal: count_normal,
+            abnormal: count_abnormal
+        };
+      },
+
+      get_total: function () {
+        // TODO: optimise by keeping a running total
+        var total = 0;
+        for (var i=0; i < count_data.length; i++) {
+            total += count_data[i].count;
+            total += count_data[i].abnormal;
+        }
+        return total;
+      }
+
+    };
+})();
+
+function init_objects() {
+    chart = doughnutChart('#doughnut').data(counter.get_count_data());
+    chart2 = doughnutChart('#doughnut2').data(counter.get_count_data());
+}
+
+function init_keyboard() {
     $('.keyboard-label').editable({
         url: function(params) {
             var keyboard = load_keyboard(params.pk);
@@ -95,17 +186,17 @@ $(document).ready(function() {
             });
         });
     });
+}
 
-    $.when(celltypes_loading).done(function() {
-        /* Once cell_types has been populated successfully, load keyboard */
-        load_keyboard();
-    });
+
+function init_other() {
+    var i, j, k;
 
     $('#edit_button').on('click', edit_keyboard);
+
     register_resets();
 
     $('#fuzz, #close_button').click(function () {
-        var total;
 
         if (editing_keyboard) {
             return;
@@ -113,14 +204,15 @@ $(document).ready(function() {
 
         if (keyboard_active) {
             keyboard_active = false;
-            total = 0;
+
+            var count_data = counter.get_count_data(); // XXX
 
             for (i=0; i < count_data.length; i++) {
                 $("#id_"+i+"-normal_count").prop("value", count_data[i].count);
                 $("#id_"+i+"-abnormal_count").prop("value", count_data[i].abnormal);
-                total += count_data[i].count;
-                total += count_data[i].abnormal;
             }
+
+            var total = counter.get_total();
 
             if (total > 0) {
                 log_stats(total);
@@ -146,7 +238,6 @@ $(document).ready(function() {
     //Adjust height of overlay to fill screen when browser gets resized
     $(window).bind("resize", function (){
         $("#fuzz").css("height", $(document).height());
-        //$("#total").text($("#counterbox").width());
         //$("#fuzz").css("top", $(window).top());
 
         if (keyboard_active) {
@@ -309,54 +400,22 @@ $(document).ready(function() {
 
             if (key === '1') {
                 /* Show percentage view, note e.which is not working due to keypress issues */
-                var show_total = 0;
-
-                for (i=0; i < count_data.length; i++) {
-                    show_total += (count_data[i].count + count_data[i].abnormal);
-                }
+                var total = counter.get_total();
+                var count_data = counter.get_count_data(); // XXX
 
                 for (i=0; i< count_data.length; i++) {
                     for (j=0; j< cell_types[count_data[i].id].box.length; j++) {
                         $(cell_types[count_data[i].id].box[j]).find("span.countval").text(
-                            Math.floor((count_data[i].count + count_data[i].abnormal)/show_total * 100) + "%");
+                            Math.floor((count_data[i].count + count_data[i].abnormal)/total * 100) + "%");
                         $(cell_types[count_data[i].id].box[j]).find("span.abnormal").text("");
                     }
                 }
             }
 
             if (code === 8) {
-                /* Time to remove the key from the key_history and decrement count
-                *  Last key should be an array containing:
-                *  {c_id:n, c_type:normal/abnormal} */
                 e.preventDefault();
-                var last_key = key_history.pop();
-                if (typeof last_key !== "undefined") {
-                    var c_id = last_key.c_id;
-                    var c_type = last_key.c_type;
-
-                    for (i=0; i < count_data.length; i++) {
-                        if (count_data[i].id === c_id) {
-                            if (count_data[i][c_type] > 0 ) {
-                                count_data[i][c_type]--;
-                            }
-                            var span_field = "span." + c_type;
-                            if (span_field === "span.count") {
-                                span_field += "val";
-                                for (j=0; j<cell_types[c_id].box.length; j++){
-                                    $(cell_types[c_id].box[j]).find(span_field).text(count_data[i][c_type]);
-                                }
-                            }
-                            if (span_field === "span.abnormal") {
-                                for (j=0; j<cell_types[c_id].box.length; j++){
-                                    $(cell_types[c_id].box[j]).find(span_field).text("("+count_data[i][c_type]+")");
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    /* Nothing to delete */
-                    key_history = [];
-                }
+                var cell_id = counter.undo();
+                if(cell_id) update_key_display(cell_id);
             } else {
                 for (i = 0; i < keyboard_map.mappings.length; i++) {
                     if (keyboard_map.mappings[i].key.toUpperCase() === key && !(shift_pressed)) {
@@ -371,27 +430,9 @@ $(document).ready(function() {
                         // Add highlight to typed key
                         $(cell_types[id].box).effect("highlight", {}, 200);
 
-                        if (abnormal === true) {
-                            for (j = 0; j < count_data.length; j++) {
-                                if (count_data[j].id === id) {
-                                    count_data[j].abnormal++;
-                                    for (k = 0; k< cell_types[id].box.length; k++) {
-                                        $(cell_types[id].box[k]).find("span.abnormal").text("("+count_data[j].abnormal+")");
-                                    }
-                                }
-                            }
-                            key_history.push({c_id: id, c_type: 'abnormal'});
-                        } else {
-                            for (j = 0; j < count_data.length; j++) {
-                                if (count_data[j].id === id) {
-                                    count_data[j].count++;
-                                    for (k = 0; k < cell_types[id].box.length; k++) {
-                                        $(cell_types[id].box[k]).find("span.countval").text(count_data[j].count);
-                                    }
-                                }
-                            }
-                            key_history.push({c_id: id, c_type: 'count'});
-                        }
+                        counter.increment(id, abnormal);
+                        update_key_display(id);
+
                         /* No further need to iterate through list */
                         break;
                     }
@@ -419,7 +460,81 @@ $(document).ready(function() {
             }
         }
     });
-});
+}
+
+// resolves when fully initialised
+var initialised = new $.Deferred();
+
+function initialise() {
+    "use strict";
+
+    init_objects();
+    
+    var init_fns = [function() {init_keyboard();}, function() {init_other();}];
+    var init_array = [];
+    var init_functions = [];
+
+    var init_counter = counter.init();
+
+    // for each member of init_fns
+    // create a deferred object, set the init state to uninitialised
+
+    class container {
+        constructor(fun) {
+            // Store a reference to our element
+            // on the page
+            this.fun = fun;
+        }
+        init() {
+            // Create a new Deferred.
+            var dfd = new $.Deferred();
+            this.dfd = dfd;
+
+            // Return an immutable promise object.
+            // Clients can listen for its done or fail
+            // callbacks but they can't resolve it themselves
+            return dfd.promise();
+        }
+        run() {
+            // run the function
+            this.fun();
+
+            this.dfd.resolve("Initialised");
+        }
+    }
+
+    for (var i in init_fns) {
+        var init_fn = init_fns[i];
+        //init_fn();
+        var cnt = new container(init_fn);
+        //cnt.init();
+        init_array.push(cnt.init());
+        init_functions.push(cnt);
+    }
+
+    // join all the deferred functions
+    $.when.apply($, init_array).done(function () {
+        update_keyboard();
+    } ).then(function () {
+        open_keyboard();
+        initialised.resolve();
+    });
+
+
+    $.when(init_counter).done(function() {
+        /* Once cell_types has been populated successfully, load keyboard */
+        load_keyboard();
+
+        // resolve all deferred functions
+        for (var i in init_functions) {
+            var init_fn = init_functions[i];
+            init_fn.run();
+        }
+    });
+
+}
+
+$(document).ready(initialise);
 
 function resize_keyboard(width) {
     /* Does nothing */
@@ -431,11 +546,7 @@ function register_resets() {
         $("#confirm-reset").modal("show");
     });
     $('#reset-count').on('click', function() {
-        var total = 0;
-        for (var i=0; i < count_data.length; i++) {
-            total += count_data[i].count;
-            total += count_data[i].abnormal;
-        }
+        var total = counter.get_total();
         log_stats(total);
         reset_counters();
         $("#confirm-reset").modal("hide");
@@ -446,15 +557,9 @@ function register_resets() {
 }
 
 function reset_counters() {
-    "use strict";
-    for (var i = 0; i < count_data.length; i++) {
-        count_data[i].count = 0;
-        count_data[i].abnormal = 0;
-    }
-    key_history = [];
+    counter.reset();
     update_keyboard();
     chart.render();
-    open_keyboard();
 }
 
 function open_keyboard() {
@@ -463,9 +568,9 @@ function open_keyboard() {
         resize_keyboard($("div#content").width());
         $('#counterbox').slideDown('slow', function () {
             $("#fuzz").css("height", $(document).height());
-            keyboard_active = true;
         });
     });
+    keyboard_active = true;
     $('div#statistics').empty();
     $("#visualise2").css("display", "none");
     $("#savefilebutton").css("display", "none");
@@ -479,6 +584,8 @@ function display_stats(count_total, format) {
     var abnormal_total = 0;
     var stats_div = $('div#statistics');
     format = typeof format !== 'undefined' ? format: 'HTML';
+
+    var count_data = counter.get_count_data();
 
     for (i=0; i < count_data.length; i++) {
         abnormal_total += count_data[i].abnormal;
@@ -655,6 +762,17 @@ function delete_specific_keyboard(keyboard_id) {
     });
 }
 
+
+function update_key_display(cell_id) {
+    var counts = counter.get_counts(cell_id);
+    for (k = 0; k< cell_types[cell_id].box.length; k++) {
+        $(cell_types[cell_id].box[k]).find("span.abnormal").text("("+counts.abnormal+")");
+    }
+    for (k = 0; k < cell_types[cell_id].box.length; k++) {
+        $(cell_types[cell_id].box[k]).find("span.countval").text(counts.normal);
+    }
+}
+
 function update_keyboard() {
     "use strict";
     var i, j, k;
@@ -678,19 +796,14 @@ function update_keyboard() {
             if (keyboard_map.mappings[j].key === key) {
                 var cell_id = keyboard_map.mappings[j].cellid;
                 var cell_data = cell_types[cell_id];
+
                 /* Adds keyboard key div to list of attached keys */
                 cell_data.box.push(item);
                 var name = cell_data.abbr_name;
-
-                var cell_count, cell_abnormal;
-                for (k=0; k < count_data.length; k++) {
-                    if (count_data[k].id === cell_id) {
-                        cell_count = count_data[k].count;
-                        cell_abnormal = count_data[k].abnormal;
-                    }
-                }
+                
+                var counts = counter.get_counts(cell_id);
                 item.append("<div class=\"name\">"+name+"</div>");
-                item.append("<div class=\"count\"><span class=\"countval\">"+cell_count+"</span> <span class=\"abnormal abnormal_count\">("+cell_abnormal+")</span></div>");
+                item.append("<div class=\"count\"><span class=\"countval\">"+counts.normal+"</span> <span class=\"abnormal abnormal_count\">("+counts.abnormal+")</span></div>");
 
                 // Attach cell visualisation_colour to key
                 item.find("p").css("background-color", cell_data.visualisation_colour);
