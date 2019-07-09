@@ -31,13 +31,12 @@ describe('The web page', () => {
    it('has the correct URL -> ' + url, () => {
       const actual =   { url: window.location.href };
       const expected = { url: url };
-      assert.deepEqual(actual, expected);
+      assert.deepStrictEqual(actual, expected);
       });
 
-   it('has cell_order of correct length', () => {
-      //const count = $(this).attr('cell_order.length');
+   it('has cell_types of correct length', () => {
       const count = Object.keys(window.cell_types).length;
-      assert.deepEqual(count, 13);
+      assert.deepStrictEqual(count, 13);
       });
 
     it('counts correctly', () => {
@@ -53,7 +52,7 @@ describe('The web page', () => {
 
         var total = window.counter.get_total();
 
-        assert.deepEqual(total, 10);
+        assert.deepStrictEqual(total, 10);
 
         e.key = e.which = 8; // 'backspace'
         for(var i = 0; i<3; i++)
@@ -61,7 +60,7 @@ describe('The web page', () => {
 
         var total = window.counter.get_total();
 
-        assert.deepEqual(total, 7);
+        assert.deepStrictEqual(total, 7);
       });
 
 });
