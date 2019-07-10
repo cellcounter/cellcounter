@@ -20,9 +20,13 @@ done
 
 mocha js_test/integration.js
 
+retval=$?
+
 # kill the server process
 kill $DEBUG_SERVER_PID
 
 # delete the temporary log file
 rm $TMP_SERVER_LOG_FILE
+
+exit $retval
 

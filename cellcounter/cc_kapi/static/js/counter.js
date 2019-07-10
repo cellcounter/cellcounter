@@ -77,6 +77,7 @@ var counter = (function() {
       },
 
       increment: function (cell_type_id, abnormal) {
+        console.log("Increment");
         if (abnormal === true) {
             for (j = 0; j < count_data.length; j++) {
                 if (count_data[j].id === cell_type_id) {
@@ -249,10 +250,14 @@ function init_other() {
         var key, code, shift_pressed, el, enter=false;
         var alpha = false, up = false, down = false;
 
+        console.log("Keydown");
+
         if (keyboard_active) {
             key = String.fromCharCode(e.which).toUpperCase();
             code = e.which;
             shift_pressed = e.shiftKey;
+
+            console.log(key);
 
             if (/[a-z]/i.test(key) && !shift_pressed) {
                 alpha = true;
