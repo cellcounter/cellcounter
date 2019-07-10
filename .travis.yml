@@ -45,15 +45,10 @@ matrix:
 
       sudo: False
 
-      addons:
-          postgresql: "9.6"
-
       # install dependencies
       install:
           - pip install -r requirements.txt
-          - pip install -r test-requirements.txt
           - npm i -g npm
-          - npm install node
           - npm ci --verbose
 
       env: 
