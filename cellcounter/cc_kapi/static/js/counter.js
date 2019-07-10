@@ -236,7 +236,7 @@ function init_other() {
     });
 
     //Adjust height of overlay to fill screen when browser gets resized
-    $(window).bind("resize", function (){
+    $(window).on("resize", function (){
         $("#fuzz").css("height", $(document).height());
         //$("#fuzz").css("top", $(window).top());
 
@@ -245,7 +245,7 @@ function init_other() {
         }
     });
 
-    jQuery(document).bind('keydown', function (e) {
+    $(document).on('keydown', function (e) {
         var key, code, shift_pressed, el, enter=false;
         var alpha = false, up = false, down = false;
 
@@ -442,7 +442,7 @@ function init_other() {
         }
     });
 
-    jQuery(document).bind('keyup', function (e){
+    $(document).on('keyup', function (e){
         var key, code;
         if (keyboard_active) {
             code = e.which;
@@ -515,7 +515,7 @@ function initialise() {
     // join all the deferred functions
     $.when.apply($, init_array).done(function () {
         update_keyboard();
-    } ).then(function () {
+
         open_keyboard();
         initialised.resolve();
     });
@@ -523,13 +523,18 @@ function initialise() {
 
     $.when(init_counter).done(function() {
         /* Once cell_types has been populated successfully, load keyboard */
-        load_keyboard();
 
-        // resolve all deferred functions
-        for (var i in init_functions) {
-            var init_fn = init_functions[i];
-            init_fn.run();
-        }
+        $.when(load_keyboard()).done(function () {
+
+            // resolve all deferred functions
+            for (var i in init_functions) {
+                var init_fn = init_functions[i];
+                init_fn.run();
+            }
+            /*for (var i in init_fns) {
+                init_fns[i]();
+            }*/
+        })
     });
 
 }
@@ -718,10 +723,11 @@ function set_keyboard(mapping) {
     chart.render();
 }
 
+
 function load_keyboard(keyboard_id) {
-    "use strict";
+    "use strict"; //XXX: switch both to use async, very inconsistent function presently
     if (keyboard_id === undefined) {
-        $.getJSON("/api/keyboards/default/", function(data) {
+        return $.getJSON("/api/keyboards/default/", function(data) {
             keyboard_map = data;
             update_keyboard();
             chart.render();
