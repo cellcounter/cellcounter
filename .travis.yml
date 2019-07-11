@@ -24,7 +24,6 @@ matrix:
 
       before_script:
           - psql -c 'create database cellcountr_test;' -U postgres
-          - npm install -g npm@'>=3'
 
       # run tests
       script: coverage run --source=cellcounter --omit='*migrations*' manage.py test
@@ -37,7 +36,8 @@ matrix:
     # Integration tests
     ##################################
 
-    - language: python
+    - dist: xenial
+      language: python
       python:
         - "3.5"
       node_js:
