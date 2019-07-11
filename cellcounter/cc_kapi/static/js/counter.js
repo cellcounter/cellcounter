@@ -20,6 +20,8 @@ var chart, chart2;
 /* Counter object */
 
 var counter = (function() {
+    "use strict";
+
     var undo_history = [];
     var count_data = [];
 
@@ -71,6 +73,14 @@ var counter = (function() {
         undo_history = [];
       },
 
+      get_cell_ids: function () {
+        var cell_ids = [];
+        for (var i=0; i < count_data.length; i++) {
+            cell_ids.push(count_data[i].id);
+        }
+        return cell_ids;
+      },
+
       get_count_data: function () {
         /* XXX: to remove. Exposes private count_data structure - all access should be through a class method */
         return count_data;
@@ -120,7 +130,7 @@ var counter = (function() {
         var count_abnormal;
 
         for (k=0; k < count_data.length; k++) {
-            if (count_data[k].id === cell_id) {
+            if (count_data[k].id == cell_id) {
                 count_normal = count_data[k].count;
                 count_abnormal = count_data[k].abnormal;
             }
@@ -131,11 +141,44 @@ var counter = (function() {
         };
       },
 
+      get_visualisation_colour: function (cell_id) {
+        for (k=0; k < count_data.length; k++) {
+            if (count_data[k].id == cell_id) {
+                return count_data[k].visualisation_colour;
+            }
+        }
+      },
+
+      get_machine_name: function (cell_id) {
+        for (k=0; k < count_data.length; k++) {
+            if (count_data[k].id == cell_id) {
+                return count_data[k].machine_name;
+            }
+        }
+      },
+
+      get_readable_name: function (cell_id) {
+        for (k=0; k < count_data.length; k++) {
+            if (count_data[k].id == cell_id) {
+                return count_data[k].readable_name;
+            }
+        }
+      },
+
       get_total: function () {
         // TODO: optimise by keeping a running total
         var total = 0;
         for (var i=0; i < count_data.length; i++) {
             total += count_data[i].count;
+            total += count_data[i].abnormal;
+        }
+        return total;
+      },
+
+      get_abnormal_total: function () {
+        // TODO: optimise by keeping a running total
+        var total = 0;
+        for (var i=0; i < count_data.length; i++) {
             total += count_data[i].abnormal;
         }
         return total;
@@ -150,6 +193,8 @@ function init_objects() {
 }
 
 function init_keyboard() {
+    "use strict";
+
     $('.keyboard-label').editable({
         url: function(params) {
             var keyboard = load_keyboard(params.pk);
@@ -190,6 +235,8 @@ function init_keyboard() {
 
 
 function init_other() {
+    "use strict";
+
     var i, j, k;
 
     $('#edit_button').on('click', edit_keyboard);
@@ -205,18 +252,20 @@ function init_other() {
         if (keyboard_active) {
             keyboard_active = false;
 
-            var count_data = counter.get_count_data(); // XXX
+            var cell_ids = counter.get_cell_ids();
 
-            for (i=0; i < count_data.length; i++) {
-                $("#id_"+i+"-normal_count").prop("value", count_data[i].count);
-                $("#id_"+i+"-abnormal_count").prop("value", count_data[i].abnormal);
+            for (i=0; i < cell_ids.length; i++) {
+                var counts = counter.get_counts(cell_ids[i]);
+                $("#id_"+i+"-normal_count").prop("value", counts.normal);
+                $("#id_"+i+"-abnormal_count").prop("value", counts.abnormal);
             }
 
             var total = counter.get_total();
 
             if (total > 0) {
                 log_stats(total);
-                display_stats(total);
+                results.update();
+                results.show("html");
             }
 
             $('#counterbox').slideUp('slow', function () {
@@ -401,13 +450,16 @@ function init_other() {
             if (key === '1') {
                 /* Show percentage view, note e.which is not working due to keypress issues */
                 var total = counter.get_total();
-                var count_data = counter.get_count_data(); // XXX
 
-                for (i=0; i< count_data.length; i++) {
-                    for (j=0; j< cell_types[count_data[i].id].box.length; j++) {
-                        $(cell_types[count_data[i].id].box[j]).find("span.countval").text(
-                            Math.floor((count_data[i].count + count_data[i].abnormal)/total * 100) + "%");
-                        $(cell_types[count_data[i].id].box[j]).find("span.abnormal").text("");
+                var cell_ids = counter.get_cell_ids();
+
+                for (i=0; i < cell_ids.length; i++) {
+                    var counts = counter.get_counts(cell_ids[i]);
+                    var boxes = cell_types[cell_ids[i]].box; // XXX
+                    for (j=0; j< boxes.length; j++) {
+                        $(boxes[j]).find("span.countval").text(
+                            Math.floor((counts.normal + counts.abnormal)/total * 100 + 0.5) + "%");
+                        $(boxes[j]).find("span.abnormal").text("");
                     }
                 }
             }
@@ -524,6 +576,8 @@ function initialise() {
     $.when(init_counter).done(function() {
         /* Once cell_types has been populated successfully, load keyboard */
 
+        results.init(counter);
+
         $.when(load_keyboard()).done(function () {
 
             // resolve all deferred functions
@@ -563,12 +617,16 @@ function register_resets() {
 
 function reset_counters() {
     counter.reset();
+    results.hide();
     update_keyboard();
     chart.render();
 }
 
 function open_keyboard() {
     "use strict";
+
+    results.hide();
+
     $('#fuzz').fadeIn('slow', function () {
         resize_keyboard($("div#content").width());
         $('#counterbox').slideDown('slow', function () {
@@ -576,116 +634,151 @@ function open_keyboard() {
         });
     });
     keyboard_active = true;
-    $('div#statistics').empty();
-    $("#visualise2").css("display", "none");
     $("#savefilebutton").css("display", "none");
     chart.render();
 }
 
-function display_stats(count_total, format) {
+var results = (function () {
     "use strict";
-    var erythroid, i, j, cell_total, cell_percent, cell_percent_abnormal;
-    var per="";
-    var abnormal_total = 0;
-    var stats_div = $('div#statistics');
-    format = typeof format !== 'undefined' ? format: 'HTML';
 
-    var count_data = counter.get_count_data();
+    var counter_object = {};
 
-    for (i=0; i < count_data.length; i++) {
-        abnormal_total += count_data[i].abnormal;
+    var abnormal_total, me_ratio, count_total;
+
+    var results_data;
+
+    function calc_stats () {
+        "use strict";
+        var i, j;
+
+        count_total = counter_object.get_total();
+
+        abnormal_total = counter_object.get_abnormal_total();
+
+        var cell_total, cell_percent, cell_percent_abnormal;
+        var cell_percent_string, cell_percent_abnormal_string;
+
+        cell_percent_string = [];
+        cell_percent_abnormal_string = [];
+
+        results_data = [];
+
+        var erythroid, myeloid;
+        var myeloid_cells = ['neutrophils', 'meta', 'myelocytes', 'promyelocytes',
+            'basophils', 'eosinophils', 'monocytes'];
+        myeloid = 0;
+
+        var cell_ids = counter_object.get_cell_ids();
+
+        for (i=0; i<cell_ids.length; i++) {
+            var cell_id = cell_ids[i];
+
+            var counts = counter.get_counts(cell_id);
+            var colour = counter.get_visualisation_colour(cell_id);
+            var name = counter.get_readable_name(cell_id);
+
+            cell_total = counts.normal + counts.abnormal;
+
+            cell_percent = Math.round(((cell_total / count_total) * 100));
+            cell_percent_abnormal = 0;
+
+            if (cell_total !== 0) {
+                cell_percent_abnormal = Math.round(((counts.abnormal / cell_total) * 100));
+            }
+
+            if (counts.abnormal === 0) {
+                cell_percent_abnormal_string = 'N/A';
+            } else if (cell_percent_abnormal === 0 && counts.abnormal > 0) {
+                cell_percent_abnormal_string = '<0.5%';
+            } else if (cell_percent_abnormal === 100 && counts.abnormal < cell_total) {
+                cell_percent_abnormal_string = '&ge;99.5%';
+            } else {
+                cell_percent_abnormal_string = cell_percent_abnormal.toString() + '%';
+            }
+
+            if (cell_percent === 0 && cell_total > 0) {
+                cell_percent_string = '<0.5%';
+            } else if (cell_percent === 100 && cell_total < count_total) {
+                cell_percent_string = '&ge;99.5%';
+            }
+            else {
+                cell_percent_string = cell_percent.toString() + '%';
+            }
+
+            results_data.push({
+                cell_id: cell_id,
+                readable_name: name,
+                visualisation_colour: colour,
+                count: counts.normal,
+                abnormal: counts.abnormal,
+                percent_string: cell_percent_string,
+                percent_abnormal_string: cell_percent_abnormal_string
+            });
+
+            var machine_name = counter_object.get_machine_name(cell_id);
+
+            /* N.B. Hacky erythroid/myeloid counting */
+            if (machine_name === 'erythroid') {
+                erythroid = counts.normal + counts.abnormal;
+            }
+
+            for (j=0; j < myeloid_cells.length; j++) {
+                if (machine_name === myeloid_cells[j]) {
+                    myeloid += (counts.normal + counts.abnormal);
+                }
+            }
+        }
+
+
+        me_ratio = parseFloat(myeloid / erythroid).toFixed(2);
+        if (me_ratio === 'Infinity') {
+            me_ratio = 'Incalculable';
+        }
     }
 
-    for (i=0; i < count_data.length; i++) {
-        cell_total = count_data[i].count + count_data[i].abnormal;
-        cell_percent = Math.round(((cell_total / count_total) * 100));
-        cell_percent_abnormal = 0;
+    function update_html() {
 
-        if (cell_total !== 0) {
-            cell_percent_abnormal = Math.round(((count_data[i].abnormal / cell_total) * 100));
+        var stats_div = $('div#statistics_html');
+        var per="";
+
+        for (var i=0; i < results_data.length; i++) {
+            var r = results_data[i];
+            stats_div.find('td#name-'+r.cell_id).text(r.readable_name);
+            stats_div.find('td#colour-'+r.cell_id).css('background-color', r.visualisation_colour);
+            stats_div.find('td#percent-'+r.cell_id).text(r.percent_string);
+            stats_div.find('td#percent-abnormal-'+r.cell_id).text(r.percent_abnormal_string);
+            stats_div.find('td#count-'+r.cell_id).text(r.count);
+            stats_div.find('td#abnormal-'+r.cell_id).text(r.abnormal);
         }
 
-        var cell_percent_string = '';
-        var cell_percent_abnormal_string = '';
+        stats_div.find('td#total-count').text(count_total);
+        stats_div.find('td#me-ratio').text(me_ratio);
 
-        if (count_data[i].abnormal === 0) {
-            cell_percent_abnormal_string = 'N/A';
-        } else if (cell_percent_abnormal === 0 && count_data[i].abnormal > 0) {
-            cell_percent_abnormal_string = '<0.5%';
-        } else {
-            cell_percent_abnormal_string = cell_percent_abnormal.toString() + '%';
+        if (abnormal_total === 0) {
+            /* If we don't have abnormal cells, don't show the columns */
+            $('.abnormal_stats').hide();
+            $('.table_spacer').attr('colspan', 1);
         }
+    }
 
-        if (cell_percent === 0 && cell_total > 0) {
-            cell_percent_string = '<0.5%';
-        } else {
-            cell_percent_string = cell_percent.toString() + '%';
-        }
+    function update_text() {
 
-        if (cell_percent === 100 && cell_total < count_total) {
-            cell_percent_string = '&ge;99.5%';
-        }
+        var stats_div = $('div#statistics_text');
+        var per="";
 
-        if (cell_percent_abnormal === 100 && count_data[i].abnormal < cell_total) {
-            cell_percent_abnormal_string = '&ge;99.5%';
-        }
-
-        if (format === 'HTML') {
-            per += '<tr><td class="celltypes">' + count_data[i].readable_name + '</td><td class="ignore" style="background-color:' + count_data[i].visualisation_colour + '"></td><td>' + cell_percent_string + "</td><td class=\"abnormal_stats\">" + cell_percent_abnormal_string + '</td><td>' + count_data[i].count + '</td><td class="abnormal_count abnormal_stats">' + count_data[i].abnormal + '</td></tr>';
-        } else {
-            per += count_data[i].readable_name + ' ' + cell_percent_string;
+        for (var i=0; i < results_data.length; i++) {
+            var r = results_data[i];
+            per += r.readable_name + ' ' + r.percent_string;
             if (abnormal_total > 0) {
-                per += ', abnormal ' + cell_percent_abnormal_string + '\n';
+                per += ', abnormal ' + r.percent_abnormal_string + '\n';
             } else {
                 per += '\n';
             }
         }
-    }
 
-    /* N.B. Hacky erythroid/myeloid counting */
-    for (i=0; i < count_data.length; i++) {
-        if (count_data[i].machine_name === 'erythroid') {
-            erythroid = count_data[i].count + count_data[i].abnormal;
-        }
-    }
+        stats_div.empty();
 
-    var myeloid = 0;
-    var myeloid_cells = ['neutrophils', 'meta', 'myelocytes', 'promyelocytes',
-        'basophils', 'eosinophils', 'monocytes'];
-
-    for (i=0; i < myeloid_cells.length; i++) {
-        for (j=0; j < count_data.length; j++) {
-            if (count_data[j].machine_name === myeloid_cells[i]) {
-                myeloid += (count_data[j].count + count_data[j].abnormal);
-            }
-        }
-    }
-
-    var me_ratio = parseFloat(myeloid / erythroid).toFixed(2);
-    if (me_ratio === 'Infinity') {
-        me_ratio = 'Incalculable';
-    }
-    stats_div.empty().append('<div id="output_style">Format output: <button id="htmlview" class="btn">HTML</button><button id="textview" class="btn">Text</button></div>');
-    $('#htmlview').click(function() {
-        display_stats(count_total, 'HTML');
-    });
-    $('#textview').click(function() {
-        display_stats(count_total, 'TEXT');
-    });
-
-    var stats_text = '';
-
-    if (format === 'HTML') {
-        stats_text = '<h3>Count statistics</h3><table class="table table-bordered table-striped">';
-        stats_text += '<tr><td colspan="2" class="celltypes">Cells Counted</td><td>' + count_total + '</td><td class="table_spacer" colspan="3"></td></tr>';
-        stats_text += '<tr><td colspan="2" class="celltypes">ME ratio *</td><td>' + me_ratio + '</td><td class="table_spacer" colspan="3"></td></tr>';
-        stats_text += '<tr><th colspan="2" style="width: 30%"></th><th>% Total</th><th class="abnormal_stats">% of CellType Abnormal</th><th>Normal</th><th class="abnormal_stats">Abnormal</th></tr>';
-        stats_text += per;
-        stats_text += '</table>';
-        stats_text += '<p>* Note: Myeloid/erythroid ratio does not include blast count.</p>';
-        stats_div.append(stats_text);
-        $("#visualise2").css("display", "block");
-    } else {
+        var stats_text = '';
         stats_text = '<pre class="stats"><code>';
         stats_text += 'Cells Counted: ' + count_total + '\n';
         stats_text += 'M:E Ratio: ' + me_ratio + '\n';
@@ -694,14 +787,50 @@ function display_stats(count_total, format) {
         stats_div.append(stats_text);
     }
 
-    if (abnormal_total === 0 && format === 'HTML') {
-        /* If we don't have abnormal cells, don't show the columns */
-        $('.abnormal_stats').hide();
-        $('.table_spacer').attr('colspan', 1);
-    }
+    return {
+      init: function (cntr) {
+        counter_object = cntr;
 
-    chart2.render();
-}
+        $('#htmlview').click(function() {
+          results.show('html')
+        });
+        $('#textview').click(function() {
+          results.show('text')
+        });
+      },
+
+      show: function (fmt) {
+        var format = typeof fmt !== 'undefined' ? fmt: 'html';
+
+        $('div#statistics_html').hide();
+        $('div#statistics_text').hide();
+        if(format === "html") {
+          $('div#statistics_html').show();
+        }
+        else {
+          $('div#statistics_text').show();
+        }
+        $('div#statistics').show();
+        chart2.render();
+
+        // display the chart
+        $("#visualise2").css("display", "block");
+      },
+
+      hide: function () {
+        $('div#statistics').hide();
+        $("#visualise2").css("display", "none");
+      },
+
+      update: function () {
+        calc_stats();
+        update_html();
+        update_text();
+      }
+
+    };
+})();
+
 
 function log_stats(total) {
     "use strict";
@@ -722,7 +851,6 @@ function set_keyboard(mapping) {
     update_keyboard();
     chart.render();
 }
-
 
 function load_keyboard(keyboard_id) {
     "use strict"; //XXX: switch both to use async, very inconsistent function presently
@@ -767,7 +895,6 @@ function delete_specific_keyboard(keyboard_id) {
         async: false
     });
 }
-
 
 function update_key_display(cell_id) {
     var counts = counter.get_counts(cell_id);
