@@ -88,14 +88,14 @@ var counter = (function() {
 
       increment: function (cell_type_id, abnormal) {
         if (abnormal === true) {
-            for (j = 0; j < count_data.length; j++) {
+            for (var j = 0; j < count_data.length; j++) {
                 if (count_data[j].id === cell_type_id) {
                     count_data[j].abnormal++;
                 }
             }
             undo_history.push({c_id: cell_type_id, c_type: 'abnormal'});
         } else {
-            for (j = 0; j < count_data.length; j++) {
+            for (var j = 0; j < count_data.length; j++) {
                 if (count_data[j].id === cell_type_id) {
                     count_data[j].count++;
                 }
@@ -111,7 +111,7 @@ var counter = (function() {
             var c_id = last_key.c_id;
             var c_type = last_key.c_type;
 
-            for (i=0; i < count_data.length; i++) {
+            for (var i=0; i < count_data.length; i++) {
                 if (count_data[i].id === c_id) {
                     if (count_data[i][c_type] > 0 ) {
                         count_data[i][c_type]--;
@@ -649,7 +649,6 @@ var results = (function () {
 
     function calc_stats () {
         "use strict";
-        var i, j;
 
         count_total = counter_object.get_total();
 
@@ -670,7 +669,7 @@ var results = (function () {
 
         var cell_ids = counter_object.get_cell_ids();
 
-        for (i=0; i<cell_ids.length; i++) {
+        for (var i=0; i<cell_ids.length; i++) {
             var cell_id = cell_ids[i];
 
             var counts = counter.get_counts(cell_id);
@@ -722,7 +721,7 @@ var results = (function () {
                 erythroid = counts.normal + counts.abnormal;
             }
 
-            for (j=0; j < myeloid_cells.length; j++) {
+            for (var j=0; j < myeloid_cells.length; j++) {
                 if (machine_name === myeloid_cells[j]) {
                     myeloid += (counts.normal + counts.abnormal);
                 }
@@ -898,10 +897,10 @@ function delete_specific_keyboard(keyboard_id) {
 
 function update_key_display(cell_id) {
     var counts = counter.get_counts(cell_id);
-    for (k = 0; k< cell_types[cell_id].box.length; k++) {
+    for (var k = 0; k< cell_types[cell_id].box.length; k++) {
         $(cell_types[cell_id].box[k]).find("span.abnormal").text("("+counts.abnormal+")");
     }
-    for (k = 0; k < cell_types[cell_id].box.length; k++) {
+    for (var k = 0; k < cell_types[cell_id].box.length; k++) {
         $(cell_types[cell_id].box[k]).find("span.countval").text(counts.normal);
     }
 }
