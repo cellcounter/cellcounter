@@ -1,0 +1,37 @@
+    <div id="statistics">
+        <div id="output_style">Format output: <button id="htmlview" class="btn">HTML</button><button id="textview" class="btn">Text</button></div>
+    <div id="statistics_html">
+    <h3>Count statistics</h3>
+        <table class="table table-bordered table-striped">
+                <tbody>
+                    <tr>
+                        <td colspan="2" class="celltypes">Cells Counted</td>
+                        <td class="results" id="total-count"></td>
+                        <td class="table_spacer" colspan="1"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="celltypes">ME ratio *</td>
+                        <td id="me-ratio"></td>
+                        <td class="table_spacer" colspan="1"></td>
+                    </tr>
+                    <tr>
+                        <th colspan="2" style="width: 30%"></th>
+                        <th>% Total</th>
+                        <th class="abnormal_stats" style="display: none;">% of CellType Abnormal</th>
+                        <th>Normal</th>
+                        <th class="abnormal_stats" style="display: none;">Abnormal</th>
+                    </tr>
+                {% for cell in cell_types %}
+                    <tr>
+                        <td class="celltypes" id="name-{{ cell.id }}"></td>
+                        <td class="ignore" id="colour-{{ cell.id }}" style="background-color:{{ cell.visualisation_colour }}"></td>
+                        <td id="percent-{{ cell.id }}">0%</td><td id="percent-abnormal-{{ cell.id }}" class="abnormal_stats" style="display: none;">N/A</td>
+                        <td id="count-{{ cell.id }}">0</td><td id="abnormal-{{ cell.id }}" class="abnormal_count abnormal_stats" style="display: none;">0</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p>* Note: Myeloid/erythroid ratio does not include blast count.</p>
+      </div>
+      <div id="statistics_text"></div>
+    </div>
