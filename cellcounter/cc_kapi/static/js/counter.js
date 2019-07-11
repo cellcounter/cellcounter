@@ -129,7 +129,7 @@ var counter = (function() {
         var count_normal;
         var count_abnormal;
 
-        for (k=0; k < count_data.length; k++) {
+        for (var k=0; k < count_data.length; k++) {
             if (count_data[k].id == cell_id) {
                 count_normal = count_data[k].count;
                 count_abnormal = count_data[k].abnormal;
@@ -142,7 +142,7 @@ var counter = (function() {
       },
 
       get_visualisation_colour: function (cell_id) {
-        for (k=0; k < count_data.length; k++) {
+        for (var k=0; k < count_data.length; k++) {
             if (count_data[k].id == cell_id) {
                 return count_data[k].visualisation_colour;
             }
@@ -150,7 +150,7 @@ var counter = (function() {
       },
 
       get_machine_name: function (cell_id) {
-        for (k=0; k < count_data.length; k++) {
+        for (var k=0; k < count_data.length; k++) {
             if (count_data[k].id == cell_id) {
                 return count_data[k].machine_name;
             }
@@ -158,7 +158,7 @@ var counter = (function() {
       },
 
       get_readable_name: function (cell_id) {
-        for (k=0; k < count_data.length; k++) {
+        for (var k=0; k < count_data.length; k++) {
             if (count_data[k].id == cell_id) {
                 return count_data[k].readable_name;
             }
