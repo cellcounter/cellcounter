@@ -22,7 +22,7 @@
                         <th class="abnormal_stats" style="display: none;">Abnormal</th>
                     </tr>
                 {% for cell in cell_types %}
-                    <tr>
+                    <tr class="count-results-detail">
                         <td class="celltypes" id="name-{{ cell.id }}"></td>
                         <td class="ignore" id="colour-{{ cell.id }}" style="background-color:{{ cell.visualisation_colour }}"></td>
                         <td id="percent-{{ cell.id }}">0%</td><td id="percent-abnormal-{{ cell.id }}" class="abnormal_stats" style="display: none;">N/A</td>
