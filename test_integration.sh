@@ -18,7 +18,7 @@ while ! grep -m1 'Quit the server with CONTROL-C.' < $TMP_SERVER_LOG_FILE; do
     sleep 1
 done
 
-mocha js_test/integration.js
+mocha js_test/test_counting.js
 
 retval=$?
 
