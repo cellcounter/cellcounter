@@ -568,8 +568,7 @@ function initialise() {
     $.when.apply($, init_array).done(function () {
         update_keyboard();
 
-        open_keyboard();
-        initialised.resolve();
+        open_keyboard(initialised.resolve);
     });
 
 
@@ -620,19 +619,29 @@ function reset_counters() {
     results.hide();
     update_keyboard();
     chart.render();
+    open_keyboard();
 }
 
-function open_keyboard() {
+function open_keyboard(done) {
     "use strict";
+
+    if(typeof done != "function") {
+        done = function() {};
+    }
 
     results.hide();
 
-    $('#fuzz').fadeIn('slow', function () {
-        resize_keyboard($("div#content").width());
-        $('#counterbox').slideDown('slow', function () {
-            $("#fuzz").css("height", $(document).height());
-        });
+    $('#fuzz').fadeIn({
+        duration:   'slow',
+        complete:   function () {
+                        resize_keyboard($("div#content").width());
+                        $('#counterbox').slideDown('slow', function () {
+                            $("#fuzz").css("height", $(document).height());
+                        });
+                    },
+        done:       done
     });
+
     keyboard_active = true;
     $("#savefilebutton").css("display", "none");
     chart.render();
