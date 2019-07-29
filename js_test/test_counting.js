@@ -45,7 +45,11 @@ function get_display(selector) {
 
 describe('The web page', () => {
 
-   before(loadWebPage);
+   before(function(done) {
+      this.timeout(3000);
+      loadWebPage(done);
+   });
+
    after(closeWebPage);
 
 

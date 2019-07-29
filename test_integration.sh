@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export NODE_PATH=$VIRTUAL_ENV/lib/node_modules
+#export NODE_PATH=$VIRTUAL_ENV/lib/node_modules
 
 
 TMP_SERVER_LOG_FILE=$(tempfile)
@@ -18,7 +18,7 @@ while ! grep -m1 'Quit the server with CONTROL-C.' < $TMP_SERVER_LOG_FILE; do
     sleep 1
 done
 
-mocha js_test/test_counting.js
+mocha js_test/test_counting.js js_test/test_display.js
 
 retval=$?
 
