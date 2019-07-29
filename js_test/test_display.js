@@ -91,6 +91,7 @@ describe('The web page', () => {
 
     it('does not count when the keyboard is closed', () => {
         trigger_keydown('d',1);
+        trigger_keydown('q',5);
 
         var total = window.counter.get_total();
 

@@ -75,7 +75,7 @@ describe('The web page', () => {
 
         assert.deepStrictEqual(total, 10);
 
-        //press backspace 5 times
+        //press backspace 3 times
         trigger_keydown(8,3);
 
         var total = window.counter.get_total();
@@ -88,8 +88,6 @@ describe('The web page', () => {
         assert($("#confirm-reset").is(":hidden"));
 
         $('.reset_button').trigger('click');
-
-        //assert($("input#reset-count").is(":visible"));
 
         $('input#reset-count').trigger('click');
 
@@ -147,11 +145,15 @@ describe('The web page', () => {
             var tds = $(this).find('td');
             assert.deepStrictEqual(tds.first().text(), cell_type_order[index]);
             assert.deepStrictEqual(tds.eq(2).html(),Math.floor(expected_counts[index]/sum*100+0.5)+"%");
-            assert.deepStrictEqual(tds.eq(3).html(),"N/A");
+            assert.deepStrictEqual(tds.eq(3).html(),"0%");
             assert.deepStrictEqual(parseInt(tds.eq(4).html()),expected_counts[index]);
             assert.deepStrictEqual(parseInt(tds.eq(5).html()),0);
         });
+
+        assert.deepStrictEqual(parseInt($('td#total-count').text()), sum);
+        assert.deepStrictEqual($('td#me-ratio').text(), "7.00");
+
     });
-    
+
 });
 

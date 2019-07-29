@@ -694,7 +694,7 @@ var results = (function () {
                 cell_percent_abnormal = Math.round(((counts.abnormal / cell_total) * 100));
             }
 
-            if (counts.abnormal === 0) {
+            if (cell_total === 0) {
                 cell_percent_abnormal_string = 'N/A';
             } else if (cell_percent_abnormal === 0 && counts.abnormal > 0) {
                 cell_percent_abnormal_string = '<0.5%';
@@ -766,6 +766,10 @@ var results = (function () {
             /* If we don't have abnormal cells, don't show the columns */
             $('.abnormal_stats').hide();
             $('.table_spacer').attr('colspan', 1);
+        }
+        else {
+            $('.abnormal_stats').show();
+            $('.table_spacer').attr('colspan', 3);
         }
     }
 
