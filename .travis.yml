@@ -1,26 +1,62 @@
-language: python
-python:
-  - "3.5"
+matrix:
+  include:
+    ##################################
+    # Django tests
+    ##################################
 
-sudo: False
+    - language: python
+      python:
+        - "3.5"
 
-addons:
-    postgresql: "9.6"
+      sudo: False
 
-# command to install dependencies
-install:
-    - pip install -r requirements.txt
-    - pip install -r test-requirements.txt
-    - pip install coveralls
+      addons:
+          postgresql: "9.6"
 
-env: 
-    - TEST=True DATABASE_URL=postgres://postgres@localhost/cellcountr_test
+      # install dependencies
+      install:
+          - pip install -r requirements.txt
+          - pip install -r test-requirements.txt
+          - pip install coveralls
 
-before_script:
-    - psql -c 'create database cellcountr_test;' -U postgres
+      env: 
+          - TEST=True DATABASE_URL=postgres://postgres@localhost/cellcountr_test
 
-# command to run tests
-script: coverage run --source=cellcounter --omit='*migrations*' manage.py test
+      before_script:
+          - psql -c 'create database cellcountr_test;' -U postgres
 
-after_success:
-    coveralls
+      # run tests
+      script: coverage run --source=cellcounter --omit='*migrations*' manage.py test
+
+      after_success:
+          coveralls
+
+
+    ##################################
+    # Integration tests
+    ##################################
+
+    - dist: xenial
+      language: python
+      python:
+        - "3.5"
+      node_js:
+        - "12.6"
+
+      sudo: False
+
+      # install dependencies
+      install:
+          - pip install -r requirements.txt
+          - npm i -g npm
+          - npm ci --verbose
+
+      env: 
+          - DEBUG=True ALLOWED_HOSTS="127.0.0.1" PATH=$PATH:$TRAVIS_BUILD_DIR/node_modules/.bin
+
+      before_script:
+          - python manage.py migrate
+
+      # run tests
+      script: bash test_integration.sh
+

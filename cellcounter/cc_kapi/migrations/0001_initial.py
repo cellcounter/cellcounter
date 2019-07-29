@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('key', models.CharField(max_length=1)),
                 ('cellid', models.ForeignKey(to='main.CellType', on_delete=models.CASCADE)),
-                ('keyboards', models.ManyToManyField(related_name=b'mappings', to='cc_kapi.Keyboard')),
+                ('keyboards', models.ManyToManyField(related_name='mappings', to='cc_kapi.Keyboard')),
             ],
             options={
             },

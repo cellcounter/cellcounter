@@ -15,7 +15,8 @@ class CellType(models.Model):
     abbr_name = models.CharField(max_length=10, unique=True)
     comment = models.TextField(blank=True)
     visualisation_colour = RGBColorField(blank=True)
-    
+    display_order = models.IntegerField(null=False, unique=True)
+
     def __unicode__(self):
         return self.readable_name
 
