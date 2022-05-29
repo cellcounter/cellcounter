@@ -24,9 +24,10 @@ Update your database:
 
     python manage.py migrate
 
-Run the Django webserver, setting the DEBUG environment variable:
+Run the Django webserver locally, setting the DEBUG environment variable:
 
     export DEBUG=True
+    export ALLOWED_HOSTS="127.0.0.1"
     python manage.py runserver
 
 To run the test suite locally, you also need the test requirements in your virtualenv:
