@@ -104,7 +104,7 @@ class TestPasswordChangeView(TestCase):
     def test_post_invalid(self):
         self.client.force_login(self.user)
         response = self.client.post(reverse('change-password'), data=self.invalid_data)
-        self.assertFormError(response, 'form', 'new_password2', "The two password fields didn't match.")
+        self.assertFormError(response, 'form', 'new_password2', "The two password fields didn’t match.")
 
 
 class TestUserDetailView(TestCase):
@@ -353,4 +353,4 @@ class TestPasswordResetConfirmView(TestCase):
                                                     'token': token}),
                                     data=self.invalid_data)
         self.assertEqual(response.status_code, 200)
-        self.assertFormError(response, 'form', 'new_password2', "The two password fields didn't match.")
+        self.assertFormError(response, 'form', 'new_password2', "The two password fields didn’t match.")
