@@ -131,6 +131,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.media',
+                'django.template.context_processors.request',
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
@@ -229,3 +230,5 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 SESSION_COOKIE_AGE = 604800
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

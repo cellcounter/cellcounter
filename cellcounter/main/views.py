@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template import RequestContext
 from django.views.generic import TemplateView, ListView, DetailView
 from rest_framework.generics import ListAPIView
@@ -55,9 +55,8 @@ class CellImageDetailView(DetailView):
 
 def similar_images(request, cell_image_pk):
     ci = CellImage.objects.get(pk = cell_image_pk)
-    return render_to_response('main/images_by_cell_type.html',
-                              {'images': ci.similar_cells()},
-                              context_instance=RequestContext(request))
+    return render(request, 'main/images_by_cell_type.html',
+                              {'images': ci.similar_cells()})
 
 
 def thumbnail(request, cell_image_pk):
