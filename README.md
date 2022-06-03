@@ -30,6 +30,9 @@ Run the Django webserver locally, setting the DEBUG environment variable:
     export ALLOWED_HOSTS="127.0.0.1"
     python manage.py runserver
 
+
+## Testing
+
 To run the test suite locally, you also need the test requirements in your virtualenv:
 
     pip install -r test-requirements.txt
@@ -48,4 +51,21 @@ To install npm from source for JavaScript testing:
     
     export DEBUG=True; export ALLOWED_HOSTS="127.0.0.1"
     ./test_integration
+
+To run the test suite via docker:
+
+    docker build --target test -t cellcountr/cellcountr_test:latest .
+
+    docker run cellcountr/cellcountr_test:latest python manage.py test
+
+
+## Deployment
+
+To build and run the docker image:
+
+    cp env.dev.example env.dev
+    edit env.dev
+    docker-compose build
+
+    docker-compose up -d
 
