@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      dockerfile: ./docker/app/Dockerfile
+      target: prod
+      context: .
+    command: gunicorn cellcounter.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - static_volume:/usr/src/cellcounter/static
+      - media_volume:/usr/src/cellcounter/media
+    expose:
+      - 8000
+    env_file:
+      - ./docker/env.dev
+  nginx:
+    build: ./docker/nginx
+#      dockerfile: ./docker/nginx/Dockerfile
+#      context: .
+    volumes:
+      - static_volume:/usr/src/cellcounter/static
+      - media_volume:/usr/src/cellcounter/media
+    ports:
+      - 8001:80
+    depends_on:
+      - app
+
+volumes:
+    static_volume:
+    media_volume:
