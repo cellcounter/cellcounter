@@ -38,9 +38,10 @@ RUN set -ex \
     && pip install --no-cache-dir -r /requirements.txt
 
 # set work directory and copy project
-RUN mkdir /usr/src/cellcounter/
-WORKDIR /usr/src/cellcounter
-COPY . /usr/src/cellcounter/
+ENV HOME=/usr/src/cellcounter
+RUN mkdir $HOME
+WORKDIR $HOME
+COPY . $HOME
 
 
 FROM builder AS prod
@@ -58,6 +59,9 @@ RUN set -ex \
     " \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $BUILD_DEPS \
     && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir $HOME/static
+RUN chown ${APP_USER}:${APP_USER} $HOME/static
 
 # Change to a non-root user
 USER ${APP_USER}:${APP_USER}
