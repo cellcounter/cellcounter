@@ -2,7 +2,7 @@
 
 [![Build Status](https://secure.travis-ci.org/cellcounter/cellcounter.png)](http://travis-ci.org/cellcounter/cellcounter) [![Coverage Status](https://coveralls.io/repos/cellcounter/cellcounter/badge.svg?branch=master&service=github)](https://coveralls.io/github/cellcounter/cellcounter?branch=master)
 
-Code developed at NHSHackDay2 to count cells for haematological blood film analysis. Cellcounter is deployed at [cellcountr.com](http://www.cellcountr.com).
+Cellcounter Django app to count cells for haematological blood film analysis. Cellcounter is deployed at [cellcountr.com](http://www.cellcountr.com).
 
 
 ## Running Locally
@@ -15,6 +15,7 @@ Create a virtual environment:
 
     virtualenv -p python3 .env
     source .env/bin/activate
+    pip install --upgrade pip
     pip install -r requirements.txt
 
 (if you don't have `virtualenv`, then `sudo pip install virtualenv`)
@@ -68,4 +69,6 @@ To build and run the docker image:
     docker-compose build
 
     docker-compose up -d
+
+    docker-compose exec web python manage.py migrate --no-input
 
