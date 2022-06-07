@@ -16,7 +16,7 @@ orbs:
 jobs:
   build-and-test:
     docker:
-      - image: cimg/base
+      - image: cimg/base:2021.04
       - image: cimg/postgres:14.1
         environment:
           DATABASE_URL: postgres://postgres@localhost/cellcountr_test
