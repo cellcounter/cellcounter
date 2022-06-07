@@ -25,7 +25,10 @@ jobs:
       - checkout
       - run:
           name: Install GEOS
-          command: ( sudo apt-get update || sudo apt-get update ) && sudo apt-get install libmemcached-dev
+          command: |
+            ( sudo apt-get update || sudo apt-get update )
+            sudo apt-get install libmemcached-dev
+            exit
       - run:
           name: "Install dependencies"
           command: pip install -r requirements.txt
