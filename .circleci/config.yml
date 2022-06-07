@@ -18,9 +18,9 @@ jobs:
     docker:
       - image: cimg/python:3.10.1
       - image: cimg/postgres:14.1
-        environment:
+        #environment:
           #DATABASE_URL: postgres://postgres@localhost/cellcountr_test
-          TEST: "True"
+        #  TEST: "True"
     steps:
       - checkout
       - run:
@@ -43,7 +43,9 @@ jobs:
       - run:
           name: "Run tests"
           # This assumes pytest is installed via the install-package step above
-          command: python manage.py test
+          command: |
+            export TEST=True
+            python manage.py test
 
 workflows:
   build-and-test-workflow:
