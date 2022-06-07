@@ -62,13 +62,22 @@ To run the test suite via docker:
 
 ## Deployment
 
+To create the docker volume to store the media files:
+
+    sudo mkdir -p /var/www/mediafiles
+    docker volume create --driver local --opt type=none --opt device=/var/www/mediafiles --opt o=bind media_volume
+
 To build and run the docker image:
 
     cp env.dev.example env.dev
     edit env.dev
-    docker-compose build
+    docker compose build
 
-    docker-compose up -d
+    docker compose up -d
 
-    docker-compose exec web python manage.py migrate --no-input
+    docker compose exec web python manage.py migrate --no-input
+
+To stop the docker image:
+
+    docker compose down -v
 

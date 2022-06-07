@@ -66,7 +66,7 @@ RUN chown ${APP_USER}:${APP_USER} $HOME/static
 # Change to a non-root user
 USER ${APP_USER}:${APP_USER}
 
-ENTRYPOINT ["/usr/src/cellcounter/entrypoint.sh"]
+ENTRYPOINT ["/usr/src/cellcounter/docker/entrypoint.sh"]
 
 
 FROM builder AS test
@@ -79,5 +79,5 @@ RUN set -ex \
 
 ENV TEST=True
 
-ENTRYPOINT ["/usr/src/cellcounter/test-entrypoint.sh"]
+ENTRYPOINT ["/usr/src/cellcounter/docker/test-entrypoint.sh"]
 
