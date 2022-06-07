@@ -30,7 +30,7 @@ jobs:
             sudo apt-get install libmemcached-dev
             exit
       - run:
-          name: "Install dependencies"
+          name: "Install dependencies222"
           command: pip install -r requirements.txt
       - run:
           name: "Install test dependencies"
