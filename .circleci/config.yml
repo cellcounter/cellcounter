@@ -21,10 +21,8 @@ jobs:
         environment:
           DATABASE_URL: postgres://postgres@localhost/cellcountr_test
           TEST: "True"
-    executor: python/default
     steps:
       - checkout
-      - python/dist
       - run:
           name: Install GEOS
           command: |
