@@ -19,24 +19,24 @@ jobs:
       - image: cimg/python:3.10.1
       - image: cimg/postgres:14.1
         environment:
-          DATABASE_URL: postgres://postgres@localhost/cellcountr_test
+          #DATABASE_URL: postgres://postgres@localhost/cellcountr_test
           TEST: "True"
     steps:
       - checkout
       - run:
-          name: Install GEOS
+          name: "Install build dependencies"
           command: |
             ( sudo apt-get update || sudo apt-get update )
             sudo apt-get install libmemcached-dev
       - run:
-          name: "Install dependencies"
-          command: pip install -r requirements.txt
-      - run:
-          name: "Install test dependencies"
-          command: pip install -r test-requirements.txt
-      - run:
-          name: "Create database"
-          command: psql -c 'create database cellcountr_test;' -U postgres
+          name: "Install python dependencies"
+          command: |
+            pip install --upgrade pip
+            pip install -r requirements.txt
+            pip install -r test-requirements.txt
+      #- run:
+      #    name: "Create database"
+      #    command: psql -c 'create database cellcountr_test;' -U postgres
       - run:
           name: "Migrate database"
           command: python manage.py migrate
