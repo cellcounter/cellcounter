@@ -9,23 +9,24 @@ services:
     command: gunicorn cellcounter.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - static_volume:/usr/src/cellcounter/static
-      - media_volume:/usr/src/cellcounter/media
+      - media_volume:/usr/src/cellcounter/mediafiles
     expose:
       - 8000
     env_file:
       - ./docker/env.dev
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   nginx:
     build: ./docker/nginx
-#      dockerfile: ./docker/nginx/Dockerfile
-#      context: .
     volumes:
-      - static_volume:/usr/src/cellcounter/static
-      - media_volume:/usr/src/cellcounter/media
+      - static_volume:/usr/src/cellcounter/static:ro
+      - media_volume:/usr/src/cellcounter/mediafiles:ro
     ports:
-      - 8001:80
+      - 127.0.0.1:8001:80
     depends_on:
       - app
 
 volumes:
     static_volume:
     media_volume:
+      external: true
