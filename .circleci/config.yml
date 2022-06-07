@@ -21,16 +21,11 @@ jobs:
         environment:
           DATABASE_URL: postgres://postgres@localhost/cellcountr_test
           TEST: "True"
-    dependencies:
-      pre:
-        - sudo apt-get update && sudo apt-get install libmemcached-dev
     steps:
       - checkout
       - run:
           name: Install GEOS
-          command: |
-            ( sudo apt-get update || sudo apt-get update )
-            sudo apt-get install libmemcached-dev
+          command: ( sudo apt-get update || sudo apt-get update ) && sudo apt-get install libmemcached-dev
       - run:
           name: "Install dependencies"
           command: pip install -r requirements.txt
