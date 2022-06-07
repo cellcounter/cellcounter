@@ -21,8 +21,10 @@ jobs:
         environment:
           DATABASE_URL: postgres://postgres@localhost/cellcountr_test
           TEST: "True"
+    executor: python/default
     steps:
       - checkout
+      - python/dist
       - run:
           name: Install GEOS
           command: |
@@ -30,7 +32,7 @@ jobs:
             sudo apt-get install libmemcached-dev
             exit
       - run:
-          name: "Install dependencies222"
+          name: "Install dependencies"
           command: pip install -r requirements.txt
       - run:
           name: "Install test dependencies"
