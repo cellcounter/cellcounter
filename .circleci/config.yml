@@ -14,13 +14,10 @@ orbs:
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  build-and-test:
+  test-server:
     docker:
       - image: cimg/python:3.10.1
       - image: cimg/postgres:14.1
-        #environment:
-          #DATABASE_URL: postgres://postgres@localhost/cellcountr_test
-        #  TEST: "True"
     steps:
       - checkout
       - run:
@@ -46,8 +43,32 @@ jobs:
           command: |
             export TEST=True
             python manage.py test
+  test-integration:
+    docker:
+      - image: cimg/node:latest
+    environment:
+      ALLOWED_HOSTS: "127.0.0.1"
+    steps:
+      - checkout
+      - run:
+          name: "Install build dependencies"
+          command: |
+            ( sudo apt-get update || sudo apt-get update )
+            sudo apt-get install libmemcached-dev
+      - run:
+          name: "Install python dependencies"
+          command: |
+            pip install --upgrade pip
+            pip install -r requirements.txt
+      - run:
+          name: "Install node packages"
+          command: npm ci
+      - run:
+          name: "Integration tests"
+          command: ./test_integration
 
 workflows:
-  build-and-test-workflow:
+  test-workflow:
     jobs:
-    - build-and-test
+    - test-server
+    - test-integration
