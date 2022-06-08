@@ -54,7 +54,7 @@ jobs:
           name: "Install build dependencies"
           command: |
             ( sudo apt-get update || sudo apt-get update )
-            sudo apt-get install libmemcached-dev python3-pip
+            sudo apt-get install python libmemcached-dev python3-pip
       - run:
           name: "Install python dependencies"
           command: |
