@@ -66,3 +66,6 @@ venv/
 
 # Pycharm
 .idea/
+
+# Environment variables
+env.dev

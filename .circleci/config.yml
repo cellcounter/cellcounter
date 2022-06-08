@@ -57,6 +57,7 @@ jobs:
             sudo apt-get install libmemcached-dev python3-pip
       - python/install-packages:
           pkg-manager: pip
+
       - run:
           name: "Install node packages"
           command: npm ci
