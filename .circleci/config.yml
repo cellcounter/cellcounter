@@ -48,7 +48,7 @@ jobs:
       - image: cimg/node:current
     environment:
       ALLOWED_HOSTS: "127.0.0.1"
-      NODE_ENV: "testing"
+      NODE_ENV: "development"
     steps:
       - checkout
       - run:
@@ -65,7 +65,9 @@ jobs:
       #    command: npm ci
       - run:
           name: "Integration tests"
-          command: ./test_integration.sh
+          command: |
+            echo 'export PATH=./node_modules/.bin:$PATH' >> $BASH_ENV
+            ./test_integration.sh
 
 workflows:
   test-workflow:
