@@ -65,7 +65,7 @@ jobs:
           command: npm ci
       - run:
           name: "Integration tests"
-          command: ./test_integration
+          command: ./test_integration.sh
 
 workflows:
   test-workflow:
