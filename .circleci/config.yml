@@ -45,7 +45,7 @@ jobs:
             python manage.py test
   test-integration:
     docker:
-      - image: cimg/node:latest
+      - image: cimg/node:current
     environment:
       ALLOWED_HOSTS: "127.0.0.1"
     steps:
