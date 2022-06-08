@@ -8,11 +8,13 @@ TMP_SERVER_LOG_FILE=$(mktemp)
 export DEBUG=True
 
 # disable autoreload or Django unhelpfully changes PID
-(python -u manage.py runserver --noreload | tee $TMP_SERVER_LOG_FILE) &
+(python3 -u manage.py runserver --noreload | tee $TMP_SERVER_LOG_FILE) &
 
 DEBUG_SERVER_PID=$!
 
 sleep 1
+
+[ -d "/proc/${DEBUG_SERVER_PID}" ] || (echo "Server not running"; exit 1)
 
 while ! grep -m1 'Quit the server with CONTROL-C.' < $TMP_SERVER_LOG_FILE; do
     sleep 1
