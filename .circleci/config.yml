@@ -55,11 +55,8 @@ jobs:
           command: |
             ( sudo apt-get update || sudo apt-get update )
             sudo apt-get install libmemcached-dev python3-pip
-      - run:
-          name: "Install python dependencies"
-          command: |
-            pip install --upgrade pip
-            pip install -r requirements.txt
+      - python/install-packages:
+          pkg-manager: pip
       - run:
           name: "Install node packages"
           command: npm ci
