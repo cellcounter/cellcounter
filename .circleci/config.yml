@@ -10,6 +10,7 @@ orbs:
 # so you dont have to copy and paste it everywhere.
 # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/python
   python: circleci/python@2.0.3
+  node: circleci/node@5.0.2
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
@@ -39,7 +40,6 @@ jobs:
           command: python manage.py migrate
       - run:
           name: "Run tests"
-          # This assumes pytest is installed via the install-package step above
           command: |
             export TEST=True
             python manage.py test
@@ -48,6 +48,7 @@ jobs:
       - image: cimg/node:current
     environment:
       ALLOWED_HOSTS: "127.0.0.1"
+
     steps:
       - checkout
       - run:
@@ -57,10 +58,11 @@ jobs:
             sudo apt-get install libmemcached-dev python3-pip
       - python/install-packages:
           pkg-manager: pip
-
-      - run:
-          name: "Install node packages"
-          command: npm ci
+      - node/install-packages:
+          pkg-manager: npm
+      #- run:
+      #    name: "Install node packages"
+      #    command: npm ci
       - run:
           name: "Integration tests"
           command: ./test_integration.sh
