@@ -3,12 +3,12 @@
 #export NODE_PATH=$VIRTUAL_ENV/lib/node_modules
 
 
-TMP_SERVER_LOG_FILE=$(tempfile)
+TMP_SERVER_LOG_FILE=$(mktemp)
 
 export DEBUG=True
 
 # disable autoreload or Django unhelpfully changes PID
-python -u manage.py runserver --noreload &>$TMP_SERVER_LOG_FILE &
+(python -u manage.py runserver --noreload | tee $TMP_SERVER_LOG_FILE) &
 
 DEBUG_SERVER_PID=$!
 
