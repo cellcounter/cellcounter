@@ -60,9 +60,9 @@ jobs:
           pkg-manager: pip
       - node/install-packages:
           pkg-manager: npm
-      #- run:
-      #    name: "Install node packages"
-      #    command: npm ci
+      - run:
+          name: "Migrate database"
+          command: python3 manage.py migrate
       - run:
           name: "Integration tests"
           command: |
