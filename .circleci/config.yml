@@ -48,7 +48,7 @@ jobs:
       - image: cimg/node:current
     environment:
       ALLOWED_HOSTS: "127.0.0.1"
-
+      NODE_ENV: "testing"
     steps:
       - checkout
       - run:
