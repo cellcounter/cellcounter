@@ -1,8 +1,6 @@
 # CellCounter
 
-[![CircleCI](https://circleci.com/gh/cellcounter/cellcounter/tree/master.svg?style=svg)](https://circleci.com/gh/cellcounter/cellcounter/tree/master)
-
-[![Coverage Status](https://coveralls.io/repos/cellcounter/cellcounter/badge.svg?branch=master&service=github)](https://coveralls.io/github/cellcounter/cellcounter?branch=master)
+[![CircleCI](https://circleci.com/gh/cellcounter/cellcounter/tree/master.svg?style=shield)](https://circleci.com/gh/cellcounter/cellcounter/tree/master) [![Coverage Status](https://coveralls.io/repos/cellcounter/cellcounter/badge.svg?branch=master&service=github)](https://coveralls.io/github/cellcounter/cellcounter?branch=master)
 
 Cellcounter Django app to count cells for haematological blood film analysis. Cellcounter is deployed at [cellcountr.com](http://www.cellcountr.com).
 
