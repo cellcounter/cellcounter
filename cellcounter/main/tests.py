@@ -72,9 +72,5 @@ class TestMainViews(WebTest):
     def test_get_celltype_api(self):
         response = self.app.get(reverse('cell_types'))
         self.assertEqual(200, response.status_code)
-<<<<<<< HEAD
         self.assertEqual(CELLTYPE_JSON, response.body.decode("utf-8"))
 
-=======
-        self.assertEqual(CELLTYPE_JSON, response.body)
->>>>>>> ca9418a96be53e1c0c8ff342739f7124540c2cc1

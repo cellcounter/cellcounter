@@ -7,7 +7,7 @@ from .models import Keyboard, KeyMap, DefaultKeyboards
 import factory
 
 
-class UserFactory(factory.DjangoModelFactory):
+class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
@@ -68,7 +68,7 @@ class KeyboardFactory(factory.django.DjangoModelFactory):
         self.save()
 
 
-class KeyMapFactory(factory.DjangoModelFactory):
+class KeyMapFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = KeyMap
 
