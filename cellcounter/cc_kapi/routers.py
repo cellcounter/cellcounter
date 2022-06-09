@@ -12,6 +12,7 @@ class KeyboardAPIRouter(SimpleRouter):
             url=r'^{prefix}/$',
             mapping={'get': 'list'},
             name='{basename}-list',
+            detail=False,
             initkwargs={'suffix': 'List'}
         ),
         Route(
@@ -19,6 +20,7 @@ class KeyboardAPIRouter(SimpleRouter):
             mapping={'get': 'list',
                      'post': 'create'},
             name='{basename}-desktop-list',
+            detail=False,
             initkwargs={'suffix': 'Desktop List',
                         'device_type' : Keyboard.DESKTOP}
         ),
@@ -28,6 +30,7 @@ class KeyboardAPIRouter(SimpleRouter):
                      'put': 'update',
                      'delete': 'destroy'},
             name='{basename}-desktop-detail',
+            detail=True,
             initkwargs={'suffix': 'Desktop Detail',
                         'device_type' : Keyboard.DESKTOP}
         ),
@@ -35,6 +38,7 @@ class KeyboardAPIRouter(SimpleRouter):
             url=r'^{prefix}/desktop/{lookup}/set_default$',
             mapping={'put': 'set_default'},
             name='{basename}-desktop-set_default',
+            detail=True,
             initkwargs={'suffix': 'Desktop Set Default',
                         'device_type' : Keyboard.DESKTOP}
         ),
@@ -43,6 +47,7 @@ class KeyboardAPIRouter(SimpleRouter):
             mapping={'get': 'list',
                      'post': 'create'},
             name='{basename}-mobile-list',
+            detail=False,
             initkwargs={'suffix': 'Mobile List',
                         'device_type' : Keyboard.MOBILE}
         ),
@@ -52,6 +57,7 @@ class KeyboardAPIRouter(SimpleRouter):
                      'put': 'update',
                      'delete': 'destroy'},
             name='{basename}-mobile-detail',
+            detail=True,
             initkwargs={'suffix': 'Mobile Detail',
                         'device_type' : Keyboard.MOBILE}
         ),
@@ -59,6 +65,7 @@ class KeyboardAPIRouter(SimpleRouter):
             url=r'^{prefix}/mobile/{lookup}/set_default$',
             mapping={'put': 'set_default'},
             name='{basename}-mobile-set_default',
+            detail=True,
             initkwargs={'suffix': 'Mobile Set Default',
                         'device_type' : Keyboard.MOBILE}
         ),

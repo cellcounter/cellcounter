@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import KeyMap, Keyboard
 
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 
 class KeyMapSerializer(serializers.ModelSerializer):

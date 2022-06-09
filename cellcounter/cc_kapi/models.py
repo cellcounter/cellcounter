@@ -78,9 +78,9 @@ class KeyMap(models.Model):
 class DefaultKeyboards(models.Model):
     """Maps the default keyboard settings (desktop and mobile) to the user"""
 
-    user = models.OneToOneField(User, primary_key=True)
-    desktop = models.ForeignKey(Keyboard, default=None, related_name="desktop_default", null=True)
-    mobile = models.ForeignKey(Keyboard, default=None, related_name="mobile_default", null=True)
+    user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE)
+    desktop = models.ForeignKey(Keyboard, default=None, related_name="desktop_default", null=True, on_delete=models.CASCADE)
+    mobile = models.ForeignKey(Keyboard, default=None, related_name="mobile_default", null=True, on_delete=models.CASCADE)
 
     def __str__(self):              # __unicode__ on Python 2
         return "%s default keyboard mappings" % self.user.username
