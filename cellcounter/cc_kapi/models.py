@@ -16,11 +16,10 @@ class Keyboard(models.Model):
                     (MOBILE, 'mobile'),
                    )
 
-
-    user = models.ForeignKey(User, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     label = models.CharField(max_length=25)
-    created = models.DateTimeField(default=timezone.now)
-    last_modified = models.DateTimeField(default=timezone.now)
+    created = models.DateTimeField(auto_now_add=True)
+    last_modified = models.DateTimeField(auto_now=True)
     device_type = models.PositiveIntegerField(choices=DEVICE_TYPES,
                                   default=DESKTOP)
 
