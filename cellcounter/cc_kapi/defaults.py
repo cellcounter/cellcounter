@@ -34,6 +34,29 @@ BUILTIN_MOBILE_KEYBOARD_MAP = {
                         "last_modified": datetime.datetime(2016, 5, 21, 12, 33, 0, 0, tzinfo=utc),
                         "device_type": Keyboard.MOBILE,
                         "mappings": [
+                            {"cellid": 1, "key": u"q"},
+                            {"cellid": 2, "key": u"w"},
+                            {"cellid": 3, "key": u"e"},
+                            {"cellid": 4, "key": u"r"},
+                            {"cellid": 5, "key": u"t"},
+                            {"cellid": 8, "key": u"a"},
+                            {"cellid": 9, "key": u"s"},
+                            {"cellid": 11, "key": u"d"},
+                            {"cellid": 10, "key": u"f"},
+                            {"cellid": 13, "key": u"g"},
+                            {"cellid": 7, "key": u"z"},
+                            {"cellid": 6, "key": u"x"},
+                            {"cellid": 12, "key": u"c"}]
+}
+
+
+BUILTIN_MOBILE_KEYBOARD_MAP = {
+                        "user": None,
+                        "label": u"Default mobile",
+                        "created": datetime.datetime(2016, 5, 21, 12, 33, 0, 0, tzinfo=utc),
+                        "last_modified": datetime.datetime(2016, 5, 21, 12, 33, 0, 0, tzinfo=utc),
+                        "device_type": Keyboard.MOBILE,
+                        "mappings": [
                             {"cellid": 1, "key": "q"},
                             {"cellid": 2, "key": "w"},
                             {"cellid": 3, "key": "e"},

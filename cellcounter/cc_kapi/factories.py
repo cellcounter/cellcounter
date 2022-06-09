@@ -1,7 +1,5 @@
 import string
-
-import factory
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 
 from cellcounter.main.models import CellType
 from .models import Keyboard, KeyMap, DefaultKeyboards
@@ -9,7 +7,7 @@ from .models import Keyboard, KeyMap, DefaultKeyboards
 import factory
 
 
-class UserFactory(factory.django.DjangoModelFactory):
+class UserFactory(factory.DjangoModelFactory):
     class Meta:
         model = User
 
@@ -47,12 +45,7 @@ class DefaultKeyMapFactory(factory.django.DjangoModelFactory):
 
     key = 'a'
 
-<<<<<<< HEAD
 class KeyboardFactory(factory.django.DjangoModelFactory):
-=======
-
-class KeyboardFactory(factory.DjangoModelFactory):
->>>>>>> 992d7b7 (Remove redundant (commented out) code.)
     class Meta:
         model = Keyboard
 
@@ -75,7 +68,7 @@ class KeyboardFactory(factory.DjangoModelFactory):
         self.save()
 
 
-class KeyMapFactory(factory.django.DjangoModelFactory):
+class KeyMapFactory(factory.DjangoModelFactory):
     class Meta:
         model = KeyMap
 

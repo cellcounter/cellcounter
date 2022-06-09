@@ -297,21 +297,21 @@ class KeyboardsAPIDesktopDetailTest(WebTest):
     def test_put_keyboard_desktop_no_mappings(self):
         response = self.app.put(reverse('keyboards-desktop-detail', kwargs={'pk': self.desktop_keyboard.id}),
                                 json.dumps({k: v for k, v in
-                                            list(MOCK_KEYBOARD.items()) if k != 'mappings'}),
+                                            MOCK_KEYBOARD.iteritems() if k != 'mappings'}),
                                 headers={'Content-Type': 'application/json'},
                                 user=self.user.username,
                                 status=400)
-        self.assertEqual('{"mappings":["This field is required."]}', response.body.decode("utf-8"))
+        self.assertEqual('{"mappings":["This field is required."]}', response.body)
         self.assertEqual(response.status_code, 400)
 
     def test_put_keyboard_desktop_missing_fields(self):
         response = self.app.put(reverse('keyboards-desktop-detail', kwargs={'pk': self.desktop_keyboard.id}),
                                 json.dumps({k: v for k, v in
-                                            list(MOCK_KEYBOARD.items()) if k != 'label'}),
+                                            MOCK_KEYBOARD.iteritems() if k != 'label'}),
                                 headers={'Content-Type': 'application/json'},
                                 user=self.user.username,
                                 status=400)
-        self.assertEqual(response.body.decode("utf-8"), '{"label":["This field is required."]}')
+        self.assertEqual(response.body, '{"label":["This field is required."]}')
         self.assertEqual(response.status_code, 400)
 
     def test_put_keyboard_desktop_valid_data(self):
