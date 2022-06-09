@@ -15,7 +15,7 @@ from .factories import UserFactory, KeyboardFactory, KeyMapFactory, DefaultKeybo
 from .models import Keyboard
 from .serializers import KeyboardSerializer, KeyboardListItemSerializer
 
-from StringIO import StringIO
+from io import StringIO
 
 
 class KeyboardTestCase(TestCase):
