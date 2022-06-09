@@ -1116,16 +1116,11 @@ function clear_keyboard () {
         var user = keyboard_map.user;
     }
     var date = new Date(Date.now()).toISOString();
-<<<<<<< HEAD
-    keyboard_map = { label: 'Default',
-        is_primary: true,
+    keyboard_map = { label: "Default",
+        is_default: true,
         created: date,
         last_modified: date,
         mappings: [] };
-=======
-    keyboard_map = {"label": "Default", "is_default": true, "created": date,
-                    "last_modified": date, "mappings": []};
->>>>>>> ca9418a96be53e1c0c8ff342739f7124540c2cc1
     if (typeof id !== 'undefined') {
         keyboard_map.id = id;
     }
