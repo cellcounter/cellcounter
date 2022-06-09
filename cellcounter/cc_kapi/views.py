@@ -76,7 +76,7 @@ class KeyboardViewSet(viewsets.ViewSet):
         # get any user specific keyboard maps
         user_keyboards = []
         user = None
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             user = self.request.user
             user_keyboards = Keyboard.objects.filter(user=user).order_by('id')
 
@@ -111,7 +111,7 @@ class KeyboardViewSet(viewsets.ViewSet):
         """Create a new keyboard based on request data and set it as the default keyboard.
         """
 
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             raise NotAuthenticated("Method only available to authenticated users")
         user = self.request.user
 
@@ -133,7 +133,7 @@ class KeyboardViewSet(viewsets.ViewSet):
 
         if pk == 'default':
             pk = 'builtin'
-            if self.request.user.is_authenticated():
+            if self.request.user.is_authenticated:
                 if hasattr(self.request.user, 'defaultkeyboards'):
                     if self.device_type == Keyboard.DESKTOP and \
                             hasattr(self.request.user.defaultkeyboards.desktop, 'id'):
@@ -148,7 +148,7 @@ class KeyboardViewSet(viewsets.ViewSet):
             except Keyboard.DoesNotExist:
                 raise NotFound("%s keyboard with name '%s' not found" % (self.device_type_display(), pk))
 
-        elif self.request.user.is_authenticated():
+        elif self.request.user.is_authenticated:
             try:
                 keyboard = Keyboard.objects.get(user=self.request.user, id=pk, device_type=self.device_type)
             except Keyboard.DoesNotExist:
@@ -165,7 +165,7 @@ class KeyboardViewSet(viewsets.ViewSet):
         """Update a keyboard based on request data.
         """
 
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             raise NotAuthenticated("Method only available to authenticated users")
         user = self.request.user
 
@@ -187,7 +187,7 @@ class KeyboardViewSet(viewsets.ViewSet):
         """Destroy a keyboard based on request data.
         """
 
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             raise NotAuthenticated("Method only available to authenticated users")
         user = self.request.user
 
@@ -220,7 +220,7 @@ class KeyboardViewSet(viewsets.ViewSet):
         """Set the specified keyboard as the user's default.
         """
 
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             raise NotAuthenticated("Method only available to authenticated users")
         user = self.request.user
 
