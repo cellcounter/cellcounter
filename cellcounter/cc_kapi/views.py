@@ -146,13 +146,13 @@ class KeyboardViewSet(viewsets.ViewSet):
             try:
                 keyboard = Keyboard.objects.get(user=None, device_type=self.device_type)
             except Keyboard.DoesNotExist:
-                raise NotFound("%s keyboard with name '%s' not found" % (self.device_type_display(), pk))
+                raise NotFound(f"{self.device_type_display()} keyboard with name '{pk}' not found")
 
         elif self.request.user.is_authenticated:
             try:
                 keyboard = Keyboard.objects.get(user=self.request.user, id=pk, device_type=self.device_type)
             except Keyboard.DoesNotExist:
-                raise NotFound("%s keyboard with id '%s' not found" % (self.device_type_display(), pk))
+                raise NotFound(f"{self.device_type_display()} keyboard with id '{pk}' not found")
 
         if not keyboard:
             raise NotAuthenticated("Method only available to authenticated users")
@@ -174,7 +174,7 @@ class KeyboardViewSet(viewsets.ViewSet):
         except ValueError:
             raise ParseError('Invalid keyboard identifier')
         except Keyboard.DoesNotExist:
-            raise NotFound("%s keyboard with id '%s' not found" % (self.device_type_display(), pk))
+            raise NotFound(f"{self.device_type_display()} keyboard with id '{pk}' not found")
 
         serializer = KeyboardSerializer(keyboard, data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -196,7 +196,7 @@ class KeyboardViewSet(viewsets.ViewSet):
         except ValueError:
             raise ParseError('Invalid keyboard identifier')
         except Keyboard.DoesNotExist:
-            raise NotFound("%s keyboard with id '%s' not found" % (self.device_type_display(), pk))
+            raise NotFound(f"{self.device_type_display()} keyboard with id '{pk}' not found")
 
         # check if the keyboard we are about to delete is the default keyboard
         if hasattr(user, 'defaultkeyboards'):
@@ -233,7 +233,7 @@ class KeyboardViewSet(viewsets.ViewSet):
         except ValueError:
             raise ParseError('Invalid keyboard identifier')
         except Keyboard.DoesNotExist:
-            raise NotFound("%s keyboard with name '%s' not found" % (self.device_type_display(), pk))
+            raise NotFound(f"{self.device_type_display()} keyboard with name '{pk}' not found")
 
         self._set_user_default_keyboard(user, keyboard)
         return Response({'status': 'Default set'})
