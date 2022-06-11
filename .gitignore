@@ -68,5 +68,8 @@ venv/
 # Pycharm
 .idea/
 
+# Django
+static/
+
 # Environment variables
 env.dev
