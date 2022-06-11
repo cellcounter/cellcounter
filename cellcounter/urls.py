@@ -32,7 +32,7 @@ urlpatterns = [
                        url(r'^login/$', LoginView.as_view(template_name="main/login.html"), name="login"),
                        url(r'^logout/$', LogoutView.as_view(next_page='/'),
                            name='logout'),
-                       url(r'^api/keyboards', include('cellcounter.cc_kapi.urls')),
+                       url(r'^api/keyboards/', include('cellcounter.cc_kapi.urls')),
                        url(r'^accounts/', include(
                            'cellcounter.accounts.urls')),
                        url(r'^admin/', admin.site.urls),
