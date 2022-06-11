@@ -69,7 +69,7 @@ venv/
 .idea/
 
 # Django
-static/
+/static/
 
 # Environment variables
 env.dev
