@@ -17,6 +17,17 @@ from .serializers import KeyboardSerializer, KeyboardListItemSerializer
 
 from io import StringIO
 
+from datetime import datetime
+import pytz
+
+def DecodeDateTimeInUTC(d, fields=["created", "last_modified"]):
+    """Utility function to convert datetime fields to UTC"""
+    def to_utc(datetime_string):
+        return datetime.fromisoformat(datetime_string.replace('Z', '+00:00')).astimezone(pytz.utc)
+    for f in fields:
+        if f in d:
+            d[f] = to_utc(d[f])
+    return d
 
 class KeyboardTestCase(TestCase):
     def test_unicode(self):
@@ -48,13 +59,21 @@ class KeyboardsAPIListTest(WebTest):
 
     def test_get_keyboard_default_anon(self):
         response = self.app.get(reverse('keyboards-list'))
-        self.assertEqual(BUILTIN_KEYBOARD_STRING, response.body)
+
+        # decode the datetime fields in UTC for comparison (app is timezone aware)
+        a = json.loads(BUILTIN_KEYBOARD_STRING, object_hook=DecodeDateTimeInUTC)
+        b = json.loads(response.body.decode("utf-8"), object_hook=DecodeDateTimeInUTC)
+        self.assertEqual(a, b)
 
     def test_get_keyboard_default_logged_in(self):
         # create a default user with no keyboards
         user = UserFactory(username="test")
         response = self.app.get(reverse('keyboards-list'), user=user.username)
-        self.assertEqual(BUILTIN_KEYBOARD_STRING_LOGGED_IN, response.body)
+
+        # decode the datetime fields in UTC for comparison (app is timezone aware)
+        a = json.loads(BUILTIN_KEYBOARD_STRING_LOGGED_IN, object_hook=DecodeDateTimeInUTC)
+        b = json.loads(response.body.decode("utf-8"), object_hook=DecodeDateTimeInUTC)
+        self.assertEqual(a, b)
 
     def test_get_default_notset(self):
         # use a user but don't have any default keyboard set
@@ -278,12 +297,12 @@ class KeyboardsAPIDesktopDetailTest(WebTest):
 
     def test_put_keyboard_desktop_no_data(self):
         response = self.app.put(reverse('keyboards-desktop-detail', kwargs={'pk': self.desktop_keyboard.id}), user=self.user.username, status=400)
-        self.assertEqual('{"user":["This field is required."],"device_type":["This field is required."],"label":["This field is required."]}', response.body)
+        self.assertEqual('{"user":["This field is required."],"label":["This field is required."],"device_type":["This field is required."],"mappings":["This field is required."]}', response.body.decode("utf-8"))
         self.assertEqual(response.status_code, 400)
 
     def test_put_keyboard_desktop_invalid_data(self):
         response = self.app.put(reverse('keyboards-desktop-detail', kwargs={'pk': self.desktop_keyboard.id}), BAD_KEYBOARD, user=self.user.username, status=400)
-        self.assertEqual('{"user":["This field is required."],"device_type":["\\"desktop\\" is not a valid choice."],"label":["This field is required."]}', response.body)
+        self.assertEqual('{"user":["This field is required."],"label":["This field is required."],"device_type":["\\"desktop\\" is not a valid choice."],"mappings":["This field is required."]}', response.body.decode("utf-8"))
         self.assertEqual(response.status_code, 400)
 
     def test_put_keyboard_desktop_nonexistent_keyboard_logged_in(self):
@@ -297,29 +316,30 @@ class KeyboardsAPIDesktopDetailTest(WebTest):
     def test_put_keyboard_desktop_no_mappings(self):
         response = self.app.put(reverse('keyboards-desktop-detail', kwargs={'pk': self.desktop_keyboard.id}),
                                 json.dumps({k: v for k, v in
-                                            MOCK_KEYBOARD.iteritems() if k != 'mappings'}),
+                                            MOCK_KEYBOARD.items() if k != 'mappings'}),
                                 headers={'Content-Type': 'application/json'},
                                 user=self.user.username,
                                 status=400)
-        self.assertEqual('{"mappings":["This field is required."]}', response.body)
+        self.assertEqual('{"mappings":["This field is required."]}', response.body.decode("utf-8"))
         self.assertEqual(response.status_code, 400)
 
     def test_put_keyboard_desktop_missing_fields(self):
         response = self.app.put(reverse('keyboards-desktop-detail', kwargs={'pk': self.desktop_keyboard.id}),
                                 json.dumps({k: v for k, v in
-                                            MOCK_KEYBOARD.iteritems() if k != 'label'}),
+                                            MOCK_KEYBOARD.items() if k != 'label'}),
                                 headers={'Content-Type': 'application/json'},
                                 user=self.user.username,
                                 status=400)
-        self.assertEqual(response.body, '{"label":["This field is required."]}')
+        self.assertEqual(response.body.decode("utf-8"), '{"label":["This field is required."]}')
         self.assertEqual(response.status_code, 400)
 
     def test_put_keyboard_desktop_valid_data(self):
-        response = self.app.put(reverse('keyboards-desktop-detail', kwargs={'pk': self.desktop_keyboard.id}), MOCK_KEYBOARD2, user=self.user.username)
+        #response = self.client.put(reverse('keyboards-desktop-detail', kwargs={'pk': self.desktop_keyboard.id}), MOCK_KEYBOARD2, user=self.user.username, content_type='application/json')
+        response = self.app.put_json(reverse('keyboards-desktop-detail', kwargs={'pk': self.desktop_keyboard.id}), MOCK_KEYBOARD2, user=self.user.username)
         response = self.app.get(reverse('keyboards-desktop-detail', kwargs={'pk': self.desktop_keyboard.id}), user=self.user, status=200)
-        resp = JSONParser().parse(StringIO(response.body))
-        self.assertEqual(resp["id"], self.desktop_keyboard.id)
-        self.assertEqual(resp["label"], "Keyboard2")
+        a = json.loads(response.body.decode("utf-8"))
+        self.assertEqual(a['id'], self.desktop_keyboard.id)
+        self.assertEqual(a['label'], "Keyboard2")
         self.assertEqual(response.status_code, 200)
 
 ##### test delete
@@ -351,7 +371,7 @@ class KeyboardsAPIDesktopDetailTest(WebTest):
         response = self.app.delete(reverse('keyboards-desktop-detail', kwargs={'pk': self.mobile_keyboard.id}), user=user, status=404)
         self.assertEqual(response.status_code, 404)
         self.assertEqual(len(Keyboard.objects.filter(user=self.user)), 2)
-        self.assertEqual('{"detail":"desktop keyboard with id \'' + str(self.mobile_keyboard.id) + '\' not found"}', response.body)
+        self.assertEqual('{"detail":"desktop keyboard with id \'' + str(self.mobile_keyboard.id) + '\' not found"}', response.body.decode("utf-8"))
 
 ##### test post
     def test_post_keyboard_desktop_logged_out(self):
@@ -409,7 +429,7 @@ class KeyboardsAPIDesktopSetDefaultTest(WebTest):
 
     def test_put_keyboard_desktop_builtin_default(self):
         response = self.app.put(reverse('keyboards-desktop-set_default', kwargs={'pk': "builtin"}), user=self.user.username, status=200)
-        self.assertEqual('{"status":"Default cleared"}', response.body)
+        self.assertEqual('{"status":"Default cleared"}', response.body.decode("utf-8"))
         self.assertEqual(response.status_code, 200)
 
     def test_put_keyboard_desktop_set_user_default(self):
