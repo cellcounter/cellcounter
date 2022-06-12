@@ -16,7 +16,7 @@ class Keyboard(models.Model):
                     (MOBILE, 'mobile'),
                    )
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     label = models.CharField(max_length=25)
     created = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
