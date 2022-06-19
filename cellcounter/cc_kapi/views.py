@@ -6,6 +6,9 @@ from rest_framework import status
 
 from .models import Keyboard, DefaultKeyboards
 from .serializers import KeyboardSerializer, KeyboardListItemSerializer
+from .defaults import BUILTIN_KEYBOARDS
+from .defaults import BUILTIN_DESKTOP_KEYBOARD_MAP, BUILTIN_MOBILE_KEYBOARD_MAP
+from .marshalls import KeyboardLayoutsMarshall
 
 from rest_framework import viewsets
 
@@ -70,41 +73,20 @@ class KeyboardViewSet(viewsets.ViewSet):
         either desktop or mobile.
         """
 
-        # get the builtin keyboard maps
-        builtin_keyboards = Keyboard.objects.filter(user=None)
-
-        # get any user specific keyboard maps
-        user_keyboards = []
         user = None
         if self.request.user.is_authenticated:
             user = self.request.user
-            user_keyboards = Keyboard.objects.filter(user=user).order_by('id')
 
-        # set the default flags appropriately
-        default_desktop, default_mobile = None, None
-        if hasattr(user, 'defaultkeyboards'):
-            default_desktop = user.defaultkeyboards.desktop
-            default_mobile = user.defaultkeyboards.mobile
-        if not default_desktop:
-            [builtin_keyboard._set_default() for builtin_keyboard in builtin_keyboards if builtin_keyboard.device_type == Keyboard.DESKTOP]
-        else:
-            [user_keyboard._set_default() for user_keyboard in user_keyboards if user_keyboard.id == default_desktop.id]
-        if not default_mobile:
-            [builtin_keyboard._set_default() for builtin_keyboard in builtin_keyboards if builtin_keyboard.device_type == Keyboard.MOBILE]
-        else:
-            [user_keyboard._set_default() for user_keyboard in user_keyboards if user_keyboard.id == default_mobile.id]
-
-        # combine builtin and user keyboards into the final list
-        keyboards = itertools.chain(builtin_keyboards, user_keyboards)
-
-        # filter by device type
         if self.device_type:
-            keyboards = [kb for kb in keyboards if kb.device_type == self.device_type]
+            keyboards = KeyboardLayoutsMarshall(user).get_all(self.device_type)
+        else:
+            keyboards = KeyboardLayoutsMarshall(user).get_all()
 
-        # serialise all requested keyboards
-        keyboard_list = KeyboardListItemSerializer(keyboards, many=True)
+        keyboard_data = []
+        for kb in keyboards:
+            keyboard_data.append(kb.serialize(many=True))
 
-        return Response(keyboard_list.data)
+        return Response(keyboard_data)
 
 
     def create(self, request):
@@ -129,36 +111,17 @@ class KeyboardViewSet(viewsets.ViewSet):
         """Retrieve a specific keyboard.
         """
 
-        keyboard = None
+        user = None
 
-        if pk == 'default':
-            pk = 'builtin'
-            if self.request.user.is_authenticated:
-                if hasattr(self.request.user, 'defaultkeyboards'):
-                    if self.device_type == Keyboard.DESKTOP and \
-                            hasattr(self.request.user.defaultkeyboards.desktop, 'id'):
-                        pk = self.request.user.defaultkeyboards.desktop.id
-                    elif self.device_type == Keyboard.MOBILE and \
-                            hasattr(self.request.user.defaultkeyboards.mobile, 'id'):
-                        pk = self.request.user.defaultkeyboards.mobile.id
+        if self.request.user.is_authenticated:
+            user = self.request.user
 
-        if pk == 'builtin':
-            try:
-                keyboard = Keyboard.objects.get(user=None, device_type=self.device_type)
-            except Keyboard.DoesNotExist:
-                raise NotFound(f"{self.device_type_display()} keyboard with name '{pk}' not found")
-
-        elif self.request.user.is_authenticated:
-            try:
-                keyboard = Keyboard.objects.get(user=self.request.user, id=pk, device_type=self.device_type)
-            except Keyboard.DoesNotExist:
-                raise NotFound(f"{self.device_type_display()} keyboard with id '{pk}' not found")
+        keyboard = KeyboardLayoutsMarshall(user).get(pk, self.device_type)
 
         if not keyboard:
-            raise NotAuthenticated("Method only available to authenticated users")
+            raise NotFound(f"{self.device_type_display()} keyboard with name '{pk}' not found")
 
-        serializer = KeyboardSerializer(keyboard)
-        return Response(serializer.data)
+        return Response(keyboard.serialize())
 
 
     def update(self, request, pk=None):

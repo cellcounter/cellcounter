@@ -102,9 +102,9 @@ class DefaultsTestCase(TestMigrations):
         self.assertEqual(len(keyboards1), 1)
         self.assertEqual(keyboards1[0].id, self.keyboard3_id)
 
-        # check that there are five keyboards in total
+        # check that there are three keyboards in total
         keyboards_all = Keyboard.objects.all()
-        self.assertEqual(len(keyboards_all), 5)
+        self.assertEqual(len(keyboards_all), 3)
 
         # check that kb is user's default desktop keyboard and there is no mobile default
         self.assertEqual(user.defaultkeyboards.desktop.id, kb1.id)

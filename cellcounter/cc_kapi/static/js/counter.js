@@ -213,7 +213,7 @@ function init_keyboard () {
     });
 
     $('#select-keyboard').on('show', function() {
-        $.getJSON("/api/keyboards/" + keyboard_platform, function(data) {
+        $.getJSON("/api/keyboards/" + keyboard_platform + '/', function(data) {
             $('#keyboard_list tbody > tr').remove();
             $.each(data, function (i, data) {
                 $('#keyboard_list table tbody').append(
@@ -832,7 +832,7 @@ function set_keyboard (mapping) {
 function load_keyboard(href) {
     "use strict";
     if (href === undefined) {
-        $.getJSON("/api/keyboards/" + keyboard_platform + "/default", function(data) {
+        $.getJSON("/api/keyboards/" + keyboard_platform + "/default/", function(data) {
             keyboard_map = data;
             update_keyboard();
             chart.render();

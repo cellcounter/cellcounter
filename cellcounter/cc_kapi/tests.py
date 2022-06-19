@@ -11,8 +11,8 @@ from cellcounter.main.models import CellType
 from .defaults import MOCK_KEYBOARD, MOCK_KEYBOARD2, BAD_KEYBOARD
 from .defaults import BUILTIN_KEYBOARD_STRING, BUILTIN_KEYBOARD_STRING_LOGGED_IN
 from .defaults import BUILTIN_DESKTOP_KEYBOARD_MAP, BUILTIN_MOBILE_KEYBOARD_MAP
-from .factories import UserFactory, KeyboardFactory, KeyMapFactory, DefaultKeyboardFactory, DefaultKeyboardsFactory
-from .models import Keyboard
+from .factories import UserFactory, KeyboardFactory, KeyMapFactory, DefaultKeyboardFactory, DefaultKeyboardsFactory, BuiltinKeyboardFactory
+from .models import Keyboard, DefaultKeyboards
 from .serializers import KeyboardSerializer, KeyboardListItemSerializer
 
 from io import StringIO
@@ -52,10 +52,12 @@ class KeyboardsAPIListTest(WebTest):
         self.user = UserFactory()
         self.desktop_keyboard = KeyboardFactory(user=self.user, device_type=Keyboard.DESKTOP)
         self.mobile_keyboard = KeyboardFactory(user=self.user, device_type=Keyboard.MOBILE)
-        self.defaults = DefaultKeyboardsFactory(user=self.user)
-        
-        self.builtin_desktop_keyboard = Keyboard.objects.filter(user=None, device_type=Keyboard.DESKTOP)[0]
-        self.builtin_mobile_keyboard = Keyboard.objects.filter(user=None, device_type=Keyboard.MOBILE)[0]
+        self.builtin_desktop_keyboard = BuiltinKeyboardFactory(device_type=Keyboard.DESKTOP)
+        self.builtin_mobile_keyboard = BuiltinKeyboardFactory(device_type=Keyboard.MOBILE)
+
+
+        self.maxDiff = None
+
 
     def test_get_keyboard_default_anon(self):
         response = self.app.get(reverse('keyboards-list'))
@@ -67,6 +69,7 @@ class KeyboardsAPIListTest(WebTest):
 
     def test_get_keyboard_default_logged_in(self):
         # create a default user with no keyboards
+        self.maxDiff = None
         user = UserFactory(username="test")
         response = self.app.get(reverse('keyboards-list'), user=user.username)
 
@@ -80,19 +83,24 @@ class KeyboardsAPIListTest(WebTest):
         response = self.app.get(reverse('keyboards-list'), user=self.user.username)
 
         # XXX: the default is currently set in the view, so mirror that in the test
-        self.builtin_desktop_keyboard._is_default = True
-        self.builtin_mobile_keyboard._is_default = True
+        self.builtin_desktop_keyboard.set_default()
+        self.builtin_mobile_keyboard.set_default()
 
         keyboards = [self.builtin_desktop_keyboard, self.builtin_mobile_keyboard, self.desktop_keyboard, self.mobile_keyboard]
-        serializer = KeyboardListItemSerializer(keyboards, many=True)
-        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
-        self.assertEqual(serializer.data[0]['is_default'], True)
-        self.assertEqual(serializer.data[1]['is_default'], True)
-        self.assertEqual(serializer.data[2]['is_default'], False)
-        self.assertEqual(serializer.data[3]['is_default'], False)
+        serializer = []
+        for kb in keyboards:
+            serializer.append(kb.serialize(many=True))
+        #serializer = KeyboardListItemSerializer(keyboards, many=True)
+        self.assertEqual(JSONRenderer().render(serializer), response.body)
+        self.assertEqual(serializer[0]['is_default'], True)
+        self.assertEqual(serializer[1]['is_default'], True)
+        self.assertEqual(serializer[2]['is_default'], False)
+        self.assertEqual(serializer[3]['is_default'], False)
 
     def test_get_default_set(self):
         # use a user with a default desktop and user keyboard
+        if not hasattr(self.user, 'defaultkeyboards'):
+            self.user.defaultkeyboards = DefaultKeyboards.objects.create(user=self.user)
         self.user.defaultkeyboards.desktop = self.desktop_keyboard
         self.user.defaultkeyboards.mobile = self.mobile_keyboard
         self.user.defaultkeyboards.save()
@@ -100,18 +108,18 @@ class KeyboardsAPIListTest(WebTest):
         response = self.app.get(reverse('keyboards-list'), user=self.user.username)
 
         # XXX: the default is currently set in the view, so mirror that in the test
-        self.builtin_desktop_keyboard._is_default = False
-        self.builtin_mobile_keyboard._is_default  = False
-        self.desktop_keyboard._is_default = True
-        self.mobile_keyboard._is_default  = True
+        self.desktop_keyboard.set_default()
+        self.mobile_keyboard.set_default()
 
         keyboards = [self.builtin_desktop_keyboard, self.builtin_mobile_keyboard, self.desktop_keyboard, self.mobile_keyboard]
-        serializer = KeyboardListItemSerializer(keyboards, many=True)
-        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
-        self.assertEqual(serializer.data[0]['is_default'], False)
-        self.assertEqual(serializer.data[1]['is_default'], False)
-        self.assertEqual(serializer.data[2]['is_default'], True)
-        self.assertEqual(serializer.data[3]['is_default'], True)
+        serializer = []
+        for kb in keyboards:
+            serializer.append(kb.serialize(many=True))
+        self.assertEqual(JSONRenderer().render(serializer), response.body)
+        self.assertEqual(serializer[0]['is_default'], False)
+        self.assertEqual(serializer[1]['is_default'], False)
+        self.assertEqual(serializer[2]['is_default'], True)
+        self.assertEqual(serializer[3]['is_default'], True)
 
 # test put
     def test_put_keyboard_logged_out(self):
@@ -147,31 +155,31 @@ class KeyboardsAPIDesktopListTest(WebTest):
     def setUp(self):
         self.user = UserFactory()
         self.desktop_keyboard = KeyboardFactory(user=self.user, device_type=Keyboard.DESKTOP)
-
         self.mobile_keyboard = KeyboardFactory(user=self.user, device_type=Keyboard.MOBILE)
-        self.builtin_desktop_keyboard = Keyboard.objects.filter(user=None, device_type=Keyboard.DESKTOP)[0]
-        self.builtin_mobile_keyboard = Keyboard.objects.filter(user=None, device_type=Keyboard.MOBILE)[0]
+        self.builtin_desktop_keyboard = BuiltinKeyboardFactory(device_type=Keyboard.DESKTOP)
+        self.builtin_mobile_keyboard = BuiltinKeyboardFactory(device_type=Keyboard.MOBILE)
 
 # test get
     def test_get_keyboard_desktop_builtin(self):
         response = self.app.get(reverse('keyboards-desktop-list'), user=self.user, status=200)
 
         # XXX: the default is currently set in the view, so mirror that in the test
-        self.builtin_desktop_keyboard._is_default = True
+        self.builtin_desktop_keyboard.set_default()
 
         keyboards = [self.builtin_desktop_keyboard, self.desktop_keyboard]
-        serializer = KeyboardListItemSerializer(keyboards, many=True)
-        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
+        serializer = []
+        for kb in keyboards:
+            serializer.append(kb.serialize(many=True))
+        self.assertEqual(JSONRenderer().render(serializer), response.body)
 
     def test_get_keyboard_desktop_builtin_logged_out(self):
         response = self.app.get(reverse('keyboards-desktop-list'), status=200)
 
         # XXX: the default is currently set in the view, so mirror that in the test
-        self.builtin_desktop_keyboard._is_default = True
+        self.builtin_desktop_keyboard.set_default()
 
-        keyboards = [self.builtin_desktop_keyboard]
-        serializer = KeyboardListItemSerializer(keyboards, many=True)
-        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
+        serializer = [self.builtin_desktop_keyboard.serialize(many=True)]
+        self.assertEqual(JSONRenderer().render(serializer), response.body)
 
 # test put
     def test_put_keyboard_logged_out(self):
@@ -232,31 +240,30 @@ class KeyboardsAPIDesktopDetailTest(WebTest):
     def setUp(self):
         self.user = UserFactory()
         self.desktop_keyboard = KeyboardFactory(user=self.user, device_type=Keyboard.DESKTOP)
-
         self.mobile_keyboard = KeyboardFactory(user=self.user, device_type=Keyboard.MOBILE)
-        self.builtin_desktop_keyboard = Keyboard.objects.filter(user=None, device_type=Keyboard.DESKTOP)[0]
-        self.builtin_mobile_keyboard = Keyboard.objects.filter(user=None, device_type=Keyboard.MOBILE)[0]
+        self.builtin_desktop_keyboard = BuiltinKeyboardFactory(device_type=Keyboard.DESKTOP)
+        self.builtin_mobile_keyboard = BuiltinKeyboardFactory(device_type=Keyboard.MOBILE)
 
 ##### test get
     def test_get_keyboard_desktop_builtin(self):
         response = self.app.get(reverse('keyboards-desktop-detail', kwargs={'pk': "builtin"}), user=self.user, status=200)
-        serializer = KeyboardSerializer(self.builtin_desktop_keyboard)
-        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
+        serializer = self.builtin_desktop_keyboard.serialize()
+        self.assertEqual(JSONRenderer().render(serializer), response.body)
 
     def test_get_keyboard_desktop_builtin_logged_out(self):
         response = self.app.get(reverse('keyboards-desktop-detail', kwargs={'pk': "builtin"}), status=200)
-        serializer = KeyboardSerializer(self.builtin_desktop_keyboard)
-        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
+        serializer = self.builtin_desktop_keyboard.serialize()
+        self.assertEqual(JSONRenderer().render(serializer), response.body)
 
     def test_get_keyboard_desktop_default(self):
         response = self.app.get(reverse('keyboards-desktop-detail', kwargs={'pk': "default"}), user=self.user, status=200)
-        serializer = KeyboardSerializer(self.builtin_desktop_keyboard)
-        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
+        serializer = self.builtin_desktop_keyboard.serialize()
+        self.assertEqual(JSONRenderer().render(serializer), response.body)
 
     def test_get_keyboard_desktop_default_logged_out(self):
         response = self.app.get(reverse('keyboards-desktop-detail', kwargs={'pk': "default"}), status=200)
-        serializer = KeyboardSerializer(self.builtin_desktop_keyboard)
-        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
+        serializer = self.builtin_desktop_keyboard.serialize()
+        self.assertEqual(JSONRenderer().render(serializer), response.body)
 
     def test_get_keyboard_desktop_anothers_keyboard(self):
         user = UserFactory()
@@ -275,8 +282,8 @@ class KeyboardsAPIDesktopDetailTest(WebTest):
         self.assertEqual(response.status_code, 404)
 
     def test_get_keyboard_desktop_keyboard_logged_out(self):
-        response = self.app.get(reverse('keyboards-desktop-detail', kwargs={'pk': self.desktop_keyboard.id}), status=403)
-        self.assertEqual(response.status_code, 403)
+        response = self.app.get(reverse('keyboards-desktop-detail', kwargs={'pk': self.desktop_keyboard.id}), status=404)
+        self.assertEqual(response.status_code, 404)
 
     def test_get_desktop_nonexistent_keyboard_detail(self):
         response = self.app.get(reverse('keyboards-desktop-detail',
@@ -297,12 +304,12 @@ class KeyboardsAPIDesktopDetailTest(WebTest):
 
     def test_put_keyboard_desktop_no_data(self):
         response = self.app.put(reverse('keyboards-desktop-detail', kwargs={'pk': self.desktop_keyboard.id}), user=self.user.username, status=400)
-        self.assertEqual('{"user":["This field is required."],"label":["This field is required."],"device_type":["This field is required."],"mappings":["This field is required."]}', response.body.decode("utf-8"))
+        self.assertEqual('{"label":["This field is required."],"device_type":["This field is required."],"mappings":["This field is required."]}', response.body.decode("utf-8"))
         self.assertEqual(response.status_code, 400)
 
     def test_put_keyboard_desktop_invalid_data(self):
         response = self.app.put(reverse('keyboards-desktop-detail', kwargs={'pk': self.desktop_keyboard.id}), BAD_KEYBOARD, user=self.user.username, status=400)
-        self.assertEqual('{"user":["This field is required."],"label":["This field is required."],"device_type":["\\"desktop\\" is not a valid choice."],"mappings":["This field is required."]}', response.body.decode("utf-8"))
+        self.assertEqual('{"label":["This field is required."],"device_type":["\\"desktopz\\" is not a valid choice."],"mappings":["This field is required."]}', response.body.decode("utf-8"))
         self.assertEqual(response.status_code, 400)
 
     def test_put_keyboard_desktop_nonexistent_keyboard_logged_in(self):
@@ -389,10 +396,9 @@ class KeyboardsAPIDesktopSetDefaultTest(WebTest):
     def setUp(self):
         self.user = UserFactory()
         self.desktop_keyboard = KeyboardFactory(user=self.user, device_type=Keyboard.DESKTOP)
-
         self.mobile_keyboard = KeyboardFactory(user=self.user, device_type=Keyboard.MOBILE)
-        self.builtin_desktop_keyboard = Keyboard.objects.filter(user=None, device_type=Keyboard.DESKTOP)[0]
-        self.builtin_mobile_keyboard = Keyboard.objects.filter(user=None, device_type=Keyboard.MOBILE)[0]
+        self.builtin_desktop_keyboard = BuiltinKeyboardFactory(device_type=Keyboard.DESKTOP)
+        self.builtin_mobile_keyboard = BuiltinKeyboardFactory(device_type=Keyboard.MOBILE)
 
 ##### test get
     def test_get_keyboard_logged_out(self):
@@ -436,8 +442,8 @@ class KeyboardsAPIDesktopSetDefaultTest(WebTest):
         # retrieve the default keyboard
         response = self.app.get(reverse('keyboards-desktop-detail', kwargs={'pk': 'default'}), user=self.user, status=200)
         # assert that it is the builtin keyboard
-        serializer = KeyboardSerializer(self.builtin_desktop_keyboard)
-        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
+        serializer = self.builtin_desktop_keyboard.serialize()
+        self.assertEqual(JSONRenderer().render(serializer), response.body)
         response = self.app.put(reverse('keyboards-desktop-set_default', kwargs={'pk': self.desktop_keyboard.id}), user=self.user.username, status=200)
         self.assertEqual(response.status_code, 200)
 
@@ -458,26 +464,22 @@ class KeyboardsAPIMobileDetailTest(WebTest):
     def setUp(self):
         self.user = UserFactory()
         self.desktop_keyboard = KeyboardFactory(user=self.user, device_type=Keyboard.DESKTOP)
-
         self.mobile_keyboard = KeyboardFactory(user=self.user, device_type=Keyboard.MOBILE)
-        self.builtin_desktop_keyboard = Keyboard.objects.filter(user=None, device_type=Keyboard.DESKTOP)[0]
-        self.builtin_mobile_keyboard = Keyboard.objects.filter(user=None, device_type=Keyboard.MOBILE)[0]
+        self.builtin_desktop_keyboard = BuiltinKeyboardFactory(device_type=Keyboard.DESKTOP)
+        self.builtin_mobile_keyboard = BuiltinKeyboardFactory(device_type=Keyboard.MOBILE)
 
 # test get
     def test_get_keyboard_mobile_builtin(self):
         response = self.app.get(reverse('keyboards-mobile-detail', kwargs={'pk': "builtin"}), status=200)
-        serializer = KeyboardSerializer(self.builtin_mobile_keyboard)
-        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
+        self.assertEqual(JSONRenderer().render(self.builtin_mobile_keyboard.serialize()), response.body)
 
     def test_get_keyboard_mobile_default(self):
         response = self.app.get(reverse('keyboards-mobile-detail', kwargs={'pk': "default"}), status=200)
-        serializer = KeyboardSerializer(self.builtin_mobile_keyboard)
-        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
+        self.assertEqual(JSONRenderer().render(self.builtin_mobile_keyboard.serialize()), response.body)
 
-    def test_get_keyboard_mobile_default_logged_out(self):
+    def test_get_keyboard_mobile_default_logged_in(self):
         response = self.app.get(reverse('keyboards-mobile-detail', kwargs={'pk': "default"}), user=self.user, status=200)
-        serializer = KeyboardSerializer(self.builtin_mobile_keyboard)
-        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
+        self.assertEqual(JSONRenderer().render(self.builtin_mobile_keyboard.serialize()), response.body)
 
     def test_get_keyboard_mobile_keyboard(self):
         response = self.app.get(reverse('keyboards-mobile-detail', kwargs={'pk': self.mobile_keyboard.id}), user=self.user, status=200)
@@ -489,8 +491,8 @@ class KeyboardsAPIMobileDetailTest(WebTest):
         self.assertEqual(response.status_code, 404)
 
     def test_get_keyboard_mobile_keyboard_logged_out(self):
-        response = self.app.get(reverse('keyboards-mobile-detail', kwargs={'pk': self.mobile_keyboard.id}), status=403)
-        self.assertEqual(response.status_code, 403)
+        response = self.app.get(reverse('keyboards-mobile-detail', kwargs={'pk': self.mobile_keyboard.id}), status=404)
+        self.assertEqual(response.status_code, 404)
 
 # test put
 # test delete
@@ -526,23 +528,22 @@ class KeyboardsAPICompositeActions(WebTest):
     def setUp(self):
         self.user = UserFactory()
         self.desktop_keyboard = KeyboardFactory(user=self.user, device_type=Keyboard.DESKTOP)
-
         self.mobile_keyboard = KeyboardFactory(user=self.user, device_type=Keyboard.MOBILE)
-        self.builtin_desktop_keyboard = Keyboard.objects.filter(user=None, device_type=Keyboard.DESKTOP)[0]
-        self.builtin_mobile_keyboard = Keyboard.objects.filter(user=None, device_type=Keyboard.MOBILE)[0]
+        self.builtin_desktop_keyboard = BuiltinKeyboardFactory(device_type=Keyboard.DESKTOP)
+        self.builtin_mobile_keyboard = BuiltinKeyboardFactory(device_type=Keyboard.MOBILE)
 
     def test_keyboard_desktop_mobile_set_user_default(self):
         # retrieve the default desktop keyboard
         response = self.app.get(reverse('keyboards-desktop-detail', kwargs={'pk': 'default'}), user=self.user, status=200)
         # assert that it is the builtin keyboard
-        serializer = KeyboardSerializer(self.builtin_desktop_keyboard)
-        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
+        serializer = self.builtin_desktop_keyboard.serialize()
+        self.assertEqual(JSONRenderer().render(serializer), response.body)
 
         # retrieve the default mobile keyboard
         response = self.app.get(reverse('keyboards-mobile-detail', kwargs={'pk': 'default'}), user=self.user, status=200)
         # assert that it is the builtin mobile keyboard
-        serializer = KeyboardSerializer(self.builtin_mobile_keyboard)
-        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
+        serializer = self.builtin_mobile_keyboard.serialize()
+        self.assertEqual(JSONRenderer().render(serializer), response.body)
 
         # set the default desktop keyboard...
         response = self.app.put(reverse('keyboards-desktop-set_default', kwargs={'pk': self.desktop_keyboard.id}), user=self.user.username, status=200)
@@ -555,14 +556,14 @@ class KeyboardsAPICompositeActions(WebTest):
         # retrieve the new default desktop keyboard
         response = self.app.get(reverse('keyboards-desktop-detail', kwargs={'pk': 'default'}), user=self.user, status=200)
         # assert that it is the user's keyboard
-        serializer = KeyboardSerializer(self.desktop_keyboard)
-        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
+        serializer = self.desktop_keyboard.serialize()
+        self.assertEqual(JSONRenderer().render(serializer), response.body)
 
         # retrieve the new default mobile keyboard
         response = self.app.get(reverse('keyboards-mobile-detail', kwargs={'pk': 'default'}), user=self.user, status=200)
         # assert that it is the user's keyboard
-        serializer = KeyboardSerializer(self.mobile_keyboard)
-        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
+        serializer = self.mobile_keyboard.serialize()
+        self.assertEqual(JSONRenderer().render(serializer), response.body)
 
         # delete the desktop keyboard
         response = self.app.delete(reverse('keyboards-desktop-detail', kwargs={'pk': self.desktop_keyboard.id}), user=self.user, status=200)
@@ -571,12 +572,12 @@ class KeyboardsAPICompositeActions(WebTest):
         # retrieve the new default desktop keyboard
         response = self.app.get(reverse('keyboards-desktop-detail', kwargs={'pk': 'default'}), user=self.user, status=200)
         # assert that it is the builtin keyboard
-        serializer = KeyboardSerializer(self.builtin_desktop_keyboard)
-        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
+        serializer = self.builtin_desktop_keyboard.serialize()
+        self.assertEqual(JSONRenderer().render(serializer), response.body)
 
         # retrieve the new default mobile keyboard
         response = self.app.get(reverse('keyboards-mobile-detail', kwargs={'pk': 'default'}), user=self.user, status=200)
         # assert that it is the user's keyboard
-        serializer = KeyboardSerializer(self.mobile_keyboard)
-        self.assertEqual(JSONRenderer().render(serializer.data), response.body)
+        serializer = self.mobile_keyboard.serialize()
+        self.assertEqual(JSONRenderer().render(serializer), response.body)
 

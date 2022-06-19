@@ -10,13 +10,13 @@ class Keyboard(models.Model):
 
     DESKTOP = 1
     MOBILE = 2
-    
+
     DEVICE_TYPES = (
                     (DESKTOP, 'desktop'),
                     (MOBILE, 'mobile'),
                    )
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     label = models.CharField(max_length=25)
     created = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)

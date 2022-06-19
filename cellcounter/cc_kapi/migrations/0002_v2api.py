@@ -12,37 +12,6 @@ from ..defaults import BUILTIN_KEYBOARDS
 from ..models import User
 from ..models import Keyboard as KeyboardLatest
 
-def builtin_keyboards(apps, schema_editor):
-    """Insert the builtin keyboards into the database.
-    """
-    CellType = apps.get_model("main", "CellType")
-
-    KeyMap = apps.get_model("cc_kapi", "KeyMap")
-    Keyboard = apps.get_model("cc_kapi", "Keyboard")
-
-    for keyboard_data in BUILTIN_KEYBOARDS:
-        mappings_data = keyboard_data['mappings']
-        k_data = dict((k, keyboard_data[k]) for k in keyboard_data.keys() if k not in ['mappings'])
-        kb = Keyboard.objects.create(**k_data)
-
-        celltype_objects = [CellType.objects.get(id=mapping['cellid']) for
-                            mapping in mappings_data]
-
-        mapping_objects = [KeyMap.objects.get_or_create(cellid=ct, key=mapping['key'])[0] for
-                           (mapping, ct) in zip(mappings_data, celltype_objects)]
-
-        [kb.mappings.add(x) for x in mapping_objects]
-
-        kb.save()
-
-def remove_builtin_keyboards(apps, schema_editor):
-    # get all the models corresponding to the current state
-    Keyboard = apps.get_model("cc_kapi", "Keyboard")
-
-    builtin_keyboards = Keyboard.objects.filter(user=None)
-
-    for kb in builtin_keyboards:
-        kb.delete()
 
 def migrate_user_default_keyboards(apps, schema_editor):
     # get all the models corresponding to the current state
@@ -140,10 +109,6 @@ class Migration(migrations.Migration):
         migrations.RemoveField(
             model_name='keyboard',
             name='is_primary',
-        ),
-        migrations.RunPython(
-            builtin_keyboards,
-            remove_builtin_keyboards,
         ),
         migrations.RunSQL(migrations.RunSQL.noop,
                       reverse_sql=set_constraints_detect_sqlite_noop()),

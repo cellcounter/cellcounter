@@ -3,8 +3,11 @@ from django.contrib.auth.models import User, AnonymousUser
 
 from cellcounter.main.models import CellType
 from .models import Keyboard, KeyMap, DefaultKeyboards
+from .defaults import BUILTIN_KEYBOARDS, BUILTIN_DESKTOP_KEYBOARD_MAP, BUILTIN_MOBILE_KEYBOARD_MAP
+from .marshalls import BuiltinKeyboardModel, UserKeyboardModel
 
 import factory
+
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -47,7 +50,7 @@ class DefaultKeyMapFactory(factory.django.DjangoModelFactory):
 
 class KeyboardFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = Keyboard
+        model = UserKeyboardModel
 
     user = factory.SubFactory(UserFactory)
     label = 'Test'
@@ -73,3 +76,13 @@ class KeyMapFactory(factory.django.DjangoModelFactory):
         model = KeyMap
 
     key = 'a'
+
+
+class BuiltinKeyboardFactory:
+    def __new__(cls, *args, **kwargs):
+        device_type = kwargs.pop('device_type')
+        if device_type == Keyboard.DESKTOP:
+            return BuiltinKeyboardModel(BUILTIN_DESKTOP_KEYBOARD_MAP)
+        elif device_type == Keyboard.MOBILE:
+            return BuiltinKeyboardModel(BUILTIN_MOBILE_KEYBOARD_MAP)
+
