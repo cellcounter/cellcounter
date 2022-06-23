@@ -984,6 +984,7 @@ function edit_keyboard () {
         },
         resizable: false,
         buttons: [{ text: save_text,
+            id: "save_keyboard_map",
             click: function () {
                 if (save_keys) {
                     save_keyboard();
@@ -1002,6 +1003,7 @@ function edit_keyboard () {
             }
         },
         { text: 'Revert',
+            id: "revert_keyboard_map",
             click: function () {
                 load_keyboard();
                 $('div#editkeymapbox').dialog('close');
