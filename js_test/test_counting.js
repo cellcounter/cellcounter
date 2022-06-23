@@ -90,6 +90,8 @@ describe('The web page', function () {
 
         $('.reset_button').trigger('click');
 
+        assert.deepStrictEqual(window.counter.get_total(), 7);
+
         $('input#reset-count').trigger('click');
 
         assert.deepStrictEqual(window.counter.get_total(), 0);
