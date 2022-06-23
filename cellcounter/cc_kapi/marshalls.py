@@ -36,24 +36,27 @@ class KeyboardLayoutsMarshall():
         if "builtin" in layout_types:
             for kb in BUILTIN_KEYBOARDS:
                 keyboard = BuiltinKeyboardModel(kb)
+                if device != 'all' and device != keyboard.device():
+                    continue
+
                 if keyboard.device() == Keyboard.DESKTOP and self.default_desktop_id == "builtin":
                     keyboard.set_default()
                 elif keyboard.device() == Keyboard.MOBILE and self.default_mobile_id == "builtin":
                     keyboard.set_default()
+
                 keyboards.append(keyboard)
 
         if "user" in layout_types:
-            user_keyboards = UserKeyboardModel.objects.filter(user=self.user).order_by('id')
+            if device != 'all':
+                user_keyboards = UserKeyboardModel.objects.filter(user=self.user, device_type=device).order_by('id')
+            else:
+                user_keyboards = UserKeyboardModel.objects.filter(user=self.user).order_by('id')
             for kb in user_keyboards:
                 if kb.device() == Keyboard.DESKTOP and self.default_desktop_id == kb.id:
                     kb.set_default()
                 elif kb.device() == Keyboard.MOBILE and self.default_mobile_id == kb.id:
                     kb.set_default()
                 keyboards.append(kb)
-
-        # filter by device
-        if device != "all":
-            keyboards = [kb for kb in keyboards if kb.device() == device]
 
         return keyboards
 
