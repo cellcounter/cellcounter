@@ -76,7 +76,6 @@ class KeyboardLayoutsMarshall():
                 keyboard = UserKeyboardModel.objects.get(user=self.user, id=layout_id, device_type=device)
             except Keyboard.DoesNotExist:
                 return None
-#            raise NotFound(f"{self.device_type_display()} keyboard with id '{pk}' not found")
 
             return keyboard
 
@@ -144,7 +143,6 @@ class UserKeyboardModel(Keyboard, KeyboardLayout):
     def serialize(self, many=False):
         if many:
             return KeyboardListItemSerializer(self).data
-        # XXX
         return KeyboardSerializer(self).data
 
     def layout_type(self):
