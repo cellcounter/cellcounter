@@ -1,10 +1,13 @@
 import string
-
-import factory
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 
 from cellcounter.main.models import CellType
-from . import models
+from .models import Keyboard, KeyMap, DefaultKeyboards
+from .defaults import BUILTIN_KEYBOARDS, BUILTIN_DESKTOP_KEYBOARD_MAP, BUILTIN_MOBILE_KEYBOARD_MAP
+from .marshalls import BuiltinKeyboardModel, UserKeyboardModel
+
+import factory
+
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -21,14 +24,36 @@ class UserFactory(factory.django.DjangoModelFactory):
     is_active = True
     is_superuser = False
 
+class DefaultKeyboardsFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = DefaultKeyboards
+
+
+class DefaultKeyboardFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Keyboard
+        strategy = factory.BUILD_STRATEGY
+
+    class Params:
+        mappings = None
+
+    id = 0
+    user = None
+
+
+class DefaultKeyMapFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = KeyMap
+        strategy = factory.BUILD_STRATEGY
+
+    key = 'a'
 
 class KeyboardFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = models.Keyboard
+        model = UserKeyboardModel
 
     user = factory.SubFactory(UserFactory)
     label = 'Test'
-    is_primary = False
 
     @factory.post_generation
     def add_maps(self, create, extracted, **kwargs):
@@ -48,6 +73,16 @@ class KeyboardFactory(factory.django.DjangoModelFactory):
 
 class KeyMapFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = models.KeyMap
+        model = KeyMap
 
     key = 'a'
+
+
+class BuiltinKeyboardFactory:
+    def __new__(cls, *args, **kwargs):
+        device_type = kwargs.pop('device_type')
+        if device_type == Keyboard.DESKTOP:
+            return BuiltinKeyboardModel(BUILTIN_DESKTOP_KEYBOARD_MAP)
+        elif device_type == Keyboard.MOBILE:
+            return BuiltinKeyboardModel(BUILTIN_MOBILE_KEYBOARD_MAP)
+

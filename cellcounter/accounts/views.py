@@ -17,6 +17,8 @@ from ratelimit.exceptions import Ratelimited
 from ratelimit.mixins import RatelimitMixin
 from ratelimit.utils import is_ratelimited
 
+from ..cc_kapi.marshalls import KeyboardLayoutsMarshall
+
 from .forms import EmailUserCreationForm, PasswordResetForm
 
 
@@ -87,7 +89,19 @@ class UserDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(UserDetailView, self).get_context_data(**kwargs)
-        context['keyboards'] = self.object.keyboard_set.all().order_by('-is_primary')
+
+        keyboards = KeyboardLayoutsMarshall(self.request.user).get_all()
+
+        # sort keyboards by device_type
+        keyboards.sort(key=lambda e: e.device_type)
+
+        # serialize the keyboards
+        keyboard_data = []
+        for kb in keyboards:
+            keyboard_data.append(kb.serialize(many=True))
+
+        context['keyboards'] = keyboard_data
+
         return context
 
 

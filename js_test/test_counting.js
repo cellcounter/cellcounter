@@ -43,7 +43,7 @@ function get_display(selector) {
     return window.getComputedStyle($(selector)[0])['display'];
 }
 
-describe('The web page', () => {
+describe('The web page', function () {
 
    before(function(done) {
       this.timeout(3000);
@@ -52,6 +52,7 @@ describe('The web page', () => {
 
    after(closeWebPage);
 
+   this.timeout(4000);
 
    it('has the correct URL -> ' + url, () => {
       const actual =   { url: window.location.href };
@@ -89,6 +90,8 @@ describe('The web page', () => {
 
         $('.reset_button').trigger('click');
 
+        assert.deepStrictEqual(window.counter.get_total(), 7);
+
         $('input#reset-count').trigger('click');
 
         assert.deepStrictEqual(window.counter.get_total(), 0);
@@ -99,7 +102,7 @@ describe('The web page', () => {
 
     it('counts each celltype', function (done) {
 
-        this.timeout(10000);
+        this.timeout(20000);
 
         var counter = window.counter;
 

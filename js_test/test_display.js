@@ -56,7 +56,7 @@ function delay(interval)
    }).timeout(interval + 100) // The extra 100ms should guarantee the test will not fail due to exceeded timeout
 }
 
-describe('The web page', () => {
+describe('The web page', function () {
 
    before(function(done) {
       this.timeout(3000);
@@ -65,6 +65,7 @@ describe('The web page', () => {
 
    after(closeWebPage);
 
+   this.timeout(4000);
 
    it('has the correct URL -> ' + url, () => {
       const actual =   { url: window.location.href };
