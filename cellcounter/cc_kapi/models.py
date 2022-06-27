@@ -5,6 +5,7 @@ from cellcounter.main.models import CellType
 
 from django.utils import timezone
 
+
 class Keyboard(models.Model):
     """Represents a Keyboard mapping between users and keys"""
 
@@ -12,16 +13,15 @@ class Keyboard(models.Model):
     MOBILE = 2
 
     DEVICE_TYPES = (
-                    (DESKTOP, 'desktop'),
-                    (MOBILE, 'mobile'),
-                   )
+        (DESKTOP, "desktop"),
+        (MOBILE, "mobile"),
+    )
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     label = models.CharField(max_length=25)
     created = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
-    device_type = models.PositiveIntegerField(choices=DEVICE_TYPES,
-                                  default=DESKTOP)
+    device_type = models.PositiveIntegerField(choices=DEVICE_TYPES, default=DESKTOP)
 
     _is_default = False
 
@@ -45,9 +45,9 @@ class Keyboard(models.Model):
 
     def __unicode__(self):
         if self.user is None:
-            return u"Builtin Keyboard '%s'" %(self.label)
+            return "Builtin Keyboard '%s'" % (self.label)
         else:
-            return u"Keyboard '%s' for user '%s'" %(self.label, self.user.username)
+            return "Keyboard '%s' for user '%s'" % (self.label, self.user.username)
 
     def _sync_keymaps(self, new_mapping_list):
         """Expects a list of KeyMap objects"""
@@ -61,27 +61,42 @@ class Keyboard(models.Model):
         """new_mapping_list is a list of KeyMap objects"""
         self._sync_keymaps(new_mapping_list)
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
 
         if self.user:
             self.last_modified = timezone.now()
 
-        super(Keyboard, self).save(force_insert=False, force_update=False, using=None,
-                                   update_fields=None)
+        super(Keyboard, self).save(
+            force_insert=False, force_update=False, using=None, update_fields=None
+        )
+
 
 class KeyMap(models.Model):
     cellid = models.ForeignKey(CellType, on_delete=models.CASCADE)
     key = models.CharField(max_length=1)
-    keyboards = models.ManyToManyField(Keyboard, related_name='mappings')
+    keyboards = models.ManyToManyField(Keyboard, related_name="mappings")
+
 
 class DefaultKeyboards(models.Model):
     """Maps the default keyboard settings (desktop and mobile) to the user"""
 
     user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE)
-    desktop = models.ForeignKey(Keyboard, default=None, related_name="desktop_default", null=True, on_delete=models.CASCADE)
-    mobile = models.ForeignKey(Keyboard, default=None, related_name="mobile_default", null=True, on_delete=models.CASCADE)
+    desktop = models.ForeignKey(
+        Keyboard,
+        default=None,
+        related_name="desktop_default",
+        null=True,
+        on_delete=models.CASCADE,
+    )
+    mobile = models.ForeignKey(
+        Keyboard,
+        default=None,
+        related_name="mobile_default",
+        null=True,
+        on_delete=models.CASCADE,
+    )
 
-    def __str__(self):              # __unicode__ on Python 2
+    def __str__(self):  # __unicode__ on Python 2
         return "%s default keyboard mappings" % self.user.username
-

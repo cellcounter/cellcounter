@@ -9,24 +9,28 @@ from rest_framework_xml.renderers import XMLRenderer
 from .models import CountInstance
 from .serializers import CountInstanceCreateSerializer, CountInstanceModelSerializer
 
-SAFE_METHODS = ['GET', 'HEAD', 'OPTIONS']
+SAFE_METHODS = ["GET", "HEAD", "OPTIONS"]
 
 
 class OpenPostStaffGet(BasePermission):
     """
     Allows posting by anonymous users, but requires a staff user to GET/HEAD/OPTIONS
     """
+
     def has_permission(self, request, view):
-        if (request.method == 'POST' or
-                all([request.method in SAFE_METHODS,
-                     request.user.is_authenticated,
-                     request.user.is_staff])):
-                return True
+        if request.method == "POST" or all(
+            [
+                request.method in SAFE_METHODS,
+                request.user.is_authenticated,
+                request.user.is_staff,
+            ]
+        ):
+            return True
         return False
 
 
 class CountInstanceAnonThrottle(AnonRateThrottle):
-    rate = '1/minute'
+    rate = "1/minute"
 
 
 class ListCreateCountInstanceAPI(ListCreateAPIView):
@@ -43,8 +47,12 @@ class ListCreateCountInstanceAPI(ListCreateAPIView):
             user = self.request.user
         else:
             user = None
-        serializer.save(session_id=request.session.session_key,
-                        ip_address=request.META.get('REMOTE_ADDR'),
-                        user=user)
+        serializer.save(
+            session_id=request.session.session_key,
+            ip_address=request.META.get("REMOTE_ADDR"),
+            user=user,
+        )
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )

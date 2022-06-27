@@ -23,66 +23,78 @@ from .forms import EmailUserCreationForm, PasswordResetForm
 
 
 class RateLimitedFormView(FormView):
-    ratelimit_key = 'ip'
+    ratelimit_key = "ip"
     ratelimit_block = True
-    ratelimit_rate = '1/h'
+    ratelimit_rate = "1/h"
     ratelimit_group = None
 
     def dispatch(self, *args, **kwargs):
-        ratelimited = is_ratelimited(request=self.request,
-                                     group=self.ratelimit_group,
-                                     key=self.ratelimit_key,
-                                     rate=self.ratelimit_rate,
-                                     increment=False)
+        ratelimited = is_ratelimited(
+            request=self.request,
+            group=self.ratelimit_group,
+            key=self.ratelimit_key,
+            rate=self.ratelimit_rate,
+            increment=False,
+        )
         if ratelimited and self.ratelimit_block:
             raise Ratelimited()
         return super(RateLimitedFormView, self).dispatch(*args, **kwargs)
 
 
 class RegistrationView(RateLimitedFormView):
-    template_name = 'accounts/register.html'
+    template_name = "accounts/register.html"
     form_class = EmailUserCreationForm
-    ratelimit_group = 'registration'
+    ratelimit_group = "registration"
 
     def form_valid(self, form):
         user = form.save()
-        messages.success(self.request,
-                         mark_safe(
-                             "Successfully registered, you are now logged in! <a href='%s'>View your profile</a>" %
-                             reverse('user-detail', kwargs={'pk': user.id})))
-        user = authenticate(username=form.cleaned_data['username'],
-                            password=form.cleaned_data['password1'])
+        messages.success(
+            self.request,
+            mark_safe(
+                "Successfully registered, you are now logged in! <a href='%s'>View your profile</a>"
+                % reverse("user-detail", kwargs={"pk": user.id})
+            ),
+        )
+        user = authenticate(
+            username=form.cleaned_data["username"],
+            password=form.cleaned_data["password1"],
+        )
         login(self.request, user)
-        is_ratelimited(request=self.request, group=self.ratelimit_group, key=self.ratelimit_key,
-                       rate=self.ratelimit_rate, increment=True)
+        is_ratelimited(
+            request=self.request,
+            group=self.ratelimit_group,
+            key=self.ratelimit_key,
+            rate=self.ratelimit_rate,
+            increment=True,
+        )
         return super(RegistrationView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('new_count')
+        return reverse("new_count")
 
 
 class PasswordChangeView(LoginRequiredMixin, FormView):
-    template_name = 'accounts/password_change.html'
+    template_name = "accounts/password_change.html"
     form_class = PasswordChangeForm
 
     def get_form_kwargs(self):
         kwargs = super(PasswordChangeView, self).get_form_kwargs()
-        kwargs['user'] = self.request.user
+        kwargs["user"] = self.request.user
         return kwargs
 
     def form_valid(self, form):
         form.save()
         messages.success(self.request, "Password changed successfully")
-        return HttpResponseRedirect(reverse('new_count'))
+        return HttpResponseRedirect(reverse("new_count"))
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
-    context_object_name = 'user_detail'
-    template_name = 'accounts/user_detail.html'
+    context_object_name = "user_detail"
+    template_name = "accounts/user_detail.html"
 
     def get_object(self, queryset=None):
-        if self.request.user.id == int(self.kwargs['pk']):
+        if self.request.user.id == int(self.kwargs["pk"]):
             return super(UserDetailView, self).get_object()
         else:
             raise PermissionDenied
@@ -100,54 +112,58 @@ class UserDetailView(LoginRequiredMixin, DetailView):
         for kb in keyboards:
             keyboard_data.append(kb.serialize(many=True))
 
-        context['keyboards'] = keyboard_data
+        context["keyboards"] = keyboard_data
 
         return context
 
 
 class UserDeleteView(LoginRequiredMixin, DeleteView):
     model = User
-    context_object_name = 'user_object'
-    template_name = 'accounts/user_check_delete.html'
+    context_object_name = "user_object"
+    template_name = "accounts/user_check_delete.html"
 
     def get_object(self, queryset=None):
-        if self.request.user.id == int(self.kwargs['pk']):
+        if self.request.user.id == int(self.kwargs["pk"]):
             return super(UserDeleteView, self).get_object()
         else:
             raise PermissionDenied
 
     def get_success_url(self):
         messages.success(self.request, "User account deleted")
-        return reverse('new_count')
+        return reverse("new_count")
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = User
-    fields = ['first_name', 'last_name', 'email', ]
-    template_name = 'accounts/user_update.html'
+    fields = [
+        "first_name",
+        "last_name",
+        "email",
+    ]
+    template_name = "accounts/user_update.html"
 
     def get_object(self, queryset=None):
-        if self.request.user.id == int(self.kwargs['pk']):
+        if self.request.user.id == int(self.kwargs["pk"]):
             return super(UserUpdateView, self).get_object()
         else:
             raise PermissionDenied
 
     def get_success_url(self):
         messages.success(self.request, "User details updated")
-        return reverse('user-detail', kwargs={'pk': self.kwargs['pk']})
+        return reverse("user-detail", kwargs={"pk": self.kwargs["pk"]})
 
 
 class PasswordResetView(RatelimitMixin, FormView):
-    template_name = 'accounts/reset_form.html'
+    template_name = "accounts/reset_form.html"
     form_class = PasswordResetForm
-    ratelimit_rate = '5/h'
-    ratelimit_group = 'pwdreset'
-    ratelimit_key = 'ip'
+    ratelimit_rate = "5/h"
+    ratelimit_group = "pwdreset"
+    ratelimit_key = "ip"
     ratelimit_block = True
 
     def form_valid(self, form):
         form.save(request=self.request)
-        messages.success(self.request, 'Reset email sent')
+        messages.success(self.request, "Reset email sent")
         return super(PasswordResetView, self).form_valid(form)
 
     def form_invalid(self, form):
@@ -155,11 +171,11 @@ class PasswordResetView(RatelimitMixin, FormView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('new_count')
+        return reverse("new_count")
 
 
 class PasswordResetConfirmView(FormView):
-    template_name = 'accounts/reset_confirm.html'
+    template_name = "accounts/reset_confirm.html"
     form_class = SetPasswordForm
 
     @method_decorator(sensitive_post_parameters())
@@ -187,29 +203,31 @@ class PasswordResetConfirmView(FormView):
         return self.valid_token(self.user_object, token)
 
     def get(self, request, *args, **kwargs):
-        if self._valid_inputs(self.kwargs['uidb64'], self.kwargs['token']):
+        if self._valid_inputs(self.kwargs["uidb64"], self.kwargs["token"]):
             form = self.get_form(self.get_form_class())
-            return self.render_to_response(self.get_context_data(form=form, validlink=True))
+            return self.render_to_response(
+                self.get_context_data(form=form, validlink=True)
+            )
         else:
             return self.render_to_response(self.get_context_data(validlink=False))
 
     def post(self, request, *args, **kwargs):
-        if self._valid_inputs(self.kwargs['uidb64'], self.kwargs['token']):
+        if self._valid_inputs(self.kwargs["uidb64"], self.kwargs["token"]):
             return super(PasswordResetConfirmView, self).post(request, *args, **kwargs)
         else:
             return self.render_to_response(self.get_context_data(validlink=False))
 
     def get_form_kwargs(self):
         kwargs = super(PasswordResetConfirmView, self).get_form_kwargs()
-        kwargs['user'] = self.user_object
+        kwargs["user"] = self.user_object
         return kwargs
 
     def form_valid(self, form):
         form.save()
-        messages.success(self.request, 'Password reset successfully')
-        return HttpResponseRedirect(reverse('new_count'))
+        messages.success(self.request, "Password reset successfully")
+        return HttpResponseRedirect(reverse("new_count"))
 
 
 def rate_limited(request, exception):
-    messages.error(request, 'You have been rate limited')
-    return HttpResponseRedirect(reverse('new_count'))
+    messages.error(request, "You have been rate limited")
+    return HttpResponseRedirect(reverse("new_count"))

@@ -25,7 +25,7 @@ def migrate_user_default_keyboards(apps, schema_editor):
             keyboard = Keyboard.objects.get(user=user, is_primary=True)
         except ObjectDoesNotExist:
             continue
-        if not hasattr(user, 'defaultkeyboards'):
+        if not hasattr(user, "defaultkeyboards"):
             defaultkeyboards = DefaultKeyboards.objects.create(user=user)
         else:
             defaultkeyboards = user.defaultkeyboards
@@ -35,6 +35,7 @@ def migrate_user_default_keyboards(apps, schema_editor):
             defaultkeyboards.mobile = keyboard
         defaultkeyboards.save()
 
+
 def undo_user_default_keyboards(apps, schema_editor):
     # get all the models corresponding to the current state
     Keyboard = apps.get_model("cc_kapi", "Keyboard")
@@ -42,7 +43,9 @@ def undo_user_default_keyboards(apps, schema_editor):
     User = apps.get_model("auth", "user")
 
     for user in User.objects.all():
-        if hasattr(user, 'defaultkeyboards') and hasattr(user.defaultkeyboards, 'desktop'):
+        if hasattr(user, "defaultkeyboards") and hasattr(
+            user.defaultkeyboards, "desktop"
+        ):
             default_desktop = user.defaultkeyboards.desktop
             keyboard = Keyboard.objects.get(id=default_desktop.id)
             keyboard.is_primary = True
@@ -50,56 +53,82 @@ def undo_user_default_keyboards(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     def set_constraints_detect_sqlite_noop():
         # hack around sqlite not supporting the SET CONSTRAINTS SQL command
-        if connection.vendor == 'sqlite':
+        if connection.vendor == "sqlite":
             return migrations.RunSQL.noop
-        return 'SET CONSTRAINTS ALL IMMEDIATE'
+        return "SET CONSTRAINTS ALL IMMEDIATE"
 
     dependencies = [
-        ('auth', '0007_alter_validators_add_error_messages'),
-        ('main', '0002_initial_data'),
-        ('cc_kapi', '0001_initial'),
+        ("auth", "0007_alter_validators_add_error_messages"),
+        ("main", "0002_initial_data"),
+        ("cc_kapi", "0001_initial"),
     ]
 
     operations = [
-        migrations.RunSQL(set_constraints_detect_sqlite_noop(),
-                      reverse_sql=migrations.RunSQL.noop),
+        migrations.RunSQL(
+            set_constraints_detect_sqlite_noop(), reverse_sql=migrations.RunSQL.noop
+        ),
         migrations.CreateModel(
-            name='DefaultKeyboards',
+            name="DefaultKeyboards",
             fields=[
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to=settings.AUTH_USER_MODEL)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        primary_key=True,
+                        serialize=False,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='keyboard',
-            name='device_type',
-            field=models.PositiveIntegerField(choices=[(1, b'desktop'), (2, b'mobile')], default=1),
+            model_name="keyboard",
+            name="device_type",
+            field=models.PositiveIntegerField(
+                choices=[(1, b"desktop"), (2, b"mobile")], default=1
+            ),
         ),
         migrations.AlterField(
-            model_name='keyboard',
-            name='user',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="keyboard",
+            name="user",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='defaultkeyboards',
-            name='desktop',
-            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='desktop_default', to='cc_kapi.Keyboard'),
+            model_name="defaultkeyboards",
+            name="desktop",
+            field=models.ForeignKey(
+                default=None,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="desktop_default",
+                to="cc_kapi.Keyboard",
+            ),
         ),
         migrations.AddField(
-            model_name='defaultkeyboards',
-            name='mobile',
-            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='mobile_default', to='cc_kapi.Keyboard'),
+            model_name="defaultkeyboards",
+            name="mobile",
+            field=models.ForeignKey(
+                default=None,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="mobile_default",
+                to="cc_kapi.Keyboard",
+            ),
         ),
         migrations.AlterField(
-            model_name='keyboard',
-            name='created',
+            model_name="keyboard",
+            name="created",
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
         migrations.AlterField(
-            model_name='keyboard',
-            name='last_modified',
+            model_name="keyboard",
+            name="last_modified",
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
         migrations.RunPython(
@@ -107,9 +136,10 @@ class Migration(migrations.Migration):
             undo_user_default_keyboards,
         ),
         migrations.RemoveField(
-            model_name='keyboard',
-            name='is_primary',
+            model_name="keyboard",
+            name="is_primary",
         ),
-        migrations.RunSQL(migrations.RunSQL.noop,
-                      reverse_sql=set_constraints_detect_sqlite_noop()),
+        migrations.RunSQL(
+            migrations.RunSQL.noop, reverse_sql=set_constraints_detect_sqlite_noop()
+        ),
     ]

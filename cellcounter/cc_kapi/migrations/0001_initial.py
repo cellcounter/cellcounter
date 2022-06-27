@@ -7,35 +7,62 @@ from django.conf import settings
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0001_initial'),
+        ("main", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Keyboard',
+            name="Keyboard",
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('label', models.CharField(max_length=25)),
-                ('is_primary', models.BooleanField(default=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('last_modified', models.DateTimeField(auto_now=True)),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
+                (
+                    "id",
+                    models.AutoField(
+                        verbose_name="ID",
+                        serialize=False,
+                        auto_created=True,
+                        primary_key=True,
+                    ),
+                ),
+                ("label", models.CharField(max_length=25)),
+                ("is_primary", models.BooleanField(default=False)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("last_modified", models.DateTimeField(auto_now=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+                    ),
+                ),
             ],
-            options={
-            },
+            options={},
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='KeyMap',
+            name="KeyMap",
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('key', models.CharField(max_length=1)),
-                ('cellid', models.ForeignKey(to='main.CellType', on_delete=models.CASCADE)),
-                ('keyboards', models.ManyToManyField(related_name='mappings', to='cc_kapi.Keyboard')),
+                (
+                    "id",
+                    models.AutoField(
+                        verbose_name="ID",
+                        serialize=False,
+                        auto_created=True,
+                        primary_key=True,
+                    ),
+                ),
+                ("key", models.CharField(max_length=1)),
+                (
+                    "cellid",
+                    models.ForeignKey(to="main.CellType", on_delete=models.CASCADE),
+                ),
+                (
+                    "keyboards",
+                    models.ManyToManyField(
+                        related_name="mappings", to="cc_kapi.Keyboard"
+                    ),
+                ),
             ],
-            options={
-            },
+            options={},
             bases=(models.Model,),
         ),
     ]

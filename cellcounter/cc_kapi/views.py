@@ -16,6 +16,7 @@ from django.urls import reverse
 
 import itertools
 
+
 class KeyboardViewSet(viewsets.ViewSet):
     """
     A ViewSet for manipulating keyboards.
@@ -26,7 +27,7 @@ class KeyboardViewSet(viewsets.ViewSet):
     _device_type = None
 
     def device_type_display(self):
-        return Keyboard.DEVICE_TYPES[self._device_type-1][1]
+        return Keyboard.DEVICE_TYPES[self._device_type - 1][1]
 
     @property
     def device_type(self):
@@ -37,11 +38,10 @@ class KeyboardViewSet(viewsets.ViewSet):
         self._device_type = val
 
     def _set_user_default_keyboard(self, user, keyboard):
-        """Helper function to set the user's default keyboard.
-        """
+        """Helper function to set the user's default keyboard."""
 
         # update or create a default on the user's profile as appropriate
-        if not hasattr(user, 'defaultkeyboards'):
+        if not hasattr(user, "defaultkeyboards"):
             defaultkeyboards = DefaultKeyboards.objects.create(user=user)
         else:
             defaultkeyboards = user.defaultkeyboards
@@ -54,7 +54,7 @@ class KeyboardViewSet(viewsets.ViewSet):
         defaultkeyboards.save()
 
     def _clear_user_default_keyboard(self, user):
-        if not hasattr(user, 'defaultkeyboards'):
+        if not hasattr(user, "defaultkeyboards"):
             return
         defaultkeyboards = user.defaultkeyboards
 
@@ -64,7 +64,6 @@ class KeyboardViewSet(viewsets.ViewSet):
             defaultkeyboards.mobile = None
 
         defaultkeyboards.save()
-
 
     def list(self, request):
         """List the keyboards available for the current user.
@@ -88,10 +87,8 @@ class KeyboardViewSet(viewsets.ViewSet):
 
         return Response(keyboard_data)
 
-
     def create(self, request):
-        """Create a new keyboard based on request data and set it as the default keyboard.
-        """
+        """Create a new keyboard based on request data and set it as the default keyboard."""
 
         if not self.request.user.is_authenticated:
             raise NotAuthenticated("Method only available to authenticated users")
@@ -106,10 +103,8 @@ class KeyboardViewSet(viewsets.ViewSet):
 
         return Response(request.data, status=status.HTTP_201_CREATED)
 
-
     def retrieve(self, request, pk=None):
-        """Retrieve a specific keyboard.
-        """
+        """Retrieve a specific keyboard."""
 
         user = None
 
@@ -119,25 +114,29 @@ class KeyboardViewSet(viewsets.ViewSet):
         keyboard = KeyboardLayoutsMarshall(user).get(pk, self.device_type)
 
         if not keyboard:
-            raise NotFound(f"{self.device_type_display()} keyboard with name '{pk}' not found")
+            raise NotFound(
+                f"{self.device_type_display()} keyboard with name '{pk}' not found"
+            )
 
         return Response(keyboard.serialize())
 
-
     def update(self, request, pk=None):
-        """Update a keyboard based on request data.
-        """
+        """Update a keyboard based on request data."""
 
         if not self.request.user.is_authenticated:
             raise NotAuthenticated("Method only available to authenticated users")
         user = self.request.user
 
         try:
-            keyboard = Keyboard.objects.get(user=user, id=pk, device_type=self.device_type)
+            keyboard = Keyboard.objects.get(
+                user=user, id=pk, device_type=self.device_type
+            )
         except ValueError:
-            raise ParseError('Invalid keyboard identifier')
+            raise ParseError("Invalid keyboard identifier")
         except Keyboard.DoesNotExist:
-            raise NotFound(f"{self.device_type_display()} keyboard with id '{pk}' not found")
+            raise NotFound(
+                f"{self.device_type_display()} keyboard with id '{pk}' not found"
+            )
 
         serializer = KeyboardSerializer(keyboard, data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -145,31 +144,37 @@ class KeyboardViewSet(viewsets.ViewSet):
 
         return Response(request.data)
 
-
     def destroy(self, request, pk=None):
-        """Destroy a keyboard based on request data.
-        """
+        """Destroy a keyboard based on request data."""
 
         if not self.request.user.is_authenticated:
             raise NotAuthenticated("Method only available to authenticated users")
         user = self.request.user
 
         try:
-            keyboard = Keyboard.objects.get(user=user, id=pk, device_type=self.device_type)
+            keyboard = Keyboard.objects.get(
+                user=user, id=pk, device_type=self.device_type
+            )
         except ValueError:
-            raise ParseError('Invalid keyboard identifier')
+            raise ParseError("Invalid keyboard identifier")
         except Keyboard.DoesNotExist:
-            raise NotFound(f"{self.device_type_display()} keyboard with id '{pk}' not found")
+            raise NotFound(
+                f"{self.device_type_display()} keyboard with id '{pk}' not found"
+            )
 
         # check if the keyboard we are about to delete is the default keyboard
-        if hasattr(user, 'defaultkeyboards'):
-            if self.device_type == Keyboard.DESKTOP and \
-               hasattr(user.defaultkeyboards, 'desktop') and \
-               user.defaultkeyboards.desktop == keyboard:
+        if hasattr(user, "defaultkeyboards"):
+            if (
+                self.device_type == Keyboard.DESKTOP
+                and hasattr(user.defaultkeyboards, "desktop")
+                and user.defaultkeyboards.desktop == keyboard
+            ):
                 user.defaultkeyboards.desktop = None
-            elif self.device_type == Keyboard.MOBILE and \
-               hasattr(user.defaultkeyboards, 'mobile') and \
-               user.defaultkeyboards.mobile == keyboard:
+            elif (
+                self.device_type == Keyboard.MOBILE
+                and hasattr(user.defaultkeyboards, "mobile")
+                and user.defaultkeyboards.mobile == keyboard
+            ):
                 user.defaultkeyboards.mobile = None
 
             user.defaultkeyboards.save()
@@ -178,27 +183,27 @@ class KeyboardViewSet(viewsets.ViewSet):
 
         return Response(request.data)
 
-
     def set_default(self, request, pk=None):
-        """Set the specified keyboard as the user's default.
-        """
+        """Set the specified keyboard as the user's default."""
 
         if not self.request.user.is_authenticated:
             raise NotAuthenticated("Method only available to authenticated users")
         user = self.request.user
 
-        if pk == 'builtin':
+        if pk == "builtin":
             self._clear_user_default_keyboard(user)
-            return Response({'status': 'Default cleared'})
+            return Response({"status": "Default cleared"})
 
         try:
-            keyboard = Keyboard.objects.get(user=user, id=pk, device_type=self.device_type)
+            keyboard = Keyboard.objects.get(
+                user=user, id=pk, device_type=self.device_type
+            )
         except ValueError:
-            raise ParseError('Invalid keyboard identifier')
+            raise ParseError("Invalid keyboard identifier")
         except Keyboard.DoesNotExist:
-            raise NotFound(f"{self.device_type_display()} keyboard with name '{pk}' not found")
+            raise NotFound(
+                f"{self.device_type_display()} keyboard with name '{pk}' not found"
+            )
 
         self._set_user_default_keyboard(user, keyboard)
-        return Response({'status': 'Default set'})
-
-
+        return Response({"status": "Default set"})
