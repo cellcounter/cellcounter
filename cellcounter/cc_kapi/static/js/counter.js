@@ -185,15 +185,28 @@ var counter = (function () {
     };
 })();
 
+function render_chart() {
+  if(chart) {
+    chart.render();
+  }
+}
+
+function render_chart2() {
+  if(chart2) {
+    chart2.render();
+  }
+}
+
 function init_objects () {
     chart = doughnutChart('#doughnut').data(counter.get_count_data());
     chart2 = doughnutChart('#doughnut2').data(counter.get_count_data());
 }
 
-function init_keyboard () {
+function init_keyboard_label_editing () {
     $('.keyboard-label').editable({
         url: function (params) {
-            var keyboard = load_keyboard(params.pk);
+            var href = $(this).data('href');
+            var keyboard = load_keyboard(href);
             keyboard.label = params.value;
             save_keyboard(keyboard);
         }
@@ -202,6 +215,9 @@ function init_keyboard () {
     $('#save_new_name').click(function () {
         save_new_keyboard($('#keyboard-name-input').val());
     });
+}
+
+function init_keyboard () {
     // Re-enable keyboard when dialog is closed
     $('#keyboard_name').on('hide', function () {
         editing_keyboard = true;
@@ -475,7 +491,7 @@ function init_other () {
                     }
                 }
             }
-            chart.render();
+            render_chart();
         }
     });
 
@@ -503,6 +519,7 @@ function init_other () {
 var initialised = new $.Deferred();
 
 function initialise () {
+    init_keyboard_label_editing();
     init_objects();
 
     var init_fns = [function () { init_keyboard(); }, function () { init_other(); }];
@@ -599,7 +616,7 @@ function reset_counters () {
     counter.reset();
     results.hide();
     update_keyboard();
-    chart.render();
+    render_chart();
     open_keyboard();
 }
 
@@ -623,7 +640,7 @@ function open_keyboard (done) {
 
     keyboard_active = true;
     $('#savefilebutton').css('display', 'none');
-    chart.render();
+    render_chart();
 }
 
 var results = (function () {
@@ -791,7 +808,7 @@ var results = (function () {
                 $('div#statistics_text').show();
             }
             $('div#statistics').show();
-            chart2.render();
+            render_chart2();
 
             // display the chart
             $('#visualise2').css('display', 'block');
@@ -826,7 +843,7 @@ function log_stats (total) {
 function set_keyboard (mapping) {
     keyboard_map = mapping;
     update_keyboard();
-    chart.render();
+    render_chart();
 }
 
 function load_keyboard(href) {
@@ -835,7 +852,7 @@ function load_keyboard(href) {
         $.getJSON("/api/keyboards/" + keyboard_platform + "/default/", function(data) {
             keyboard_map = data;
             update_keyboard();
-            chart.render();
+            render_chart();
         });
     } else {
         var keyboard = {};
@@ -867,11 +884,10 @@ function set_keyboard_default(keyboard_href) {
 
 function delete_specific_keyboard(keyboard_href) {
     "use strict";
-    var keyboard = load_keyboard(keyboard_href);
     $.ajax({
         url: keyboard_href,
         type: 'DELETE',
-        data: JSON.stringify(keyboard),
+        data: '',
         contentType: 'application/json; charset=utf-8',
         async: false
     });
