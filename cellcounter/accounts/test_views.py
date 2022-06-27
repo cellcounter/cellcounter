@@ -122,7 +122,7 @@ class TestUserDetailView(TestCase):
         response = self.client.get(reverse('user-detail', kwargs={'pk': self.keyboard.user.id}))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['user_detail'], self.keyboard.user)
-        self.assertEqual(len(response.context['keyboards']), 1)
+        self.assertEqual(len(response.context['keyboards']), 3)
 
     def test_get_someone_else(self):
         user2 = UserFactory()
