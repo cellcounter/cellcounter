@@ -218,18 +218,13 @@ function init_keyboard_label_editing () {
         $(this).css("cursor", "pointer");
       }
     });
-
-    $('.keyboard-delete').each(function() {
-      if($(this).data('pk') == "builtin")
-        $(this).css('display', 'none');
-    });
-
-    $('#save_new_name').click(function () {
-        save_new_keyboard($('#keyboard-name-input').val());
-    });
 }
 
 function init_keyboard () {
+    $('#save_new_name').click(function () {
+        save_new_keyboard($('#keyboard-name-input').val());
+    });
+
     // Re-enable keyboard when dialog is closed
     $('#keyboard_name').on('hide', function () {
         editing_keyboard = true;
