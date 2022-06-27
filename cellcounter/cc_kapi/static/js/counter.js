@@ -203,13 +203,25 @@ function init_objects () {
 }
 
 function init_keyboard_label_editing () {
-    $('.keyboard-label').editable({
-        url: function (params) {
-            var href = $(this).data('href');
-            var keyboard = load_keyboard(href);
-            keyboard.label = params.value;
-            save_keyboard(keyboard);
-        }
+    $('.keyboard-label').each(function() {
+
+      if($(this).data('pk') != "builtin") {
+
+        $(this).editable({
+          url: function (params) {
+              var href = $(this).data('href');
+              var keyboard = load_keyboard(href);
+              keyboard.label = params.value;
+              save_keyboard(keyboard);
+          }
+        });
+        $(this).css("cursor", "pointer");
+      }
+    });
+
+    $('.keyboard-delete').each(function() {
+      if($(this).data('pk') == "builtin")
+        $(this).css('display', 'none');
     });
 
     $('#save_new_name').click(function () {
