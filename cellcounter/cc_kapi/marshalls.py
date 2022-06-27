@@ -1,13 +1,18 @@
 from .models import Keyboard
-from .serializers import KeyboardSerializer, KeyboardListItemSerializer, BuiltinKeyboardSerializer, BuiltinKeyboardListItemSerializer
+from .serializers import (
+    KeyboardSerializer,
+    KeyboardListItemSerializer,
+    BuiltinKeyboardSerializer,
+    BuiltinKeyboardListItemSerializer,
+)
 from .defaults import BUILTIN_KEYBOARDS
 
 from pydictobject import DictObject
 
 from abc import ABC, abstractmethod
 
-class KeyboardLayoutsMarshall():
 
+class KeyboardLayoutsMarshall:
     def __init__(self, user=None):
         self.user = user
         self._populate_defaults()
@@ -15,13 +20,15 @@ class KeyboardLayoutsMarshall():
     def _populate_defaults(self):
         self.default_desktop_id = "builtin"
         self.default_mobile_id = "builtin"
-        if self.user and hasattr(self.user, 'defaultkeyboards'):
+        if self.user and hasattr(self.user, "defaultkeyboards"):
             try:
                 self.default_desktop_id = self.user.defaultkeyboards.desktop.id
             except AttributeError:
                 pass
             try:
-                self.default_mobile_id = self.user.defaultkeyboards.mobile.id or "builtin"
+                self.default_mobile_id = (
+                    self.user.defaultkeyboards.mobile.id or "builtin"
+                )
             except AttributeError:
                 pass
 
@@ -29,28 +36,38 @@ class KeyboardLayoutsMarshall():
         if layout_types == "all":
             layout_types = ["builtin", "user"]
         else:
-            layout_types = layout_types.split(',')
+            layout_types = layout_types.split(",")
 
         keyboards = []
 
         if "builtin" in layout_types:
             for kb in BUILTIN_KEYBOARDS:
                 keyboard = BuiltinKeyboardModel(kb)
-                if device != 'all' and device != keyboard.device():
+                if device != "all" and device != keyboard.device():
                     continue
 
-                if keyboard.device() == Keyboard.DESKTOP and self.default_desktop_id == "builtin":
+                if (
+                    keyboard.device() == Keyboard.DESKTOP
+                    and self.default_desktop_id == "builtin"
+                ):
                     keyboard.set_default()
-                elif keyboard.device() == Keyboard.MOBILE and self.default_mobile_id == "builtin":
+                elif (
+                    keyboard.device() == Keyboard.MOBILE
+                    and self.default_mobile_id == "builtin"
+                ):
                     keyboard.set_default()
 
                 keyboards.append(keyboard)
 
         if "user" in layout_types:
-            if device != 'all':
-                user_keyboards = UserKeyboardModel.objects.filter(user=self.user, device_type=device).order_by('id')
+            if device != "all":
+                user_keyboards = UserKeyboardModel.objects.filter(
+                    user=self.user, device_type=device
+                ).order_by("id")
             else:
-                user_keyboards = UserKeyboardModel.objects.filter(user=self.user).order_by('id')
+                user_keyboards = UserKeyboardModel.objects.filter(
+                    user=self.user
+                ).order_by("id")
             for kb in user_keyboards:
                 if kb.device() == Keyboard.DESKTOP and self.default_desktop_id == kb.id:
                     kb.set_default()
@@ -72,11 +89,11 @@ class KeyboardLayoutsMarshall():
                     return keyboard
             return None
 
-        
-
         if self.user:
             try:
-                keyboard = UserKeyboardModel.objects.get(user=self.user, id=layout_id, device_type=device)
+                keyboard = UserKeyboardModel.objects.get(
+                    user=self.user, id=layout_id, device_type=device
+                )
             except Keyboard.DoesNotExist:
                 return None
 
@@ -96,7 +113,6 @@ class KeyboardLayoutsMarshall():
 
 
 class KeyboardLayout:
-
     def serialize(self):
         raise NotImplementedError()
 
@@ -111,7 +127,6 @@ class KeyboardLayout:
 
 
 class BuiltinKeyboardModel(DictObject, KeyboardLayout):
-
     def __init__(self, *args, **kwargs):
         self.is_default = False
         super().__init__(*args, **kwargs)
@@ -153,5 +168,3 @@ class UserKeyboardModel(Keyboard, KeyboardLayout):
 
     class Meta:
         proxy = True
-
-

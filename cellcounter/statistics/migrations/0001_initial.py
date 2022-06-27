@@ -12,14 +12,30 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='CountInstance',
+            name="CountInstance",
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('timestamp', models.DateTimeField(auto_now_add=True)),
-                ('session_id', models.CharField(max_length=32)),
-                ('ip_address', models.GenericIPAddressField()),
-                ('count_total', models.IntegerField()),
-                ('user', models.ForeignKey(default=None, to=settings.AUTH_USER_MODEL, null=True, on_delete=models.CASCADE)),
+                (
+                    "id",
+                    models.AutoField(
+                        verbose_name="ID",
+                        serialize=False,
+                        auto_created=True,
+                        primary_key=True,
+                    ),
+                ),
+                ("timestamp", models.DateTimeField(auto_now_add=True)),
+                ("session_id", models.CharField(max_length=32)),
+                ("ip_address", models.GenericIPAddressField()),
+                ("count_total", models.IntegerField()),
+                (
+                    "user",
+                    models.ForeignKey(
+                        default=None,
+                        to=settings.AUTH_USER_MODEL,
+                        null=True,
+                        on_delete=models.CASCADE,
+                    ),
+                ),
             ],
         ),
     ]

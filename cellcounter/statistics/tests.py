@@ -20,7 +20,7 @@ view = ListCreateCountInstanceAPI.as_view()
 
 class TestStatsMiddleware(TestCase):
     def setUp(self):
-        self.request = RequestFactory().get(reverse('create-count-instance'))
+        self.request = RequestFactory().get(reverse("create-count-instance"))
         self.request.session = {}
         self.request.COOKIES = {}
         self.mw = StatsSessionMiddleware()
@@ -34,89 +34,87 @@ class TestStatsMiddleware(TestCase):
         self.assertIsNotNone(self.request.session.session_key)
 
     def test_key_session(self):
-        """Don't create new session id when one is already set
-        """
+        """Don't create new session id when one is already set"""
         session_engine = import_module(settings.SESSION_ENGINE)
         SessionStore = session_engine.SessionStore
         session_id = SessionStore(None)
         session_id.save()
-        self.request.COOKIES['sessionid'] = session_id.session_key
+        self.request.COOKIES["sessionid"] = session_id.session_key
         self.mw.process_request(self.request)
         self.assertEqual(session_id.session_key, self.request.session.session_key)
 
 
 class TestCountInstanceAPI(APITestCase):
     def setUp(self):
-        self.user = User.objects.create_user('basic', 'basic@example.com', 'basic')
-        self.staff_user = User.objects.create_superuser('permitted',
-                                                        'permitted@example.com',
-                                                        'password')
-        self.url = reverse('create-count-instance')
-        self.data = {'count_total': 100}
+        self.user = User.objects.create_user("basic", "basic@example.com", "basic")
+        self.staff_user = User.objects.create_superuser(
+            "permitted", "permitted@example.com", "password"
+        )
+        self.url = reverse("create-count-instance")
+        self.data = {"count_total": 100}
         cache.clear()
 
     def test_create_permissions(self):
-        request = factory.post('/', {'count_total': 100}, format='json')
+        request = factory.post("/", {"count_total": 100}, format="json")
         StatsSessionMiddleware().process_request(request)
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        request = factory.post('/', {'count_total': 100}, format='json')
+        request = factory.post("/", {"count_total": 100}, format="json")
         StatsSessionMiddleware().process_request(request)
         force_authenticate(request, user=self.staff_user)
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        request = factory.post('/', {'count_total': 100}, format='json')
+        request = factory.post("/", {"count_total": 100}, format="json")
         StatsSessionMiddleware().process_request(request)
         force_authenticate(request, user=self.user)
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_safe_permissions(self):
-        request = factory.get('/')
+        request = factory.get("/")
         force_authenticate(request, user=self.staff_user)
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        request = factory.head('/')
+        request = factory.head("/")
         force_authenticate(request, user=self.staff_user)
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        request = factory.options('/')
+        request = factory.options("/")
         force_authenticate(request, user=self.staff_user)
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_anonymous_permissions(self):
-        request = factory.get('/')
+        request = factory.get("/")
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-        request = factory.head('/')
+        request = factory.head("/")
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-        request = factory.options('/')
+        request = factory.options("/")
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_get(self):
-        instance = CountInstance.objects.create(user=self.user,
-                                                session_id='a',
-                                                count_total=100,
-                                                ip_address="127.0.0.1")
-        request = factory.get('/')
+        instance = CountInstance.objects.create(
+            user=self.user, session_id="a", count_total=100, ip_address="127.0.0.1"
+        )
+        request = factory.get("/")
         force_authenticate(request, user=self.staff_user)
         response = view(request)
         response.render()
-        self.assertEqual(response.data[0]['session_id'], instance.session_id)
-        self.assertEqual(response.data[0]['count_total'], instance.count_total)
-        self.assertEqual(response.data[0]['ip_address'], instance.ip_address)
+        self.assertEqual(response.data[0]["session_id"], instance.session_id)
+        self.assertEqual(response.data[0]["count_total"], instance.count_total)
+        self.assertEqual(response.data[0]["ip_address"], instance.ip_address)
 
     def test_ratelimit_exceeded(self):
-        request = factory.post('/', {'count_total': 100}, format='json')
+        request = factory.post("/", {"count_total": 100}, format="json")
         StatsSessionMiddleware().process_request(request)
         for dummy in range(2):
             response = view(request)

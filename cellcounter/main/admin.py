@@ -12,15 +12,16 @@ class SimilarLookingGroupAdmin(admin.ModelAdmin):
 
 
 class CellTypeAdmin(admin.ModelAdmin):
-    pass 
+    pass
 
 
 class LicenseAdmin(admin.ModelAdmin):
-    pass 
+    pass
 
 
 class CopyrightHolderAdmin(admin.ModelAdmin):
-    pass 
+    pass
+
 
 admin.site.register(CellImage, CellImageAdmin)
 admin.site.register(CellType, CellTypeAdmin)

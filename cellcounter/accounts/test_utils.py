@@ -14,13 +14,13 @@ class Email:
 class TestReadEmailUtil(TestCase):
     def test_matching_email(self):
         user = UserFactory()
-        request = RequestFactory().post('/')
-        url = PasswordResetForm().get_context_data(request, user)['url']
+        request = RequestFactory().post("/")
+        url = PasswordResetForm().get_context_data(request, user)["url"]
         msg = Email(body=url)
-        email_url, path = (read_signup_email(msg))
+        email_url, path = read_signup_email(msg)
         self.assertEqual(email_url, url)
 
     def test_nonmatching_email(self):
-        msg = Email(body='')
-        email_url, path = (read_signup_email(msg))
+        msg = Email(body="")
+        email_url, path = read_signup_email(msg)
         self.assertTrue(not any([email_url, path]))

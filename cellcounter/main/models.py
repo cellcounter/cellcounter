@@ -31,8 +31,8 @@ class CellImage(models.Model):
     thumbnail_top = models.IntegerField()
     thumbnail_width = models.IntegerField()
     uploader = models.ForeignKey(User, on_delete=models.CASCADE)
-    copyright = models.ForeignKey('CopyrightHolder', on_delete=models.CASCADE)
-    license = models.ForeignKey('License', on_delete=models.CASCADE)
+    copyright = models.ForeignKey("CopyrightHolder", on_delete=models.CASCADE)
+    license = models.ForeignKey("License", on_delete=models.CASCADE)
 
     def similar_cells(self):
         groups = self.similarlookinggroup_set.all()
@@ -45,27 +45,35 @@ class CellImage(models.Model):
     def generate_thumbnail(self):
         django_type = mimetypes.guess_type(self.file.file.name)[0]
 
-        if django_type == 'image/jpeg':
-            pil_type = 'jpeg'
-            file_extension = 'jpg'
-        elif django_type == 'image/png':
-            pil_type = 'png'
-            file_extension = 'png'
+        if django_type == "image/jpeg":
+            pil_type = "jpeg"
+            file_extension = "jpg"
+        elif django_type == "image/png":
+            pil_type = "png"
+            file_extension = "png"
 
         image = Image.open(StringIO(self.file.read()))
-        thumb_image = image.crop((self.thumbnail_left, self.thumbnail_top,
-                                  self.thumbnail_left + self.thumbnail_width,
-                                  self.thumbnail_top + self.thumbnail_width))
+        thumb_image = image.crop(
+            (
+                self.thumbnail_left,
+                self.thumbnail_top,
+                self.thumbnail_left + self.thumbnail_width,
+                self.thumbnail_top + self.thumbnail_width,
+            )
+        )
         thumb_image = thumb_image.resize((200, 200), Image.ANTIALIAS)
         temp_handle = StringIO()
         thumb_image.save(temp_handle, pil_type)
         temp_handle.seek(0)
 
-        suf = SimpleUploadedFile(os.path.split(self.file.name)[-1],
-                                 temp_handle.read(), content_type=django_type)
+        suf = SimpleUploadedFile(
+            os.path.split(self.file.name)[-1],
+            temp_handle.read(),
+            content_type=django_type,
+        )
         self.thumbnail.save(
-            '%s_thumbnail.%s' % (os.path.splitext(suf.name)[0], file_extension),
-            suf)
+            "%s_thumbnail.%s" % (os.path.splitext(suf.name)[0], file_extension), suf
+        )
 
     def __unicode__(self):
         return self.title
@@ -91,7 +99,9 @@ class CopyrightHolder(models.Model):
     name = models.CharField(max_length=300)
     link_title = models.CharField(max_length=300, null=True, blank=True)
     link_url = models.CharField(max_length=300, null=True, blank=True)
-    user = models.ManyToManyField(User)  # These users may apply this copyright to an image
+    user = models.ManyToManyField(
+        User
+    )  # These users may apply this copyright to an image
 
     def __unicode__(self):
         return self.name

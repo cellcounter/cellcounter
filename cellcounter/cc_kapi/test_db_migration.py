@@ -18,8 +18,11 @@ class TestMigrations(TransactionTestCase):
     migrate_to = None
 
     def setUp(self):
-        assert self.migrate_from and self.migrate_to, \
-            "TestCase '{}' must define migrate_from and migrate_to properties".format(type(self).__name__)
+        assert (
+            self.migrate_from and self.migrate_to
+        ), "TestCase '{}' must define migrate_from and migrate_to properties".format(
+            type(self).__name__
+        )
 
         connection.prepare_database()
 
@@ -44,16 +47,16 @@ class TestMigrations(TransactionTestCase):
 
 class DefaultsTestCase(TestMigrations):
 
-    migrate_from = [('cc_kapi', u'0001_initial')]
-    migrate_to = [('cc_kapi', u'0002_v2api')]
+    migrate_from = [("cc_kapi", "0001_initial")]
+    migrate_to = [("cc_kapi", "0002_v2api")]
 
     def setUpBeforeMigration(self, apps):
         # create users and keyboards under the old schema
-        User = apps.get_model('auth', 'User')
+        User = apps.get_model("auth", "User")
 
         class KeyboardFactory2(KeyboardFactory):
             class Meta:
-                model = apps.get_model('cc_kapi', 'Keyboard')
+                model = apps.get_model("cc_kapi", "Keyboard")
 
         user = User(username="test")
         user.save()
@@ -75,7 +78,6 @@ class DefaultsTestCase(TestMigrations):
         keyboard3 = KeyboardFactory2(user=user1)
         keyboard3.save()
         self.keyboard3_id = keyboard3.id
-
 
     def test_defaults_migrated(self):
         # check that there are two users
@@ -111,5 +113,4 @@ class DefaultsTestCase(TestMigrations):
         self.assertEqual(user.defaultkeyboards.mobile, None)
 
         # check that user1 has no default desktop or mobile keyboard
-        self.assertFalse(hasattr(user1, 'defaultkeyboards'))
-
+        self.assertFalse(hasattr(user1, "defaultkeyboards"))
