@@ -857,7 +857,7 @@ function set_keyboard_default(keyboard_href) {
     "use strict";
     $.ajax({
         url: keyboard_href + 'set_default',
-        type: 'POST',
+        type: 'PUT',
         data: '',
         contentType: "application/json; charset=utf-8",
         async: false
