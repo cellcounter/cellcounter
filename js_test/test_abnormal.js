@@ -49,11 +49,11 @@ function delay(interval)
    {
       setTimeout(() => done(), interval)
 
-   }).timeout(interval + 100) // The extra 100ms should guarantee the test will not fail due to exceeded timeout
+   }).timeout(interval + 500) // The extra 500ms should guarantee the test will not fail due to exceeded timeout
 }
 
 
-describe('The web page', () => {
+describe('The web page', function () {
 
    before(function(done) {
       this.timeout(3000);
@@ -62,6 +62,7 @@ describe('The web page', () => {
 
    after(closeWebPage);
 
+   this.timeout(4000);
 
    it('has the correct URL -> ' + url, () => {
       const actual =   { url: window.location.href };
@@ -88,7 +89,7 @@ describe('The web page', () => {
 
     it('counts each celltype', function (done) {
 
-        this.timeout(10000);
+        this.timeout(20000);
 
         var counter = window.counter;
 

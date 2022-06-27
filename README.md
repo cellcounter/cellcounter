@@ -43,7 +43,7 @@ To run the test suite locally, you also need the test requirements in your virtu
 
 To install npm from source for JavaScript testing:
 
-    curl http://nodejs.org/dist/node-latest.tar.gz | tar xvz
+    curl https://nodejs.org/dist/node-latest.tar.gz | tar xvz
     cd node-v*
     ./configure --prefix=$VIRTUAL_ENV
     make install

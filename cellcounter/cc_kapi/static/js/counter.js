@@ -12,15 +12,17 @@ var first_count = true;
 var edit_cell_id = -1;
 var selected_element = {};
 var date_now = new Date(Date.now()).toISOString();
-var keyboard_map = { label: 'Default',
-    is_primary: true,
+
+var keyboard_map = {label: "Default",
+    is_default: true,
     created: date_now,
     last_modified: date_now,
     mappings: [] };
 var chart, chart2;
 
-/* Counter object */
+var keyboard_platform = "desktop";
 
+/* Counter object */
 var counter = (function () {
     var undo_history = [];
     var count_data = [];
@@ -183,23 +185,46 @@ var counter = (function () {
     };
 })();
 
+function render_chart() {
+  if(chart) {
+    chart.render();
+  }
+}
+
+function render_chart2() {
+  if(chart2) {
+    chart2.render();
+  }
+}
+
 function init_objects () {
     chart = doughnutChart('#doughnut').data(counter.get_count_data());
     chart2 = doughnutChart('#doughnut2').data(counter.get_count_data());
 }
 
-function init_keyboard () {
-    $('.keyboard-label').editable({
-        url: function (params) {
-            var keyboard = load_keyboard(params.pk);
-            keyboard.label = params.value;
-            save_keyboard(keyboard);
-        }
-    });
+function init_keyboard_label_editing () {
+    $('.keyboard-label').each(function() {
 
+      if($(this).data('pk') != "builtin") {
+
+        $(this).editable({
+          url: function (params) {
+              var href = $(this).data('href');
+              var keyboard = load_keyboard(href);
+              keyboard.label = params.value;
+              save_keyboard(keyboard);
+          }
+        });
+        $(this).css("cursor", "pointer");
+      }
+    });
+}
+
+function init_keyboard () {
     $('#save_new_name').click(function () {
         save_new_keyboard($('#keyboard-name-input').val());
     });
+
     // Re-enable keyboard when dialog is closed
     $('#keyboard_name').on('hide', function () {
         editing_keyboard = true;
@@ -210,18 +235,18 @@ function init_keyboard () {
         $('#select-keyboard').modal('show');
     });
 
-    $('#select-keyboard').on('show', function () {
-        $.getJSON('/api/keyboards/', function (data) {
+    $('#select-keyboard').on('show', function() {
+        $.getJSON("/api/keyboards/" + keyboard_platform + '/', function(data) {
             $('#keyboard_list tbody > tr').remove();
             $.each(data, function (i, data) {
                 $('#keyboard_list table tbody').append(
-                    '<tr><td>' + data.label + '</td><td><span class="btn btn-success load_keyboard" title="Select keyboard" data-id="' + data.id + '"><i class="icon-ok icon-white"></i></span></td></tr>');
+                    '<tr><td>'+data.label+'</td><td><span class="btn btn-success load_keyboard" title="Select keyboard" data-id="' + data.id + '" data-href="' + data.href + '"><i class="icon-ok icon-white"></i></span></td></tr>');
             });
-            $('.load_keyboard').on('click', function () {
-                var id = ($(this).attr('data-id'));
-                set_keyboard(load_keyboard(id));
-                $('#select-keyboard').modal('hide');
-                $('div#editkeymapbox').dialog('close');
+            $('.load_keyboard').on('click', function() {
+                var href = ($(this).attr('data-href'));
+                set_keyboard(load_keyboard(href));
+                $('#select-keyboard').modal("hide");
+                $("div#editkeymapbox").dialog("close");
             });
         });
     });
@@ -473,7 +498,7 @@ function init_other () {
                     }
                 }
             }
-            chart.render();
+            render_chart();
         }
     });
 
@@ -501,6 +526,7 @@ function init_other () {
 var initialised = new $.Deferred();
 
 function initialise () {
+    init_keyboard_label_editing();
     init_objects();
 
     var init_fns = [function () { init_keyboard(); }, function () { init_other(); }];
@@ -597,7 +623,7 @@ function reset_counters () {
     counter.reset();
     results.hide();
     update_keyboard();
-    chart.render();
+    render_chart();
     open_keyboard();
 }
 
@@ -621,7 +647,7 @@ function open_keyboard (done) {
 
     keyboard_active = true;
     $('#savefilebutton').css('display', 'none');
-    chart.render();
+    render_chart();
 }
 
 var results = (function () {
@@ -789,7 +815,7 @@ var results = (function () {
                 $('div#statistics_text').show();
             }
             $('div#statistics').show();
-            chart2.render();
+            render_chart2();
 
             // display the chart
             $('#visualise2').css('display', 'block');
@@ -824,21 +850,21 @@ function log_stats (total) {
 function set_keyboard (mapping) {
     keyboard_map = mapping;
     update_keyboard();
-    chart.render();
+    render_chart();
 }
 
-function load_keyboard (keyboard_id) {
-    // XXX: switch both to use async, very inconsistent function presently
-    if (keyboard_id === undefined) {
-        return $.getJSON('/api/keyboards/default/', function (data) {
+function load_keyboard(href) {
+    "use strict";
+    if (href === undefined) {
+        $.getJSON("/api/keyboards/" + keyboard_platform + "/default/", function(data) {
             keyboard_map = data;
             update_keyboard();
-            chart.render();
+            render_chart();
         });
     } else {
         var keyboard = {};
         $.ajax({
-            url: '/api/keyboards/' + keyboard_id + '/',
+            url: href,
             type: 'GET',
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
@@ -851,19 +877,24 @@ function load_keyboard (keyboard_id) {
     }
 }
 
-function set_keyboard_primary (keyboard_id) {
-    var keyboard = load_keyboard(keyboard_id);
-    keyboard.is_primary = true;
-    save_keyboard(keyboard);
+function set_keyboard_default(keyboard_href) {
+    "use strict";
+    $.ajax({
+        url: keyboard_href + 'set_default',
+        type: 'PUT',
+        data: '',
+        contentType: "application/json; charset=utf-8",
+        async: false
+    });
     return false;
 }
 
-function delete_specific_keyboard (keyboard_id) {
-    var keyboard = load_keyboard(keyboard_id);
+function delete_specific_keyboard(keyboard_href) {
+    "use strict";
     $.ajax({
-        url: '/api/keyboards/' + keyboard.id + '/',
+        url: keyboard_href,
         type: 'DELETE',
-        data: JSON.stringify(keyboard),
+        data: '',
         contentType: 'application/json; charset=utf-8',
         async: false
     });
@@ -976,6 +1007,7 @@ function edit_keyboard () {
         },
         resizable: false,
         buttons: [{ text: save_text,
+            id: "save_keyboard_map",
             click: function () {
                 if (save_keys) {
                     save_keyboard();
@@ -994,6 +1026,7 @@ function edit_keyboard () {
             }
         },
         { text: 'Revert',
+            id: "revert_keyboard_map",
             click: function () {
                 load_keyboard();
                 $('div#editkeymapbox').dialog('close');
@@ -1062,7 +1095,7 @@ function save_keyboard (keyboard) {
 
     if ('id' in keyboard) {
         $.ajax({
-            url: '/api/keyboards/' + keyboard.id + '/',
+            url: '/api/keyboards/' + keyboard_platform + '/' + keyboard.id + '/',
             type: 'PUT',
             data: JSON.stringify(keyboard),
             contentType: 'application/json; charset=utf-8',
@@ -1074,7 +1107,7 @@ function save_keyboard (keyboard) {
         });
     } else {
         $.ajax({
-            url: '/api/keyboards/',
+            url: '/api/keyboards/' + keyboard_platform + '/',
             type: 'POST',
             data: JSON.stringify(keyboard),
             contentType: 'application/json; charset=utf-8',
@@ -1108,8 +1141,8 @@ function clear_keyboard () {
         var user = keyboard_map.user;
     }
     var date = new Date(Date.now()).toISOString();
-    keyboard_map = { label: 'Default',
-        is_primary: true,
+    keyboard_map = { label: "Default",
+        is_default: true,
         created: date,
         last_modified: date,
         mappings: [] };

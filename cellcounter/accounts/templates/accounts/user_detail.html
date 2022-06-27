@@ -27,12 +27,21 @@
 {% if keyboards %}
     <p>To change a keyboard's label, click on the keyboard name.</p>
     <table class="table">
-    <tr><th>Label</th><th>Current Default</th><th>Management Function</th></tr>
+    <tr><th>Label</th><th>Device Type</th><th>Current Default</th><th>Set default</th><th>Delete</th></tr>
     {% for keyboard in keyboards %}
-        <tr><td><a href="" class="keyboard-label" data-type="text" data-pk="{{ keyboard.id }}" title="Click to change label">{{ keyboard.label }}</a></td><td>{% if keyboard.is_primary %}<i class="icon-ok"></i>{% endif %}</td>
+        <tr><td><span class="keyboard-label" data-type="text" data-pk="{{ keyboard.id }}" data-href="{{ keyboard.href }}" title="Click to change label">{{ keyboard.label }}</span></td><td>{{ keyboard.device_type }}</td><td>{% if keyboard.is_default %}<i class="icon-ok"></i>{% endif %}</td>
             <td>
-                <a href="" title="Set keyboard as default" class="btn btn-success" onclick="set_keyboard_primary({{ keyboard.id }});"><i class="icon-ok icon-white"></i></a>
-                <a href="" title="Delete keyboard" class="btn btn-danger" onclick="delete_specific_keyboard({{ keyboard.id }});"><i class="icon-trash icon-white"></i></a>
+                {% if not keyboard.is_default %}
+                <a href="" title="Set keyboard as default" class="keyboard-default btn btn-success" onclick="set_keyboard_default('{{ keyboard.href }}');"><i class="icon-ok icon-white"></i></a>
+                {% else %}
+                <span class="btn btn-success" style="filter: grayscale(100%); opacity: 0.6; cursor: not-allowed"><i class="icon-ok icon-white"></i></span>
+                {% endif %}
+            </td><td>
+                {% if keyboard.id != "builtin" %}
+                <a href="" title="Delete keyboard" class="keyboard-delete btn btn-danger" data-pk="{{ keyboard.id }}" onclick="delete_specific_keyboard('{{ keyboard.href }}');"><i class="icon-trash icon-white"></i></a>
+                {% else %}
+                <span class="btn btn-success" style="filter: grayscale(100%); opacity: 0.6; cursor: not-allowed"><i class="icon-trash icon-white"></i></span>
+                {% endif %}
             </td>
         </tr>
     {% endfor %}
