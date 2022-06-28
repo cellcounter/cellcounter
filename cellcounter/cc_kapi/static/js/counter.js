@@ -26,6 +26,7 @@ var keyboard_platform = "desktop";
 var counter = (function () {
     var undo_history = [];
     var count_data = [];
+    var counting_start_time;
 
     return {
         init: function () {
@@ -69,6 +70,10 @@ var counter = (function () {
                 count_data[i].abnormal = 0;
             }
             undo_history = [];
+        },
+
+        reset_start_time: function () {
+            counting_start_time = new Date();
         },
 
         get_cell_ids: function () {
@@ -180,6 +185,10 @@ var counter = (function () {
                 total += count_data[i].abnormal;
             }
             return total;
+        },
+
+        get_counting_time: function () {
+            return Math.round((new Date() - counting_start_time)/1000);
         }
 
     };
@@ -276,9 +285,10 @@ function init_other () {
             }
 
             var total = counter.get_total();
+            var time_counting = counter.get_counting_time();
 
             if (total > 0) {
-                log_stats(total);
+                log_counter_stats(total, time_counting, "close");
                 results.update();
                 results.show('html');
             }
@@ -610,7 +620,12 @@ function register_resets () {
     });
     $('#reset-count').on('click', function () {
         var total = counter.get_total();
-        log_stats(total);
+        if(total==0) {
+          $('#confirm-reset').modal('hide');
+          return;
+        }
+        var time_counting = counter.get_counting_time();
+        log_counter_stats(total, time_counting, "reset");
         reset_counters();
         $('#confirm-reset').modal('hide');
     });
@@ -648,6 +663,7 @@ function open_keyboard (done) {
     keyboard_active = true;
     $('#savefilebutton').css('display', 'none');
     render_chart();
+    counter.reset_start_time();
 }
 
 var results = (function () {
@@ -835,7 +851,7 @@ var results = (function () {
     };
 })();
 
-function log_stats (total) {
+function log_counter_stats(total, time_counting, event_type) {
     if (total > 75) {
         $.ajax({
             url: '/api/stats/',
@@ -845,6 +861,16 @@ function log_stats (total) {
             async: true
         });
     }
+    log_plausible_event('Counter', {props: {count: total, time: time_counting, event: event_type}});
+}
+
+function log_plausible_event(name, props) {
+  if(window.plausible) {
+    if(props)
+      plausible(name, props);
+    else
+      plausible(name);
+  }
 }
 
 function set_keyboard (mapping) {

@@ -135,6 +135,7 @@ TEMPLATES = [
                 "django.template.context_processors.static",
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
+                "cellcounter.main.context_processors.plausible_analytics",
             ],
         },
     },
@@ -227,3 +228,9 @@ SESSION_COOKIE_AGE = 604800
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+PLAUSIBLE_ANALYTICS_CONFIG = {
+    "enabled": True,
+    "server": "https://stats.cellcountr.com",
+    "domainkey": "cellcountr.com",
+}

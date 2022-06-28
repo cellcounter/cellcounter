@@ -38,6 +38,10 @@
     <link rel="stylesheet" href="{% static "css/style_ie_hacks.css" %}" type="text/css" media="screen" />
     <![endif]-->
 
+{% if PLAUSIBLE_ANALYTICS_ENABLED %}
+{% include "main/plausible_analytics_snippet.html" %}
+{% endif %}
+
 </head>
 <body>
 
